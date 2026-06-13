@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg:         #0D0D10;
+  --surface:    #14141A;
+  --surface-hi: #1E1E26;
+  --border:     #24242C;
+  --border-hi:  #36363F;
+  --muted:      #4E4E5C;
+  --dim:        #767688;
+  --primary:    #CCCCE0;
+  --bright:     #EDEDF8;
+  --teal:       #00C896;
+}
+
+html {
+  background-color: #0D0D10;
+  color: #CCCCE0;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(0, 200, 150, 0.2);
+  color: #EDEDF8;
+}
+
+/* スクロールバー */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* AdSense プレースホルダー（審査前・プレースホルダーIDの場合） */
+.adsbygoogle {
+  background: var(--surface);
+  border-radius: 4px;
+  min-height: 90px;
+}
+.adsbygoogle:not([data-ad-status="filled"]) {
+  border: 1px dashed var(--border);
+}
+
+/* ドットグリッドパターン */
+.dot-grid {
+  background-image: radial-gradient(circle, var(--border-hi) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
