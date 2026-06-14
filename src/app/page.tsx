@@ -67,7 +67,7 @@ export default function Home() {
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal mb-3">Request</p>
         <h2 className="text-xl font-bold text-bright">欲しいツールを教えてください</h2>
         <p className="mt-3 mx-auto max-w-sm text-sm leading-relaxed text-dim">
-          「こんなツールがあったら便利」というアイデアがあれば気軽にリクエストしてください。
+          「こんなツールがあったら便利」というアイデアがあれば気軽にリクエストしてください。<br />
           今後の開発の参考にします。
         </p>
         <a
