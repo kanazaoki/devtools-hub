@@ -34,3 +34,12 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# local tools / claude
+.company/
+.playwright-mcp/
+docs/
+
+# playwright screenshots (root level)
+/*.png
+/*.jpg

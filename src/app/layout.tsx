@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { Analytics } from '@vercel/analytics/next'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { ADSENSE_CLIENT } from '@/components/AdSense'
@@ -41,6 +42,7 @@ export default function RootLayout({
             strategy="lazyOnload"
           />
         )}
+        <Analytics />
       </body>
     </html>
   )
