@@ -6,7 +6,7 @@ import { AdSense } from '@/components/AdSense'
 export const metadata: Metadata = {
   title: 'devtools-hub — 開発者・クリエイター向け無料 Web ツール集',
   description:
-    '個人開発者が作った開発・デザイン向けツールを無料公開。カラーコード変換、グラデーションエディタ、画像変換、テキストレイアウト確認など。デスクトップ版は BOOTH で配布中。',
+    '個人開発者が作った開発・デザイン向けツールを無料公開。カラーコード変換、グラデーションエディタ、画像変換、テキストレイアウト確認など。デスクトップ版は BOOTH で販売中。',
 }
 
 export default function Home() {
@@ -28,8 +28,8 @@ export default function Home() {
             無料ツール集
           </h1>
           <p className="mt-4 mx-auto max-w-md text-sm leading-relaxed text-dim">
-            デザイン・開発・画像処理に使えるツールをブラウザでそのまま使えます。
-            デスクトップ版はより多くの機能付きで BOOTH にて配布中。
+            デザイン・開発・画像処理に使えるツールをブラウザでそのまま使えます。<br />
+            デスクトップ版はより多くの機能付きで BOOTH にて販売中。
           </p>
 
           {/* スタッツバー */}

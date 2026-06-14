@@ -10,7 +10,7 @@ export function Footer() {
               devtools-hub
             </p>
             <p className="mt-2 text-sm text-dim max-w-xs">
-              開発者・クリエイター向け無料 Web ツール集。デスクトップ版は BOOTH で配布中。
+              開発者・クリエイター向け無料 Web ツール集。デスクトップ版は BOOTH で販売中。
             </p>
           </div>
           <div className="flex flex-col gap-2">
