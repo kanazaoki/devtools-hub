@@ -11,7 +11,7 @@ type Props = {
   params: { slug: string }
 }
 
-const DEDICATED_PAGES = new Set(['color-deck', 'gradient-deck', 'text-layout', 'text-deck', 'ai-prompt-manager', 'webp-studio', 'mockup-builder', 'resize-image'])
+const DEDICATED_PAGES = new Set(['color-deck', 'gradient-deck', 'text-layout', 'text-deck', 'ai-prompt-manager', 'webp-studio', 'mockup-builder', 'sheet-studio', 'resize-image'])
 
 export function generateStaticParams() {
   return tools
