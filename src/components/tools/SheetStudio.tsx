@@ -173,8 +173,13 @@ export function SheetStudio() {
     if (!packerImages.length) return
     const result = packRects(packerImages, padding, trim, pow2)
     setPacked(result)
-    if (packerCanvasRef.current) renderSheet(packerCanvasRef.current, result.rects, result.tw, result.th)
   }, [packerImages, padding, trim, pow2])
+
+  useEffect(() => {
+    if (packed && packerCanvasRef.current) {
+      renderSheet(packerCanvasRef.current, packed.rects, packed.tw, packed.th)
+    }
+  }, [packed])
 
   // Packer: download
   const handleDownloadPng = () => {
@@ -335,13 +340,13 @@ export function SheetStudio() {
           {/* Right: canvas + controls */}
           <div className="space-y-3">
             <div className="overflow-auto rounded-lg border border-border bg-[#111827] p-3 min-h-32 flex items-center justify-center">
-              {packed ? (
-                <canvas ref={packerCanvasRef} className="max-w-full" style={{ imageRendering: 'pixelated' }} />
-              ) : (
-                <div ref={el => { if (el && packerCanvasRef.current) el.appendChild(packerCanvasRef.current) }}>
-                  <canvas ref={packerCanvasRef} className="hidden" />
-                  <p className="font-mono text-xs text-muted/40">パックするとここにプレビューが表示されます</p>
-                </div>
+              <canvas
+                ref={packerCanvasRef}
+                className="max-w-full"
+                style={{ imageRendering: 'pixelated', display: packed ? 'block' : 'none' }}
+              />
+              {!packed && (
+                <p className="font-mono text-xs text-muted/40">パックするとここにプレビューが表示されます</p>
               )}
             </div>
 
