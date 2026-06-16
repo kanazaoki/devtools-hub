@@ -12,6 +12,29 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
+    slug: 'base64-studio',
+    name: 'base64-studio',
+    tagline: 'Base64 エンコード & デコード',
+    description:
+      'テキストや画像を Base64 に変換。Standard / URL-safe 切り替え・Data URI 形式での出力に対応。Base64 文字列を貼り付けるだけで元のテキスト・画像に自動復元。',
+    tags: ['開発者向け', 'テキスト', 'エンコード'],
+    boothUrl: 'https://knkk.booth.pm/items/8516143',
+    hasWebVersion: true,
+    features: [
+      'テキスト → Base64 リアルタイム変換',
+      '画像ドロップ → Base64 / Data URI 変換',
+      'Base64 → テキスト・画像へ自動デコード',
+      'Standard / URL-safe Base64 切り替え',
+      'Pure Base64 / Data URI 形式の出力切り替え',
+    ],
+    desktopFeatures: [
+      'Swap ⇄（エンコード出力 → デコード入力に転送）',
+      '画像デコード結果を PNG としてファイル保存',
+      'キーボードショートカット（Ctrl+E/D・Ctrl+Shift+C）',
+      '入力・出力のバイト数をリアルタイム表示',
+    ],
+  },
+  {
     slug: 'json-studio',
     name: 'JSON Studio',
     tagline: 'JSON フォーマッター & バリデーター',
