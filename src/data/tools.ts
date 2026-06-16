@@ -12,6 +12,30 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
+    slug: 'json-studio',
+    name: 'JSON Studio',
+    tagline: 'JSON フォーマッター & バリデーター',
+    description:
+      'JSON を貼り付けるだけでリアルタイム整形・構文エラー検出。シンタックスハイライト・キーのアルファベット順ソート・Minify に対応。開発者の日常作業をすばやくこなせる JSON ツール。',
+    tags: ['JSON', '開発者向け', 'フォーマッター'],
+    boothUrl: 'https://knkk.booth.pm/items/8515118',
+    hasWebVersion: true,
+    features: [
+      'JSON 貼り付けでリアルタイム整形',
+      '構文エラーのリアルタイム検出',
+      'シンタックスハイライト（キー・文字列・数値・真偽値）',
+      'インデント幅選択（2 / 4 / タブ）',
+      'キーのアルファベット順ソート・Minify',
+    ],
+    desktopFeatures: [
+      'YAML モード（JSON → YAML 変換表示）',
+      'Diff モード（2つの JSON の差分比較）',
+      '折りたたみ（オブジェクト・配列を▶クリックで折りたたみ）',
+      '出力内検索（Ctrl+F）',
+      '入力履歴（最大10件）',
+    ],
+  },
+  {
     slug: 'color-deck',
     name: 'color-deck',
     tagline: 'カラーコード変換 & パレット保存',
