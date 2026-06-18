@@ -164,14 +164,16 @@ const PRESETS: { label: string; expr: string }[] = [
 // ── FieldSelect ───────────────────────────────────────────────────────────────
 
 function FieldSelect({
-  config, value, onChange,
+  config, value, onChange, isLast,
 }: {
   config: FieldConfig
   value: string
   onChange: (v: string) => void
+  isLast?: boolean
 }) {
   const isSimple = value === '*' || /^\d+$/.test(value)
   const displayValue = isSimple ? value : '*'
+  const isAny = value === '*'
 
   const options = ['*', ...Array.from(
     { length: config.max - config.min + 1 },
@@ -179,24 +181,26 @@ function FieldSelect({
   )]
 
   return (
-    <div className="flex flex-col items-center gap-1.5">
+    <div className={`flex flex-1 flex-col gap-2 px-3 py-3 ${isLast ? '' : 'border-r border-border'}`}>
       <span className="font-mono text-[9px] uppercase tracking-widest text-muted">{config.label}</span>
       <select
         value={displayValue}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded border border-border bg-bg px-2 py-1.5 font-mono text-xs text-primary outline-none focus:border-border-hi transition-colors"
+        className="w-full rounded border border-border bg-bg px-1.5 py-1 font-mono text-[10px] text-primary outline-none focus:border-border-hi transition-colors"
       >
         {options.map((opt) => (
           <option key={opt} value={opt}>
             {opt === '*'
-              ? `* (すべて)`
+              ? '* すべて'
               : config.labelFn
                 ? config.labelFn(parseInt(opt, 10))
                 : opt}
           </option>
         ))}
       </select>
-      <span className="font-mono text-[11px] tabular-nums text-dim">{value}</span>
+      <span className={`font-mono text-base font-bold tabular-nums leading-none ${isAny ? 'text-muted/40' : 'text-teal'}`}>
+        {value}
+      </span>
     </div>
   )
 }
@@ -274,54 +278,53 @@ export function CronBuilder() {
   const description = describeExpression(fields)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
 
       {/* ── Presets ── */}
-      <div className="space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted">プリセット</p>
-        <div className="flex flex-wrap gap-2">
-          {PRESETS.map(({ label, expr }) => (
-            <button
-              key={label}
-              onClick={() => handlePreset(expr)}
-              className={`rounded border px-3 py-1.5 font-mono text-xs transition-all ${
-                cronInput === expr
-                  ? 'border-teal/40 bg-teal/10 text-teal'
-                  : 'border-border text-muted hover:border-border-hi hover:text-dim'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="mr-1 font-mono text-[9px] uppercase tracking-widest text-muted">Quick:</span>
+        {PRESETS.map(({ label, expr }) => (
+          <button
+            key={label}
+            onClick={() => handlePreset(expr)}
+            className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-all ${
+              cronInput === expr
+                ? 'border-teal/40 bg-teal/10 text-teal'
+                : 'border-border text-muted hover:border-border-hi hover:text-dim'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* ── Visual builder ── */}
-      <div className="space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted">フィールド選択</p>
-        <div className="grid grid-cols-5 gap-2">
-          {FIELD_CONFIGS.map((config) => (
+      <div className="overflow-hidden rounded-md border border-border bg-bg">
+        <div className="flex divide-x divide-border">
+          {FIELD_CONFIGS.map((config, idx) => (
             <FieldSelect
               key={config.key}
               config={config}
               value={fields[config.key]}
               onChange={(v) => handleFieldChange(config.key, v)}
+              isLast={idx === FIELD_CONFIGS.length - 1}
             />
           ))}
         </div>
       </div>
 
       {/* ── Expression ── */}
-      <div className="space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted">CRON 式</p>
+      <div className="space-y-1.5">
         <div className="flex items-stretch gap-2">
           <input
             type="text"
             value={cronInput}
             onChange={(e) => handleCronInput(e.target.value)}
             spellCheck={false}
-            className={`flex-1 rounded border bg-bg px-4 py-2.5 font-mono text-sm text-bright outline-none transition-colors ${
-              parseError ? 'border-red-400/60 focus:border-red-400' : 'border-border-hi focus:border-teal/50'
+            className={`flex-1 rounded-md border-l-2 bg-bg px-4 py-3 font-mono text-base tracking-widest text-bright outline-none transition-colors ${
+              parseError
+                ? 'border border-red-400/40 border-l-red-400'
+                : 'border border-border border-l-teal/40 focus:border-border-hi focus:border-l-teal/70'
             }`}
             placeholder="* * * * *"
           />
@@ -334,24 +337,29 @@ export function CronBuilder() {
 
       {/* ── Description ── */}
       {!parseError && (
-        <div className="rounded-md border border-border bg-bg px-4 py-3">
-          <p className="font-mono text-[9px] uppercase tracking-widest text-muted mb-1">説明</p>
-          <p className="font-mono text-sm text-bright">{description}</p>
+        <div className="border-l-2 border-l-teal/40 pl-4 py-0.5">
+          <p className="font-mono text-[9px] uppercase tracking-widest text-muted/60 mb-1">意味</p>
+          <p className="font-mono text-sm font-medium text-bright">{description}</p>
         </div>
       )}
 
       {/* ── Next executions ── */}
       {!parseError && nextRuns.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <p className="font-mono text-[10px] uppercase tracking-widest text-muted">次回実行時刻</p>
-          <div className="overflow-hidden rounded-md border border-border bg-bg">
+          <div className="overflow-hidden rounded-md border border-border bg-bg divide-y divide-border/50">
             {nextRuns.map((d, i) => (
-              <div
-                key={i}
-                className={`flex items-center gap-3 px-4 py-2 ${i % 2 === 0 ? 'bg-transparent' : 'bg-white/[0.015]'}`}
-              >
-                <span className="shrink-0 font-mono text-[9px] text-muted/40 tabular-nums w-4">{i + 1}</span>
-                <span className="font-mono text-xs text-dim tabular-nums">{formatDate(d)}</span>
+              <div key={i} className="flex items-center justify-between px-4 py-2.5">
+                <div className="flex items-center gap-3">
+                  <span className="shrink-0 font-mono text-[9px] text-muted/30 tabular-nums w-3">{i + 1}</span>
+                  <span className="font-mono text-sm tabular-nums text-teal/80">
+                    {String(d.getHours()).padStart(2, '0')}:{String(d.getMinutes()).padStart(2, '0')}
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] tabular-nums text-muted">
+                  {d.getFullYear()}/{String(d.getMonth()+1).padStart(2,'0')}/{String(d.getDate()).padStart(2,'0')}
+                  （{['日','月','火','水','木','金','土'][d.getDay()]}）
+                </span>
               </div>
             ))}
           </div>
