@@ -529,6 +529,26 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'css-unit-converter',
+    name: 'CSS Unit Converter',
+    tagline: 'px / rem / em / vw / vh / pt / cm / mm を瞬時に相互変換',
+    description:
+      '入力値と単位を選ぶだけで、CSS の全主要単位に一括変換。ベースフォントサイズ・ビューポートサイズをカスタマイズして正確な rem / vw / vh 換算が可能。フロントエンド開発の単位計算を高速化。',
+    tags: ['開発者向け', 'CSS', 'ユーティリティ'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      'px / rem / em / vw / vh / pt / cm / mm の8単位を相互変換',
+      'ベースフォントサイズ（デフォルト16px）をカスタマイズ可能',
+      'ビューポートサイズ（デフォルト1440×900）をカスタマイズして vw/vh を正確に換算',
+      '変換結果を全単位で一覧表示・各行コピーボタン付き',
+    ],
+    desktopFeatures: [
+      '変換セット保存（最大5件）',
+    ],
+  },
+  {
     slug: 'color-contrast-checker',
     name: 'Color Contrast Checker',
     tagline: 'WCAG 2.1 準拠のコントラスト比をリアルタイムチェック',
