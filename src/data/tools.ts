@@ -442,6 +442,27 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'uuid-generator',
+    name: 'UUID ジェネレーター',
+    tagline: 'v4 / v1 / v7 UUID をワンクリックで生成・一括出力',
+    description:
+      'UUID v4（ランダム）・v1（タイムスタンプ）・v7（順序付きランダム）を即座に生成。一括生成やコピーにも対応し、開発・テストのデータ作成を効率化します。',
+    tags: ['開発者向け', 'ユーティリティ', 'UUID'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-18',
+    features: [
+      'UUID v4 / v1 / v7 の3バージョンを切り替えて生成',
+      'ワンクリックコピー（Copied! フィードバック付き）',
+      '一括生成（最大100件）+ 改行区切りでまとめてコピー',
+      '直近10件の生成履歴を表示・再コピー',
+    ],
+    desktopFeatures: [
+      '大量生成（最大10,000件）',
+      '生成結果を CSV / TXT ファイルに書き出し',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
