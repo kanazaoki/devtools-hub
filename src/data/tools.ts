@@ -262,6 +262,25 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'hash-studio',
+    name: 'Hash Studio',
+    tagline: 'MD5 / SHA ハッシュ生成 & 検証',
+    description:
+      'テキスト入力またはファイルドロップで MD5 / SHA-1 / SHA-256 / SHA-512 のハッシュ値をリアルタイム生成。既知のハッシュ値との照合（Verify）にも対応。インターネット接続不要で、入力データは外部に送信されない。',
+    tags: ['開発者向け', 'セキュリティ', 'ハッシュ'],
+    boothUrl: '',
+    hasWebVersion: true,
+    features: [
+      'MD5 / SHA-1 / SHA-256 / SHA-512 をリアルタイム生成',
+      'テキスト入力 & ファイルドロップに対応',
+      'ハッシュ値をワンクリックでコピー',
+      '既知のハッシュ値と照合して一致確認（Verify）',
+    ],
+    desktopFeatures: [
+      'ファイルの非同期ストリーム処理（大容量ファイル対応）',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
