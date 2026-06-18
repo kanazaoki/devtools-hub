@@ -485,6 +485,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'cron-builder',
+    name: 'CRON 式ビルダー',
+    tagline: 'cron 式をビジュアルで組み立て・日本語で解説',
+    description:
+      '分・時・日・月・曜日の各フィールドをUIで選択してcron式を組み立てます。入力したcron式を日本語で説明し、次回実行時刻も即座に確認できます。',
+    tags: ['開発者向け', 'ユーティリティ', 'DevOps'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-18',
+    features: [
+      '分・時・日・月・曜日の5フィールドをビジュアル選択',
+      'cron式の直接入力 → 日本語説明へ即変換',
+      'プリセット5種（毎分・毎時・毎日・毎週・毎月）',
+      '次回実行時刻を3件リアルタイム表示',
+      'ワンクリックでcron式をコピー',
+    ],
+    desktopFeatures: [
+      '次回実行時刻を最大50件 CSV 出力',
+      '複数のcron式を保存・管理',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
