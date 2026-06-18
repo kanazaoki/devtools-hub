@@ -262,6 +262,23 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'diff-viewer',
+    name: 'Diff Viewer',
+    tagline: 'テキストの差分をリアルタイムで可視化',
+    description:
+      '2つのテキストを貼り付けて差分を確認できるビューア。Unified / Split の2モードに対応し、Split モードでは変更行内の文字レベルの差分もハイライトで確認できます。',
+    tags: ['開発者向け', 'ユーティリティ', 'テキスト'],
+    boothUrl: '',
+    hasWebVersion: true,
+    features: [
+      'Before / After テキストをリアルタイム差分比較',
+      'Unified モード：変更箇所をコンテキスト行付きで一覧表示',
+      'Split モード：左右並列 + 文字レベル差分ハイライト',
+      '+追加 / -削除 / unchanged のサマリー表示',
+    ],
+    desktopFeatures: [],
+  },
+  {
     slug: 'number-base-converter',
     name: 'Number Base Converter',
     tagline: '2進数・8進数・10進数・16進数をリアルタイム相互変換',
