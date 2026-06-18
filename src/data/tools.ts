@@ -262,6 +262,24 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'number-base-converter',
+    name: 'Number Base Converter',
+    tagline: '2進数・8進数・10進数・16進数をリアルタイム相互変換',
+    description:
+      'BIN / OCT / DEC / HEX をリアルタイムで相互変換。ビットビューアではクリックで個々のビットを反転でき、ビットマスクの作成・確認にも使えます。ビット長・バイト長・32bit符号付き整数も同時表示。',
+    tags: ['開発者向け', 'ユーティリティ', '進数変換'],
+    boothUrl: '',
+    hasWebVersion: true,
+    features: [
+      'BIN / OCT / DEC / HEX をリアルタイム相互変換',
+      '各フォーマットをワンクリックでコピー',
+      'ビットビューア（4ビットグループ・ビット番号付き）',
+      'ビットをクリックして反転（ビットマスク作成に便利）',
+      'ビット長・バイト長・32bit符号付き整数の表示',
+    ],
+    desktopFeatures: [],
+  },
+  {
     slug: 'timestamp-converter',
     name: 'Timestamp Converter',
     tagline: 'Unix タイムスタンプ ↔ 日時 リアルタイム変換',
