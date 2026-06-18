@@ -268,7 +268,7 @@ export const tools: Tool[] = [
     description:
       'テキスト入力またはファイルドロップで MD5 / SHA-1 / SHA-256 / SHA-512 のハッシュ値をリアルタイム生成。既知のハッシュ値との照合（Verify）にも対応。インターネット接続不要で、入力データは外部に送信されない。',
     tags: ['開発者向け', 'セキュリティ', 'ハッシュ'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8520773',
     hasWebVersion: true,
     features: [
       'MD5 / SHA-1 / SHA-256 / SHA-512 をリアルタイム生成',
