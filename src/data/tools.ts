@@ -268,7 +268,7 @@ export const tools: Tool[] = [
     description:
       '2つのテキストを貼り付けて差分を確認できるビューア。Unified / Split の2モードに対応し、Split モードでは変更行内の文字レベルの差分もハイライトで確認できます。',
     tags: ['開発者向け', 'ユーティリティ', 'テキスト'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8522624',
     hasWebVersion: true,
     features: [
       'Before / After テキストをリアルタイム差分比較',
