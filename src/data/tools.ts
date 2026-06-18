@@ -383,7 +383,7 @@ export const tools: Tool[] = [
     description:
       'テキストや URL を貼り付けるだけでリアルタイムにエンコード/デコード。encodeURIComponent（クエリ値向け）と encodeURI（フルURL向け）を切り替え可能。URL にクエリパラメータが含まれる場合は key / value 形式で自動パース表示。',
     tags: ['開発者向け', 'エンコード', 'ユーティリティ'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8522891',
     hasWebVersion: true,
     releasedAt: '2026-06-18',
     features: [
