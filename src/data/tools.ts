@@ -399,6 +399,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'markdown-preview',
+    name: 'Markdown Preview',
+    tagline: 'リアルタイムプレビュー & 目次自動生成',
+    description:
+      'Markdown を入力すると即座にプレビューへ反映。見出し（H1〜H3）から目次を自動生成してクリックでジャンプ。コードブロックのシンタックスハイライト・文字数/行数カウントに対応。README や技術文書の確認・執筆に。',
+    tags: ['開発者向け', 'テキスト', 'Markdown'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-18',
+    features: [
+      'リアルタイム Markdown プレビュー（入力と同時に反映）',
+      'コードブロックのシンタックスハイライト（JS/TS/Python/HTML/CSS/JSON/Shell）',
+      '見出しから目次（TOC）を自動生成・クリックでスクロール',
+      '文字数・行数をリアルタイム表示',
+      'Copy MD ボタンで Markdown をクリップボードにコピー',
+    ],
+    desktopFeatures: [
+      '.md / .txt ファイルをドラッグ＆ドロップで読み込み',
+      'HTML ファイルとしてエクスポート（スタイル付き）',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
