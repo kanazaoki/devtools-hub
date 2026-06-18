@@ -262,6 +262,26 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'timestamp-converter',
+    name: 'Timestamp Converter',
+    tagline: 'Unix タイムスタンプ ↔ 日時 リアルタイム変換',
+    description:
+      'Unix タイムスタンプ（秒・ミリ秒）と日時をリアルタイムで相互変換。タイムゾーン選択・相対時間表示・ISO 8601 出力に対応。クイックオフセット（+1h / +7d / +30d）で将来のタイムスタンプも即生成。',
+    tags: ['開発者向け', 'ユーティリティ', '時刻'],
+    boothUrl: '',
+    hasWebVersion: true,
+    features: [
+      'Unix タイムスタンプ → 日時変換（秒・ミリ秒対応）',
+      '日時 → Unix タイムスタンプ変換',
+      'タイムゾーン選択（東京・UTC・NY など15拠点）',
+      '相対時間表示（"2 years ago" / "in 3 days"）',
+      'クイックオフセット（Now +1h / +24h / +7d / +30d / +1y）',
+    ],
+    desktopFeatures: [
+      '現在時刻のリアルタイム表示・ワンクリックコピー',
+    ],
+  },
+  {
     slug: 'jwt-decoder',
     name: 'JWT Decoder',
     tagline: 'JWT トークンを即デコード & 検証',
