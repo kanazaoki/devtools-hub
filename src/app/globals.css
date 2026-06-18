@@ -52,6 +52,10 @@ html {
   background-size: 24px 24px;
 }
 
+/* ── UUID Generator styles ── */
+@keyframes uuid-flash { 0% { opacity:0; background-color: rgba(0,200,150,0.12); } 100% { opacity:1; background-color: transparent; } }
+.uuid-flash { animation: uuid-flash 0.35s ease-out forwards; }
+
 /* ── Markdown Preview styles ── */
 .md-editor:focus { box-shadow: inset 3px 0 0 var(--teal); }
 .md-live-dot { animation: md-pulse 2s ease-in-out infinite; }
