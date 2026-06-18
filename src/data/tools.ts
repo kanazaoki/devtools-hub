@@ -427,7 +427,7 @@ export const tools: Tool[] = [
     description:
       'テキストや URL を入力すると即座に QR コードを生成。サイズ・前景色・背景色を自由にカスタマイズして PNG または SVG でダウンロードできます。Wi-Fi 設定や連絡先など幅広い用途に。',
     tags: ['開発者向け', 'ユーティリティ', 'QR'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8523108',
     hasWebVersion: true,
     releasedAt: '2026-06-18',
     features: [
