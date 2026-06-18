@@ -529,6 +529,27 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'text-case-converter',
+    name: 'Text Case Converter',
+    tagline: 'テキストを8形式のケースに一括変換・コピー',
+    description:
+      '入力したテキストを camelCase / PascalCase / snake_case / kebab-case / SCREAMING_SNAKE_CASE / Title Case / UPPERCASE / lowercase の8形式に瞬時変換。変数名・ファイル名・定数名の書き換えを一括コピーで効率化。',
+    tags: ['開発者向け', 'テキスト', 'ユーティリティ'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      '8形式（camelCase / PascalCase / snake_case / kebab-case / SCREAMING_SNAKE / Title / UPPER / lower）にリアルタイム変換',
+      '各形式の個別コピーボタン（Copied! フィードバック付き）',
+      '全形式を改行区切りで一括コピー',
+      '入力テキストの単語数・文字数をリアルタイム表示',
+    ],
+    desktopFeatures: [
+      'クリップボードから自動読み込み',
+      '変換履歴（直近10件）をlocalStorageに保存',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
