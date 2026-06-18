@@ -491,7 +491,7 @@ export const tools: Tool[] = [
     description:
       '分・時・日・月・曜日の各フィールドをUIで選択してcron式を組み立てます。入力したcron式を日本語で説明し、次回実行時刻も即座に確認できます。',
     tags: ['開発者向け', 'ユーティリティ', 'DevOps'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8523728',
     hasWebVersion: true,
     releasedAt: '2026-06-18',
     features: [
