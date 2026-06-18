@@ -123,6 +123,12 @@ export function JwtDecoder() {
         </p>
       )}
 
+      {result?.parts && (
+        <p className="font-mono text-[10px] text-muted/40">
+          ※ 署名の検証は行っていません。改ざん検知には秘密鍵・公開鍵が必要です。
+        </p>
+      )}
+
       {result?.parts && (() => {
         const { header, payload, signature } = result.parts
         const now = Math.floor(Date.now() / 1000)
