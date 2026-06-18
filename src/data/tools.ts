@@ -529,6 +529,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'color-contrast-checker',
+    name: 'Color Contrast Checker',
+    tagline: 'WCAG 2.1 準拠のコントラスト比をリアルタイムチェック',
+    description:
+      '前景色と背景色を選ぶだけで WCAG 2.1 のコントラスト比を即計算。AA / AAA 基準の合否を通常テキスト・大テキスト別に判定。アクセシビリティ対応の UI 開発に。',
+    tags: ['開発者向け', 'カラー', 'アクセシビリティ'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      'コントラスト比をリアルタイム計算（WCAG 2.1 準拠）',
+      'AA / AAA 基準を通常テキスト・大テキスト別に合否判定',
+      'カラーピッカー＋HEX 直接入力に対応',
+      '前景色と背景色を実際の組み合わせでプレビュー確認',
+      '前景↔背景ワンクリックスワップ',
+    ],
+    desktopFeatures: [
+      'スポイトツール（画面から色をピック）',
+      'カラーセット保存（最大10件）',
+    ],
+  },
+  {
     slug: 'text-case-converter',
     name: 'Text Case Converter',
     tagline: 'テキストを8形式のケースに一括変換・コピー',
