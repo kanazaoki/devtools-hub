@@ -8,6 +8,7 @@ export interface Tool {
   hasWebVersion: boolean
   features: string[]
   desktopFeatures: string[]
+  releasedAt: string
 }
 
 export const tools: Tool[] = [
@@ -20,6 +21,7 @@ export const tools: Tool[] = [
     tags: ['開発者向け', 'テキスト', 'エンコード'],
     boothUrl: 'https://knkk.booth.pm/items/8516143',
     hasWebVersion: true,
+    releasedAt: '2026-06-16',
     features: [
       'テキスト → Base64 リアルタイム変換',
       '画像ドロップ → Base64 / Data URI 変換',
@@ -43,6 +45,7 @@ export const tools: Tool[] = [
     tags: ['JSON', '開発者向け', 'フォーマッター'],
     boothUrl: 'https://knkk.booth.pm/items/8515118',
     hasWebVersion: true,
+    releasedAt: '2026-06-16',
     features: [
       'JSON 貼り付けでリアルタイム整形',
       '構文エラーのリアルタイム検出',
@@ -67,6 +70,7 @@ export const tools: Tool[] = [
     tags: ['カラー', 'デザイン', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8488574',
     hasWebVersion: true,
+    releasedAt: '2026-06-13',
     features: [
       'HEX / RGB / CSS rgba() / RGBA float / HSV / HSL をリアルタイム変換',
       'カラーピッカー & スポイト機能',
@@ -90,6 +94,7 @@ export const tools: Tool[] = [
     tags: ['カラー', 'デザイン', 'CSS'],
     boothUrl: 'https://knkk.booth.pm/items/8466853',
     hasWebVersion: true,
+    releasedAt: '2026-06-13',
     features: [
       'linear / radial / conic グラデーション対応',
       'カラーストップの追加・削除・位置調整',
@@ -112,6 +117,7 @@ export const tools: Tool[] = [
     tags: ['テキスト', 'ゲーム開発', 'UI'],
     boothUrl: 'https://knkk.booth.pm/items/8457828',
     hasWebVersion: true,
+    releasedAt: '2026-06-13',
     features: [
       'フォントサイズ・行間・文字間隔・最大横幅をスライダー調整',
       'リアルタイムプレビュー',
@@ -136,6 +142,7 @@ export const tools: Tool[] = [
     tags: ['テキスト', '効率化', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8457296',
     hasWebVersion: true,
+    releasedAt: '2026-06-13',
     features: [
       'スニペットの追加・編集・削除',
       'タイトル・本文でキーワード検索',
@@ -159,6 +166,7 @@ export const tools: Tool[] = [
     tags: ['AI', '画像生成', 'クリエイター向け'],
     boothUrl: 'https://knkk.booth.pm/items/8448296',
     hasWebVersion: true,
+    releasedAt: '2026-06-13',
     features: [
       '前提・顔・服・背景など4カテゴリで管理',
       '日本語タイトル ↔ 英語タグ対応',
@@ -179,6 +187,7 @@ export const tools: Tool[] = [
     tags: ['画像', '変換', '最適化'],
     boothUrl: 'https://knkk.booth.pm/items/8447752',
     hasWebVersion: true,
+    releasedAt: '2026-06-13',
     features: [
       'PNG / JPG → WebP / AVIF 変換',
       '品質スライダー（0〜100）',
@@ -204,6 +213,7 @@ export const tools: Tool[] = [
     tags: ['画像', 'マーケティング', 'ゲーム開発'],
     boothUrl: 'https://knkk.booth.pm/items/8441710',
     hasWebVersion: true,
+    releasedAt: '2026-06-13',
     features: [
       'スクリーンショットをドロップするだけで生成',
       'キャッチコピーの追加・フォントサイズ調整',
@@ -224,6 +234,7 @@ export const tools: Tool[] = [
     tags: ['画像', 'ゲーム開発', 'スプライト'],
     boothUrl: 'https://knkk.booth.pm/items/8507305',
     hasWebVersion: true,
+    releasedAt: '2026-06-14',
     features: [
       '複数画像を1枚のスプライトシートに自動パック',
       'パディング・2のべき乗サイズ・透明トリムのオプション',
@@ -248,6 +259,7 @@ export const tools: Tool[] = [
     tags: ['開発者向け', 'テキスト', '正規表現'],
     boothUrl: 'https://knkk.booth.pm/items/8517333',
     hasWebVersion: true,
+    releasedAt: '2026-06-17',
     features: [
       'パターン入力と同時にリアルタイムマッチング',
       'マッチ箇所のハイライト表示',
@@ -270,6 +282,7 @@ export const tools: Tool[] = [
     tags: ['開発者向け', 'ユーティリティ', 'テキスト'],
     boothUrl: 'https://knkk.booth.pm/items/8522624',
     hasWebVersion: true,
+    releasedAt: '2026-06-18',
     features: [
       'Before / After テキストをリアルタイム差分比較',
       'Unified モード：変更箇所をコンテキスト行付きで一覧表示',
@@ -290,6 +303,7 @@ export const tools: Tool[] = [
     tags: ['開発者向け', 'ユーティリティ', '進数変換'],
     boothUrl: 'https://knkk.booth.pm/items/8521953',
     hasWebVersion: true,
+    releasedAt: '2026-06-18',
     features: [
       'BIN / OCT / DEC / HEX をリアルタイム相互変換',
       '各フォーマットをワンクリックでコピー',
@@ -308,6 +322,7 @@ export const tools: Tool[] = [
     tags: ['開発者向け', 'ユーティリティ', '時刻'],
     boothUrl: 'https://knkk.booth.pm/items/8521650',
     hasWebVersion: true,
+    releasedAt: '2026-06-18',
     features: [
       'Unix タイムスタンプ → 日時変換（秒・ミリ秒対応）',
       '日時 → Unix タイムスタンプ変換',
@@ -328,6 +343,7 @@ export const tools: Tool[] = [
     tags: ['開発者向け', 'セキュリティ', '認証'],
     boothUrl: 'https://knkk.booth.pm/items/8521076',
     hasWebVersion: true,
+    releasedAt: '2026-06-18',
     features: [
       'Header / Payload / Signature を即デコード',
       'JSON シンタックスハイライト表示',
@@ -349,6 +365,7 @@ export const tools: Tool[] = [
     tags: ['開発者向け', 'セキュリティ', 'ハッシュ'],
     boothUrl: 'https://knkk.booth.pm/items/8520773',
     hasWebVersion: true,
+    releasedAt: '2026-06-18',
     features: [
       'MD5 / SHA-1 / SHA-256 / SHA-512 をリアルタイム生成',
       'テキスト入力 & ファイルドロップに対応',
@@ -368,6 +385,7 @@ export const tools: Tool[] = [
     tags: ['画像', 'リサイズ', 'アイコン'],
     boothUrl: 'https://knkk.booth.pm/items/8433323',
     hasWebVersion: true,
+    releasedAt: '2026-06-13',
     features: [
       '16 / 32 / 48 / 64 / 128 / 256 / 512px に一括リサイズ',
       '複数画像を同時処理',

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { tools } from '@/data/tools'
-import { ToolCard } from '@/components/ToolCard'
+import { ToolGrid } from '@/components/ToolGrid'
 import { AdSense } from '@/components/AdSense'
 
 export const metadata: Metadata = {
@@ -55,11 +55,7 @@ export default function Home() {
         <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-muted">
           All Tools
         </p>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {tools.map((tool) => (
-            <ToolCard key={tool.slug} tool={tool} />
-          ))}
-        </div>
+        <ToolGrid />
       </section>
 
       {/* ツールリクエスト */}

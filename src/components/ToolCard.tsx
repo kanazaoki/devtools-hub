@@ -48,9 +48,10 @@ const DEFAULT_ACCENT = '#36363F'
 
 interface ToolCardProps {
   tool: Tool
+  isNew?: boolean
 }
 
-export function ToolCard({ tool }: ToolCardProps) {
+export function ToolCard({ tool, isNew = false }: ToolCardProps) {
   const accentColor = ACCENT_HEX[tool.tags[0]] ?? DEFAULT_ACCENT
 
   return (
@@ -70,6 +71,13 @@ export function ToolCard({ tool }: ToolCardProps) {
         className="absolute left-0 top-0 h-full w-[3px] rounded-l-lg opacity-50 transition-opacity duration-200 group-hover:opacity-100"
         style={{ backgroundColor: accentColor }}
       />
+
+      {/* New バッジ */}
+      {isNew && (
+        <span className="absolute right-3 top-3 z-20 rounded border border-teal/30 bg-teal/15 px-1.5 py-px font-mono text-[9px] font-bold tracking-wider text-teal">
+          NEW
+        </span>
+      )}
 
       <div className="relative flex h-full flex-col gap-3 p-5 pl-6">
         {/* ツール名・タグライン */}
