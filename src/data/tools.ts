@@ -535,7 +535,7 @@ export const tools: Tool[] = [
     description:
       '入力したテキストを camelCase / PascalCase / snake_case / kebab-case / SCREAMING_SNAKE_CASE / Title Case / UPPERCASE / lowercase の8形式に瞬時変換。変数名・ファイル名・定数名の書き換えを一括コピーで効率化。',
     tags: ['開発者向け', 'テキスト', 'ユーティリティ'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8523814',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
