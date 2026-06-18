@@ -276,7 +276,10 @@ export const tools: Tool[] = [
       'Split モード：左右並列 + 文字レベル差分ハイライト',
       '+追加 / -削除 / unchanged のサマリー表示',
     ],
-    desktopFeatures: [],
+    desktopFeatures: [
+      'ファイルをドラッグ＆ドロップで直接読み込み（.txt / .json / .md など）',
+      '差分を .patch ファイルとしてワンクリック保存',
+    ],
   },
   {
     slug: 'number-base-converter',
