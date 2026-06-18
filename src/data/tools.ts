@@ -469,7 +469,7 @@ export const tools: Tool[] = [
     description:
       '大文字・小文字・数字・記号の組み合わせと長さ（4〜64文字）を指定してパスワードを生成。強度メーター付きで安全度を確認しながら使えます。',
     tags: ['開発者向け', 'ユーティリティ', 'セキュリティ'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8523653',
     hasWebVersion: true,
     releasedAt: '2026-06-18',
     features: [
