@@ -377,6 +377,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'url-encoder',
+    name: 'URL Encoder/Decoder',
+    tagline: 'URLエンコード & クエリパラメータ解析',
+    description:
+      'テキストや URL を貼り付けるだけでリアルタイムにエンコード/デコード。encodeURIComponent（クエリ値向け）と encodeURI（フルURL向け）を切り替え可能。URL にクエリパラメータが含まれる場合は key / value 形式で自動パース表示。',
+    tags: ['開発者向け', 'エンコード', 'ユーティリティ'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-18',
+    features: [
+      'テキスト → URLエンコードをリアルタイム変換',
+      'URLエンコード → テキストへ即デコード',
+      'encodeURIComponent / encodeURI モード切り替え',
+      'クエリパラメータを key / value 形式で自動パース',
+      '不正なパーセントエンコードのエラー表示',
+    ],
+    desktopFeatures: [
+      '変換履歴（直近10件を自動保存）',
+      '複数URLの一括エンコード/デコード',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
