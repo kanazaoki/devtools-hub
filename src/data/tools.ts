@@ -448,7 +448,7 @@ export const tools: Tool[] = [
     description:
       'UUID v4（ランダム）・v1（タイムスタンプ）・v7（順序付きランダム）を即座に生成。一括生成やコピーにも対応し、開発・テストのデータ作成を効率化します。',
     tags: ['開発者向け', 'ユーティリティ', 'UUID'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8523589',
     hasWebVersion: true,
     releasedAt: '2026-06-18',
     features: [
