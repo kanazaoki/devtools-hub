@@ -262,6 +262,27 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'jwt-decoder',
+    name: 'JWT Decoder',
+    tagline: 'JWT トークンを即デコード & 検証',
+    description:
+      'JWT トークンを貼り付けるだけでヘッダー・ペイロード・署名を即座にデコード。有効期限（exp）の残り時間・期限切れを色で表示。iss / sub / aud などの標準クレームを読みやすく整形。インターネット接続不要。',
+    tags: ['開発者向け', 'セキュリティ', '認証'],
+    boothUrl: '',
+    hasWebVersion: true,
+    features: [
+      'Header / Payload / Signature を即デコード',
+      'JSON シンタックスハイライト表示',
+      '標準クレーム（exp / iat / iss / sub など）をわかりやすく表示',
+      '有効期限（exp）の残り時間・期限切れを色で表示',
+      '各パートをワンクリックでコピー',
+    ],
+    desktopFeatures: [
+      'フォーカス時にクリップボードの JWT を自動検出して貼り付け',
+      'パターン履歴（直近10件を自動保存）',
+    ],
+  },
+  {
     slug: 'hash-studio',
     name: 'Hash Studio',
     tagline: 'MD5 / SHA ハッシュ生成 & 検証',
