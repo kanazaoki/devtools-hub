@@ -268,7 +268,7 @@ export const tools: Tool[] = [
     description:
       'Unix タイムスタンプ（秒・ミリ秒）と日時をリアルタイムで相互変換。タイムゾーン選択・相対時間表示・ISO 8601 出力に対応。クイックオフセット（+1h / +7d / +30d）で将来のタイムスタンプも即生成。',
     tags: ['開発者向け', 'ユーティリティ', '時刻'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8521650',
     hasWebVersion: true,
     features: [
       'Unix タイムスタンプ → 日時変換（秒・ミリ秒対応）',
