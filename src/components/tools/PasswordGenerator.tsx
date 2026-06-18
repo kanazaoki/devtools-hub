@@ -92,40 +92,60 @@ function CopyButton({ text, label = 'Copy', size = 'sm' }: { text: string; label
   )
 }
 
-// ── Checkbox ──────────────────────────────────────────────────────────────────
+// ── CharToggle — button-style toggle chip ─────────────────────────────────────
 
-function CharCheckbox({
-  id, label, checked, onChange,
+const CHAR_META: { key: CharKey; abbr: string; sub: string }[] = [
+  { key: 'upper',   abbr: 'A–Z', sub: '大文字' },
+  { key: 'lower',   abbr: 'a–z', sub: '小文字' },
+  { key: 'digits',  abbr: '0–9', sub: '数字'   },
+  { key: 'symbols', abbr: '!@#', sub: '記号'   },
+]
+
+function CharToggle({
+  checked, onChange, abbr, sub,
 }: {
-  id: string; label: string; checked: boolean; onChange: (v: boolean) => void
+  checked: boolean; onChange: (v: boolean) => void; abbr: string; sub: string
 }) {
   return (
-    <label
-      htmlFor={id}
-      className="flex cursor-pointer items-center gap-2 rounded border border-border px-3 py-2 transition-colors hover:border-border-hi"
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      className={`flex flex-col items-center gap-0.5 rounded-md border py-2.5 transition-all duration-100 ${
+        checked
+          ? 'border-teal/35 bg-teal/8 text-teal'
+          : 'border-border bg-surface text-muted hover:border-border-hi hover:text-dim'
+      }`}
     >
-      <input
-        id={id}
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-        className="h-3.5 w-3.5 accent-teal"
-      />
-      <span className="font-mono text-xs text-primary">{label}</span>
-    </label>
+      <span className={`font-mono text-sm font-bold tracking-tight ${checked ? 'text-teal' : 'text-dim'}`}>{abbr}</span>
+      <span className={`font-mono text-[9px] uppercase tracking-widest ${checked ? 'text-teal/60' : 'text-muted/50'}`}>{sub}</span>
+      {checked && <span className="mt-0.5 h-0.5 w-4 rounded-full bg-teal" />}
+    </button>
   )
+}
+
+// ── Strength segments ─────────────────────────────────────────────────────────
+
+const STRENGTH_SEGMENTS: Record<Strength, number> = {
+  'Weak': 1, 'Fair': 2, 'Strong': 3, 'Very Strong': 4,
+}
+const STRENGTH_SEG_COLOR: Record<Strength, string> = {
+  'Weak':        'bg-red-400',
+  'Fair':        'bg-yellow-400',
+  'Strong':      'bg-teal/80',
+  'Very Strong': 'bg-teal',
+}
+const STRENGTH_LABEL_COLOR: Record<Strength, string> = {
+  'Weak':        'text-red-400',
+  'Fair':        'text-yellow-400',
+  'Strong':      'text-teal/80',
+  'Very Strong': 'text-teal',
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function PasswordGenerator() {
-  const uid = useId()
-
   const [options, setOptions] = useState<Record<CharKey, boolean>>({
-    upper: true,
-    lower: true,
-    digits: true,
-    symbols: false,
+    upper: true, lower: true, digits: true, symbols: false,
   })
   const [length, setLength] = useState(16)
   const [password, setPassword] = useState('')
@@ -148,72 +168,103 @@ export function PasswordGenerator() {
   }, [options, length, bulkCount, canGenerate])
 
   const clampBulk = (v: number) => Math.max(1, Math.min(20, v))
-
   const setOption = (key: CharKey, val: boolean) =>
     setOptions((prev) => ({ ...prev, [key]: val }))
 
+  // Slider track fill percentage
+  const fillPct = Math.round(((length - 4) / (64 - 4)) * 100)
+  const sliderStyle = {
+    background: `linear-gradient(to right, var(--teal) 0%, var(--teal) ${fillPct}%, var(--border) ${fillPct}%, var(--border) 100%)`,
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
 
-      {/* ── Character options ── */}
-      <div className="space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted">文字種</p>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <CharCheckbox id={`${uid}-upper`}   label="大文字 A–Z"  checked={options.upper}   onChange={(v) => setOption('upper', v)} />
-          <CharCheckbox id={`${uid}-lower`}   label="小文字 a–z"  checked={options.lower}   onChange={(v) => setOption('lower', v)} />
-          <CharCheckbox id={`${uid}-digits`}  label="数字 0–9"    checked={options.digits}  onChange={(v) => setOption('digits', v)} />
-          <CharCheckbox id={`${uid}-symbols`} label="記号 !@#…"   checked={options.symbols} onChange={(v) => setOption('symbols', v)} />
+      {/* ── Config block: char type + length ── */}
+      <div className="space-y-4">
+
+        {/* Char toggles */}
+        <div>
+          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted">文字種</p>
+          <div className="grid grid-cols-4 gap-2">
+            {CHAR_META.map(({ key, abbr, sub }) => (
+              <CharToggle
+                key={key}
+                checked={options[key]}
+                onChange={(v) => setOption(key, v)}
+                abbr={abbr}
+                sub={sub}
+              />
+            ))}
+          </div>
+          {!canGenerate && (
+            <p className="mt-1.5 font-mono text-[11px] text-red-400">文字種を1つ以上選択してください</p>
+          )}
         </div>
-        {!canGenerate && (
-          <p className="font-mono text-[11px] text-red-400">文字種を1つ以上選択してください</p>
-        )}
+
+        {/* Length slider */}
+        <div>
+          <div className="mb-2 flex items-baseline justify-between">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">長さ</p>
+            <div className="flex items-baseline gap-1">
+              <span className="font-mono text-xl font-bold tabular-nums text-teal">{length}</span>
+              <span className="font-mono text-[9px] text-muted/60">文字</span>
+            </div>
+          </div>
+          <input
+            type="range"
+            min={4}
+            max={64}
+            value={length}
+            onChange={(e) => setLength(Number(e.target.value))}
+            style={sliderStyle}
+            className="h-1 w-full cursor-pointer appearance-none rounded-full [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-teal [&::-webkit-slider-thumb]:shadow-[0_0_0_2px_rgba(0,200,150,0.25)]"
+          />
+          <div className="mt-1 flex justify-between font-mono text-[9px] text-muted/40">
+            <span>4</span><span>16</span><span>32</span><span>48</span><span>64</span>
+          </div>
+        </div>
       </div>
 
-      {/* ── Length ── */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">長さ</p>
-          <span className="font-mono text-sm font-bold text-teal">{length}</span>
-        </div>
-        <input
-          type="range"
-          min={4}
-          max={64}
-          value={length}
-          onChange={(e) => setLength(Number(e.target.value))}
-          className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-border accent-teal"
-        />
-        <div className="flex justify-between font-mono text-[9px] text-muted/50">
-          <span>4</span>
-          <span>64</span>
-        </div>
-      </div>
+      {/* ── Separator ── */}
+      <div className="border-t border-border" />
 
-      {/* ── Generated password ── */}
-      <div className="space-y-2">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-muted">パスワード</p>
-
-        <div className={`rounded-md border px-4 py-3.5 ${password ? 'border-border-hi bg-bg' : 'border-border bg-bg'}`}>
+      {/* ── Password output ── */}
+      <div className="space-y-2.5">
+        <div
+          className={`rounded-md border px-4 py-4 transition-colors duration-200 ${
+            password ? 'border-teal/25 bg-bg' : 'border-border bg-bg'
+          }`}
+        >
           {password ? (
             <code className="block break-all font-mono text-sm leading-relaxed tracking-wide text-bright select-all">
               {password}
             </code>
           ) : (
-            <p className="font-mono text-[11px] uppercase tracking-widest text-muted/30">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-muted/25">
               — Generate をクリック —
             </p>
           )}
         </div>
 
-        {/* Strength meter */}
+        {/* Strength: 4-segment bar */}
         {password && (
-          <div className="space-y-1">
-            <div className="h-1 w-full rounded-full bg-border overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${STRENGTH_BAR_WIDTH[strength]} ${STRENGTH_BAR_COLOR[strength]}`}
-              />
+          <div className="flex items-center gap-3">
+            <div className="flex flex-1 gap-1">
+              {[1, 2, 3, 4].map((seg) => (
+                <div
+                  key={seg}
+                  className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                    seg <= STRENGTH_SEGMENTS[strength]
+                      ? STRENGTH_SEG_COLOR[strength]
+                      : 'bg-border'
+                  }`}
+                />
+              ))}
             </div>
-            <p className={`font-mono text-[10px] ${STRENGTH_COLOR[strength]}`}>{strength}</p>
+            <span className={`shrink-0 font-mono text-[10px] tabular-nums ${STRENGTH_LABEL_COLOR[strength]}`}>
+              {strength}
+            </span>
           </div>
         )}
 
