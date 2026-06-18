@@ -507,6 +507,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'json-path-tester',
+    name: 'JSON Path Tester',
+    tagline: 'JSONPath 式をリアルタイムでテスト・結果を即確認',
+    description:
+      'JSONデータにJSONPath式を打ち込むだけで、マッチした値をリアルタイム表示。ドット記法・再帰下降・配列インデックス・フィルター式（[?(@.key)]）に対応。ライブラリなしの純JS実装。',
+    tags: ['開発者向け', 'ユーティリティ', 'JSON'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      'JSONPath式をリアルタイムでテスト・結果即確認',
+      'ドット記法・再帰下降（..）・配列インデックス・フィルター式に対応',
+      'プリセット式5種以上（全要素・特定キー・インデックス・フィルター等）',
+      '結果件数表示・JSONコピー機能',
+      '無効JSON・無効式のエラーハンドリング',
+    ],
+    desktopFeatures: [
+      'JSONファイルをドロップして読み込み',
+      '結果をJSON / CSVでファイル出力',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
