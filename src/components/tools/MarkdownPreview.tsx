@@ -251,6 +251,7 @@ function CopyButton({ text, label = 'Copy MD' }: { text: string; label?: string 
 // ── Main component ──
 export function MarkdownPreview() {
   const [input, setInput] = useState('')
+  const [focused, setFocused] = useState(false)
   const previewRef = useRef<HTMLDivElement>(null)
 
   const { html, headings } = useMemo(() => {
@@ -269,79 +270,112 @@ export function MarkdownPreview() {
 
   return (
     <div className="space-y-3">
-      {/* Controls row */}
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-[10px] text-muted/50">
-            {charCount > 0 && <>{charCount.toLocaleString()} chars · {lineCount.toLocaleString()} lines</>}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          {input && <CopyButton text={input} />}
-          {input && (
-            <button
-              onClick={() => setInput('')}
-              className="rounded border border-border px-2.5 py-1 font-mono text-[10px] text-muted transition-colors hover:border-border-hi hover:text-dim"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      </div>
-
       {/* Split pane */}
-      <div className="grid grid-cols-1 gap-0 overflow-hidden rounded-lg border border-border md:grid-cols-2">
-        {/* Editor */}
+      <div className={`grid grid-cols-1 gap-0 overflow-hidden rounded-lg border transition-colors duration-200 md:grid-cols-2 ${
+        focused ? 'border-border-hi' : 'border-border'
+      }`}>
+        {/* Editor pane */}
         <div className="flex flex-col border-b border-border md:border-b-0 md:border-r">
-          <div className="border-b border-border bg-surface-hi px-4 py-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Markdown</span>
+          <div className="flex items-center justify-between border-b border-border bg-surface-hi px-4 py-2">
+            <div className="flex items-center gap-2.5">
+              {/* file icon dots */}
+              <span className="flex gap-1" aria-hidden="true">
+                <span className="h-2 w-2 rounded-full bg-border-hi" />
+                <span className="h-2 w-2 rounded-full bg-border-hi" />
+                <span className="h-2 w-2 rounded-full bg-border-hi" />
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Markdown</span>
+            </div>
+            <span className="font-mono text-[10px] tabular-nums text-muted/40">
+              {charCount > 0 ? `${charCount.toLocaleString()} ch · ${lineCount} ln` : ''}
+            </span>
           </div>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setFocused(false)}
             placeholder={'# 見出し\n\nここに Markdown を入力...'}
             spellCheck={false}
-            className="min-h-[320px] flex-1 resize-y bg-bg p-4 font-mono text-xs leading-relaxed text-primary outline-none placeholder:text-muted/20"
+            className="md-editor min-h-[320px] flex-1 resize-y bg-bg p-4 font-mono text-xs leading-relaxed text-primary outline-none placeholder:text-muted/20"
           />
         </div>
 
-        {/* Preview */}
+        {/* Preview pane */}
         <div className="flex flex-col">
-          <div className="border-b border-border bg-surface-hi px-4 py-2">
+          <div className="flex items-center justify-between border-b border-border bg-surface-hi px-4 py-2">
             <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Preview</span>
+            <span className={`flex items-center gap-1.5 font-mono text-[10px] transition-opacity duration-300 ${html ? 'opacity-100' : 'opacity-0'}`}>
+              <span className="md-live-dot h-1.5 w-1.5 rounded-full bg-teal" aria-hidden="true" />
+              <span className="text-teal/60">live</span>
+            </span>
           </div>
           {html ? (
             <div
               ref={previewRef}
-              className="md-preview min-h-[320px] flex-1 overflow-y-auto p-4"
+              className="md-preview min-h-[320px] flex-1 overflow-y-auto p-5"
               dangerouslySetInnerHTML={{ __html: html }}
             />
           ) : (
-            <div ref={previewRef} className="min-h-[320px] flex-1 overflow-y-auto p-4">
-              <p className="font-mono text-[11px] text-muted/25">テキストを入力するとプレビューが表示されます</p>
+            <div ref={previewRef} className="min-h-[320px] flex-1 overflow-y-auto p-5 flex flex-col items-center justify-center gap-3">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-border-hi">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <polyline points="14 2 14 8 20 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                <polyline points="10 9 9 9 8 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              <p className="font-mono text-[11px] text-muted/30">入力するとここに表示されます</p>
             </div>
           )}
         </div>
       </div>
 
+      {/* Action bar */}
+      {input && (
+        <div className="flex items-center justify-end gap-2">
+          <CopyButton text={input} />
+          <button
+            onClick={() => setInput('')}
+            className="rounded border border-border px-2.5 py-1 font-mono text-[10px] text-muted transition-colors hover:border-border-hi hover:text-dim"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {/* TOC */}
       {headings.length > 0 && (
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 px-1">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true" className="text-muted/60">
+              <rect x="1" y="1" width="4" height="1.5" rx="0.5" fill="currentColor"/>
+              <rect x="1" y="4" width="10" height="1.5" rx="0.5" fill="currentColor"/>
+              <rect x="1" y="7" width="8" height="1.5" rx="0.5" fill="currentColor"/>
+              <rect x="1" y="10" width="6" height="1.5" rx="0.5" fill="currentColor"/>
+            </svg>
             <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Contents</span>
-            <span className="rounded bg-surface-hi px-1.5 py-px font-mono text-[9px] text-muted/60">
+            <span className="rounded bg-surface-hi px-1.5 py-px font-mono text-[9px] text-muted/50">
               {headings.length}
             </span>
           </div>
           <div className="overflow-hidden rounded-lg border border-border">
-            {headings.map((h) => (
+            {headings.map((h, i) => (
               <button
-                key={h.id}
+                key={`${h.id}-${i}`}
                 onClick={() => scrollToHeading(h.id)}
-                className={`block w-full truncate border-b border-border px-4 py-2 text-left font-mono text-[11px] transition-colors last:border-b-0 hover:bg-surface-hi ${
-                  h.level === 1 ? 'text-dim font-semibold' : h.level === 2 ? 'pl-8 text-muted' : 'pl-12 text-muted/60'
+                className={`md-toc-item group relative block w-full truncate border-b border-border py-2 text-left font-mono text-[11px] transition-all duration-150 last:border-b-0 hover:bg-surface-hi ${
+                  h.level === 1
+                    ? 'pl-4 text-dim font-semibold'
+                    : h.level === 2
+                    ? 'pl-9 text-muted'
+                    : 'pl-14 text-muted/55'
                 }`}
               >
+                {/* level indicator line */}
+                <span className={`absolute left-0 top-0 h-full w-0.5 opacity-0 transition-opacity duration-150 group-hover:opacity-100 ${
+                  h.level === 1 ? 'bg-teal' : h.level === 2 ? 'bg-dim/40' : 'bg-muted/30'
+                }`} aria-hidden="true" />
                 {h.text}
               </button>
             ))}
