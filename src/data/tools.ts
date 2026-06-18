@@ -421,6 +421,27 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'qr-code',
+    name: 'QR コード',
+    tagline: 'テキスト・URL を即座に QR コードへ変換',
+    description:
+      'テキストや URL を入力すると即座に QR コードを生成。サイズ・前景色・背景色を自由にカスタマイズして PNG または SVG でダウンロードできます。Wi-Fi 設定や連絡先など幅広い用途に。',
+    tags: ['開発者向け', 'ユーティリティ', 'QR'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-18',
+    features: [
+      'テキスト・URL からリアルタイム QR コード生成',
+      'サイズ変更（128px〜512px）',
+      '前景色・背景色のカスタマイズ',
+      'PNG / SVG 形式でダウンロード',
+    ],
+    desktopFeatures: [
+      '画像ファイルから QR コードを読み取り（デコード）',
+      '複数データの一括 QR コード生成',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
