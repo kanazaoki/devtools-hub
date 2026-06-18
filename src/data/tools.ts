@@ -268,7 +268,7 @@ export const tools: Tool[] = [
     description:
       'JWT トークンを貼り付けるだけでヘッダー・ペイロード・署名を即座にデコード。有効期限（exp）の残り時間・期限切れを色で表示。iss / sub / aud などの標準クレームを読みやすく整形。インターネット接続不要。',
     tags: ['開発者向け', 'セキュリティ', '認証'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8521076',
     hasWebVersion: true,
     features: [
       'Header / Payload / Signature を即デコード',
