@@ -535,7 +535,7 @@ export const tools: Tool[] = [
     description:
       '前景色と背景色を選ぶだけで WCAG 2.1 のコントラスト比を即計算。AA / AAA 基準の合否を通常テキスト・大テキスト別に判定。アクセシビリティ対応の UI 開発に。',
     tags: ['開発者向け', 'カラー', 'アクセシビリティ'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8523850',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
