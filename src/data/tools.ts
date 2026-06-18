@@ -463,6 +463,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'password-generator',
+    name: 'パスワードジェネレーター',
+    tagline: '文字種・長さを指定して安全なパスワードを即生成',
+    description:
+      '大文字・小文字・数字・記号の組み合わせと長さ（4〜64文字）を指定してパスワードを生成。強度メーター付きで安全度を確認しながら使えます。',
+    tags: ['開発者向け', 'ユーティリティ', 'セキュリティ'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-18',
+    features: [
+      '文字種（大文字・小文字・数字・記号）を個別にON/OFF',
+      '長さ 4〜64 文字をスライダーで指定',
+      '強度メーター（Weak / Fair / Strong / Very Strong）',
+      'ワンクリックコピー（Copied! フィードバック付き）',
+      '複数件生成（最大20件）+ まとめてコピー',
+    ],
+    desktopFeatures: [
+      'パスフレーズ生成（英単語リストから N 単語を組み合わせ）',
+      '生成結果を CSV ファイルに書き出し',
+    ],
+  },
+  {
     slug: 'resize-image',
     name: 'アイコン一括リサイズ',
     tagline: 'アイコン画像を各サイズに一括リサイズ',
