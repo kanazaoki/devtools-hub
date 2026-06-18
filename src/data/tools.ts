@@ -405,7 +405,7 @@ export const tools: Tool[] = [
     description:
       'Markdown を入力すると即座にプレビューへ反映。見出し（H1〜H3）から目次を自動生成してクリックでジャンプ。コードブロックのシンタックスハイライト・文字数/行数カウントに対応。README や技術文書の確認・執筆に。',
     tags: ['開発者向け', 'テキスト', 'Markdown'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8522991',
     hasWebVersion: true,
     releasedAt: '2026-06-18',
     features: [
