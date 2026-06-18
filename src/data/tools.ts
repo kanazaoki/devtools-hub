@@ -268,7 +268,7 @@ export const tools: Tool[] = [
     description:
       'BIN / OCT / DEC / HEX をリアルタイムで相互変換。ビットビューアではクリックで個々のビットを反転でき、ビットマスクの作成・確認にも使えます。ビット長・バイト長・32bit符号付き整数も同時表示。',
     tags: ['開発者向け', 'ユーティリティ', '進数変換'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8521953',
     hasWebVersion: true,
     features: [
       'BIN / OCT / DEC / HEX をリアルタイム相互変換',
