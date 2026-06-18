@@ -513,7 +513,7 @@ export const tools: Tool[] = [
     description:
       'JSONデータにJSONPath式を打ち込むだけで、マッチした値をリアルタイム表示。ドット記法・再帰下降・配列インデックス・フィルター式（[?(@.key)]）に対応。ライブラリなしの純JS実装。',
     tags: ['開発者向け', 'ユーティリティ', 'JSON'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8523775',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
