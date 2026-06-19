@@ -535,7 +535,7 @@ export const tools: Tool[] = [
     description:
       'X/Y オフセット・ブラー・スプレッド・カラー・透明度をスライダーでリアルタイム調整。複数シャドウレイヤー（最大5件）を重ねて複雑なエフェクトも作成可能。生成 CSS をワンクリックでコピー。',
     tags: ['デザイン', 'CSS', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8524910',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
