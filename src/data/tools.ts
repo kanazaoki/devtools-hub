@@ -716,7 +716,7 @@ export const tools: Tool[] = [
     description:
       'HEX・RGB・HSL・CMYK のいずれかを入力すると、他の全形式にリアルタイム変換。CSS 名前付き色（red、tomato、steelblue など）の入力にも対応。各フォーマットをワンクリックでコピー。',
     tags: ['カラー', 'CSS', 'デザイン'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8526023',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
@@ -737,7 +737,7 @@ export const tools: Tool[] = [
     description:
       'テキストを貼り付けるだけで文字数・単語数・行数・段落数・バイト数・読了時間・400字詰め原稿用紙換算を即時表示。全角/半角の内訳も確認できます。',
     tags: ['テキスト', '執筆', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8526042',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
@@ -758,7 +758,7 @@ export const tools: Tool[] = [
     description:
       'ゲーム開発でよく使う8色プリセット付きのカラーパレットを管理しながら、16×16 / 32×32 のキャンバスにピクセルアートを描画。消しゴム・塗りつぶしツール完備。描いた絵から使用色を抽出し、背景透過 PNG を等倍または×8拡大でダウンロードできます。',
     tags: ['ゲーム開発', 'デザイン', '画像'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8525991',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
