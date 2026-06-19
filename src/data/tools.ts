@@ -529,6 +529,27 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'lorem-ipsum-generator',
+    name: 'Lorem Ipsum Generator',
+    tagline: '段落・単語・文字数でダミーテキストを即生成',
+    description:
+      '段落数・単語数・文字数の3モードでラテン語風ダミーテキストを即生成。「Lorem ipsum dolor sit amet」固定開始オプション付き。デザインモックアップや開発のプレースホルダーテキストとしてすぐ使えます。',
+    tags: ['テキスト', 'ユーティリティ', '開発者向け'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      '段落数・単語数・文字数の3モードでダミーテキスト生成',
+      '「Lorem ipsum dolor sit amet」固定開始オプション',
+      'ワンクリックでクリップボードにコピー',
+      '生成テキストの文字数をリアルタイム表示',
+    ],
+    desktopFeatures: [
+      'カスタム単語リスト保存（最大3件）',
+      '生成結果を txt ファイルに保存',
+    ],
+  },
+  {
     slug: 'aspect-ratio-calculator',
     name: 'Aspect Ratio Calculator',
     tagline: '幅・高さからアスペクト比を即算出。逆算・プリセット対応',
