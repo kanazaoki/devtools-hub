@@ -592,7 +592,7 @@ export const tools: Tool[] = [
     description:
       'blur / brightness / contrast / grayscale / hue-rotate / invert / opacity / saturate / sepia の9種類の CSS フィルターをスライダーでリアルタイム調整。サンプル画像で効果を確認しながら、生成した CSS をワンクリックでコピーできます。',
     tags: ['CSS', 'デザイン', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8525112',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
