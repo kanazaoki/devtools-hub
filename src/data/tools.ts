@@ -535,7 +535,7 @@ export const tools: Tool[] = [
     description:
       '入力値と単位を選ぶだけで、CSS の全主要単位に一括変換。ベースフォントサイズ・ビューポートサイズをカスタマイズして正確な rem / vw / vh 換算が可能。フロントエンド開発の単位計算を高速化。',
     tags: ['開発者向け', 'CSS', 'ユーティリティ'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8524296',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
