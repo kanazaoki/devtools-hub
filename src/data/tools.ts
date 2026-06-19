@@ -529,6 +529,26 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'aspect-ratio-calculator',
+    name: 'Aspect Ratio Calculator',
+    tagline: '幅・高さからアスペクト比を即算出。逆算・プリセット対応',
+    description:
+      '幅と高さを入力するだけでアスペクト比（16:9 など）を即座に算出。逆算モードで比率＋一辺からもう一辺を計算。16:9 / 4:3 / 1:1 など8種のプリセット付き。動画・画像・UI デザインのサイズ計算を高速化。',
+    tags: ['デザイン', 'ユーティリティ', '開発者向け'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      '幅×高さ → アスペクト比をリアルタイム表示（最大公約数で自動約分）',
+      '逆算モード: 比率＋一辺からもう一辺を計算',
+      '16:9 / 4:3 / 1:1 / 9:16 / 21:9 / 3:2 / 2:1 / 5:4 の8種プリセット',
+      'プリセットをワンクリックで比率フィールドに即反映',
+    ],
+    desktopFeatures: [
+      '比率セット保存（最大5件）',
+    ],
+  },
+  {
     slug: 'css-unit-converter',
     name: 'CSS Unit Converter',
     tagline: 'px / rem / em / vw / vh / pt / cm / mm を瞬時に相互変換',

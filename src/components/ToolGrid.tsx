@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { tools } from '@/data/tools'
 import { ToolCard } from './ToolCard'
 
-const FILTER_CATEGORIES = ['開発者向け', '画像', 'テキスト', 'カラー', 'ゲーム開発', 'AI'] as const
+const FILTER_CATEGORIES = ['開発者向け', 'デザイン', '画像', 'テキスト', 'カラー', 'ゲーム開発', 'AI'] as const
 const NEW_WINDOW_DAYS = 30
 
 export function ToolGrid() {
