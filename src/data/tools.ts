@@ -529,6 +529,24 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'box-shadow-generator',
+    name: 'Box Shadow Generator',
+    tagline: 'CSS box-shadow をスライダーで即作成。複数レイヤー対応',
+    description:
+      'X/Y オフセット・ブラー・スプレッド・カラー・透明度をスライダーでリアルタイム調整。複数シャドウレイヤー（最大5件）を重ねて複雑なエフェクトも作成可能。生成 CSS をワンクリックでコピー。',
+    tags: ['デザイン', 'CSS', '開発者向け'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      'X/Y・ブラー・スプレッドをスライダー＋数値入力でリアルタイム調整',
+      '複数シャドウレイヤー追加（最大5件）・個別編集',
+      'カラーピッカー＋HEX 入力・透明度調整・inset オプション',
+      '生成 CSS をワンクリックでコピー',
+    ],
+    desktopFeatures: ['プリセット保存（最大5件）'],
+  },
+  {
     slug: 'lorem-ipsum-generator',
     name: 'Lorem Ipsum Generator',
     tagline: '段落・単語・文字数でダミーテキストを即生成',
