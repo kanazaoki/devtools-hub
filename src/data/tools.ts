@@ -535,7 +535,7 @@ export const tools: Tool[] = [
     description:
       '幅と高さを入力するだけでアスペクト比（16:9 など）を即座に算出。逆算モードで比率＋一辺からもう一辺を計算。16:9 / 4:3 / 1:1 など8種のプリセット付き。動画・画像・UI デザインのサイズ計算を高速化。',
     tags: ['デザイン', 'ユーティリティ', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8524362',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
