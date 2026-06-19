@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useCallback, useMemo } from 'react'
 
@@ -35,7 +35,6 @@ function fromPx(px: number, unit: Unit, basePx: number, vpW: number, vpH: number
 
 function formatResult(n: number): string {
   if (!isFinite(n)) return '—'
-  // 小数点以下は最大6桁、末尾ゼロ除去
   return parseFloat(n.toPrecision(7)).toString()
 }
 
@@ -92,142 +91,170 @@ export function CssUnitConverter() {
   }, [])
 
   return (
-    <div className="space-y-6">
-      {/* ── Input row ── */}
-      <div className="flex items-end gap-3">
-        <div className="flex-1 space-y-1.5">
-          <label className="font-mono text-[10px] uppercase tracking-widest text-muted">
-            値
-          </label>
-          <input
-            type="text"
-            inputMode="decimal"
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            placeholder="16"
-            className="w-full rounded border border-border bg-bg px-3 py-2 font-mono text-sm text-primary outline-none transition-colors placeholder:text-muted/30 focus:border-border-hi"
-            aria-label="変換する値"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <label className="font-mono text-[10px] uppercase tracking-widest text-muted">
-            単位
-          </label>
-          <select
-            value={inputUnit}
-            onChange={e => setInputUnit(e.target.value as Unit)}
-            className="rounded border border-border bg-bg px-3 py-2 font-mono text-sm text-primary outline-none transition-colors focus:border-border-hi"
-            aria-label="入力単位"
+    <div className="space-y-5">
+
+      {/* ── Value input ── */}
+      <div>
+        <label
+          htmlFor="cuc-value"
+          className="mb-1.5 block font-mono text-[9px] uppercase tracking-widest text-muted/60"
+        >
+          値
+        </label>
+        <input
+          id="cuc-value"
+          type="text"
+          inputMode="decimal"
+          value={inputValue}
+          onChange={e => setInputValue(e.target.value)}
+          placeholder="16"
+          aria-label="変換する値"
+          className="w-full rounded border border-border bg-bg px-4 py-3 font-mono text-2xl text-bright outline-none transition-colors placeholder:text-muted/20 focus:border-teal/40"
+        />
+      </div>
+
+      {/* ── Unit segmented control ── */}
+      <div
+        role="group"
+        aria-label="入力単位"
+        className="flex flex-wrap gap-1.5"
+      >
+        {UNITS.map(u => (
+          <button
+            key={u}
+            type="button"
+            onClick={() => setInputUnit(u)}
+            aria-pressed={u === inputUnit}
+            className={`rounded px-3.5 py-1.5 font-mono text-xs font-medium transition-all duration-100 ${
+              u === inputUnit
+                ? 'bg-teal text-bg shadow-sm'
+                : 'border border-border text-muted hover:border-teal/30 hover:text-dim'
+            }`}
           >
-            {UNITS.map(u => (
-              <option key={u} value={u}>{u}</option>
-            ))}
-          </select>
-        </div>
+            {u}
+          </button>
+        ))}
       </div>
 
-      {/* ── Settings ── */}
-      <div className="rounded border border-border bg-surface p-4">
-        <p className="mb-3 font-mono text-[9px] uppercase tracking-widest text-muted">設定</p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <div className="space-y-1">
-            <label className="font-mono text-[10px] text-muted/70">
-              ベースフォントサイズ (px)
-            </label>
-            <input
-              type="number"
-              min="1"
-              step="1"
-              value={basePxStr}
-              onChange={e => handleBasePx(e.target.value)}
-              className="w-full rounded border border-border bg-bg px-2 py-1.5 font-mono text-sm text-primary outline-none transition-colors focus:border-border-hi"
-              aria-label="ベースフォントサイズ"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="font-mono text-[10px] text-muted/70">
-              ビューポート幅 (px)
-            </label>
-            <input
-              type="number"
-              min="1"
-              step="1"
-              value={vpWStr}
-              onChange={e => handleVpW(e.target.value)}
-              className="w-full rounded border border-border bg-bg px-2 py-1.5 font-mono text-sm text-primary outline-none transition-colors focus:border-border-hi"
-              aria-label="ビューポート幅"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="font-mono text-[10px] text-muted/70">
-              ビューポート高 (px)
-            </label>
-            <input
-              type="number"
-              min="1"
-              step="1"
-              value={vpHStr}
-              onChange={e => handleVpH(e.target.value)}
-              className="w-full rounded border border-border bg-bg px-2 py-1.5 font-mono text-sm text-primary outline-none transition-colors focus:border-border-hi"
-              aria-label="ビューポート高"
-            />
-          </div>
-        </div>
+      {/* ── Settings (inline) ── */}
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border/50 py-2.5">
+        <span className="font-mono text-[9px] uppercase tracking-widest text-muted/40 shrink-0">
+          設定
+        </span>
+
+        <label className="flex items-baseline gap-1">
+          <span className="font-mono text-[10px] text-muted/50">base</span>
+          <input
+            type="number"
+            min="1"
+            step="1"
+            value={basePxStr}
+            onChange={e => handleBasePx(e.target.value)}
+            aria-label="ベースフォントサイズ"
+            className="w-12 border-b border-border bg-transparent pb-0.5 text-center font-mono text-xs text-dim outline-none transition-colors focus:border-teal/50"
+          />
+          <span className="font-mono text-[10px] text-muted/40">px</span>
+        </label>
+
+        <span className="text-border/50 select-none" aria-hidden="true">·</span>
+
+        <label className="flex items-baseline gap-1">
+          <span className="font-mono text-[10px] text-muted/50">vw</span>
+          <input
+            type="number"
+            min="1"
+            step="1"
+            value={vpWStr}
+            onChange={e => handleVpW(e.target.value)}
+            aria-label="ビューポート幅"
+            className="w-14 border-b border-border bg-transparent pb-0.5 text-center font-mono text-xs text-dim outline-none transition-colors focus:border-teal/50"
+          />
+          <span className="font-mono text-[10px] text-muted/40">px</span>
+        </label>
+
+        <span className="text-border/50 select-none" aria-hidden="true">·</span>
+
+        <label className="flex items-baseline gap-1">
+          <span className="font-mono text-[10px] text-muted/50">vh</span>
+          <input
+            type="number"
+            min="1"
+            step="1"
+            value={vpHStr}
+            onChange={e => handleVpH(e.target.value)}
+            aria-label="ビューポート高"
+            className="w-14 border-b border-border bg-transparent pb-0.5 text-center font-mono text-xs text-dim outline-none transition-colors focus:border-teal/50"
+          />
+          <span className="font-mono text-[10px] text-muted/40">px</span>
+        </label>
       </div>
 
-      {/* ── Results ── */}
-      <div className="overflow-hidden rounded border border-border">
-        {UNITS.map((unit, i) => {
+      {/* ── Results grid ── */}
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {UNITS.map(unit => {
           const row = results?.find(r => r.unit === unit)
           const value = row?.value ?? '—'
           const isFrom = unit === inputUnit
           const isCopied = copiedUnit === unit
+
           return (
             <div
               key={unit}
-              className={`group flex items-center gap-3 border-l-2 px-4 py-2.5 transition-colors ${
+              className={`group relative overflow-hidden rounded border p-3 transition-colors ${
                 isFrom
-                  ? 'border-l-teal/50 bg-white/[0.03]'
-                  : 'border-l-transparent hover:border-l-teal/20 hover:bg-white/[0.02]'
-              } ${i < UNITS.length - 1 ? 'border-b border-border' : ''}`}
+                  ? 'border-teal/35 bg-teal/[0.04]'
+                  : 'border-border bg-surface hover:border-border-hi'
+              }`}
             >
-              <span
-                className={`w-10 shrink-0 font-mono text-xs font-semibold ${
-                  isFrom ? 'text-teal' : 'text-muted/50'
-                }`}
-              >
-                {unit}
-              </span>
-              <span
-                className={`flex-1 font-mono text-sm ${
-                  value === '—' ? 'text-muted/30' : isFrom ? 'text-teal' : 'text-bright'
+              {/* unit label + input badge */}
+              <div className="mb-2 flex items-center justify-between gap-1">
+                <span
+                  className={`font-mono text-[9px] font-bold uppercase tracking-widest ${
+                    isFrom ? 'text-teal' : 'text-muted/40'
+                  }`}
+                >
+                  {unit}
+                </span>
+                {isFrom && (
+                  <span className="rounded-sm bg-teal/10 px-1 font-mono text-[7px] uppercase tracking-wider text-teal/70">
+                    in
+                  </span>
+                )}
+              </div>
+
+              {/* value */}
+              <p
+                className={`break-all font-mono text-sm leading-snug ${
+                  value === '—'
+                    ? 'text-muted/20'
+                    : isFrom
+                    ? 'text-teal'
+                    : 'text-bright'
                 }`}
               >
                 {value}
-              </span>
+              </p>
+
+              {/* copy button */}
               <button
+                type="button"
                 onClick={() => copyUnit(unit, value)}
                 disabled={value === '—'}
-                className={`shrink-0 rounded border px-2.5 py-1 font-mono text-[10px] transition-all duration-100 ${
+                className={`absolute bottom-2 right-2 rounded px-1.5 py-0.5 font-mono text-[8px] transition-all duration-100 ${
                   value === '—'
-                    ? 'cursor-not-allowed opacity-0'
+                    ? 'pointer-events-none opacity-0'
                     : isCopied
-                    ? 'border-teal/50 bg-teal/8 text-teal opacity-100'
-                    : 'border-border text-muted opacity-0 hover:border-border-hi hover:text-dim group-hover:opacity-100'
+                    ? 'bg-teal/10 text-teal opacity-100'
+                    : 'text-muted/50 opacity-0 hover:text-dim group-hover:opacity-100'
                 }`}
+                aria-label={`${unit} の値をコピー`}
               >
-                {isCopied ? 'Copied!' : 'Copy'}
+                {isCopied ? '✓ copied' : 'copy'}
               </button>
             </div>
           )
         })}
       </div>
-
-      {!results && (
-        <p className="text-center font-mono text-[11px] text-muted/40">
-          値を入力すると変換結果が表示されます
-        </p>
-      )}
     </div>
   )
 }
