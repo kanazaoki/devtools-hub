@@ -710,6 +710,27 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'color-format-converter',
+    name: 'Color Format Converter',
+    tagline: 'HEX / RGB / HSL / CMYK を瞬時に相互変換',
+    description:
+      'HEX・RGB・HSL・CMYK のいずれかを入力すると、他の全形式にリアルタイム変換。CSS 名前付き色（red、tomato、steelblue など）の入力にも対応。各フォーマットをワンクリックでコピー。',
+    tags: ['カラー', 'CSS', 'デザイン'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      'HEX / RGB / HSL / CMYK の4フォーマットを相互変換',
+      'CSS 名前付き色（red, tomato, steelblue など）入力に対応',
+      '各フォーマットをワンクリックでコピー（Copied! フィードバック付き）',
+      '無効値のリアルタイムエラー表示',
+    ],
+    desktopFeatures: [
+      'スポイトツール（EyeDropper API で画面から色をピック）',
+      'カラー履歴（直近20色を自動保存）',
+    ],
+  },
+  {
     slug: 'pixel-art-palette',
     name: 'Pixel Art Palette',
     tagline: 'パレットを組んでピクセルアートを描き、PNG で書き出す',
