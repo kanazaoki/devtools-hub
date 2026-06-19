@@ -535,7 +535,7 @@ export const tools: Tool[] = [
     description:
       '段落数・単語数・文字数の3モードでラテン語風ダミーテキストを即生成。「Lorem ipsum dolor sit amet」固定開始オプション付き。デザインモックアップや開発のプレースホルダーテキストとしてすぐ使えます。',
     tags: ['テキスト', 'ユーティリティ', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8524453',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
