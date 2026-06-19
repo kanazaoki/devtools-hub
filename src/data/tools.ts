@@ -586,6 +586,24 @@ export const tools: Tool[] = [
     desktopFeatures: ['パレット保存（最大10件）'],
   },
   {
+    slug: 'css-filter-generator',
+    name: 'CSS Filter Generator',
+    tagline: '9種類のフィルターをスライダーで調整して CSS を即生成',
+    description:
+      'blur / brightness / contrast / grayscale / hue-rotate / invert / opacity / saturate / sepia の9種類の CSS フィルターをスライダーでリアルタイム調整。サンプル画像で効果を確認しながら、生成した CSS をワンクリックでコピーできます。',
+    tags: ['CSS', 'デザイン', '開発者向け'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      'blur / brightness / contrast など9種類のフィルターをスライダーで調整',
+      'サンプル画像にフィルターをリアルタイム適用してプレビュー',
+      'デフォルト値は省略した簡潔な CSS filter プロパティを生成',
+      '「Copy CSS」ワンクリックコピー + Reset ボタン',
+    ],
+    desktopFeatures: ['フィルタープリセット保存（最大5件）'],
+  },
+  {
     slug: 'aspect-ratio-calculator',
     name: 'Aspect Ratio Calculator',
     tagline: '幅・高さからアスペクト比を即算出。逆算・プリセット対応',
