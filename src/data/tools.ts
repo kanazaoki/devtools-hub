@@ -574,7 +574,7 @@ export const tools: Tool[] = [
     description:
       'カラーピッカーでベースカラーを選ぶだけで補色・類似色・トライアド・テトラド・モノクロマティックの5種類のカラーハーモニーを自動生成。各カラーを HEX / RGB / HSL 形式で表示してワンクリックでコピーできます。',
     tags: ['カラー', 'デザイン', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm',
+    boothUrl: 'https://knkk.booth.pm/items/8525003',
     hasWebVersion: true,
     releasedAt: '2026-06-19',
     features: [
