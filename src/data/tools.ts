@@ -568,6 +568,24 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'color-palette-generator',
+    name: 'Color Palette Generator',
+    tagline: 'ベースカラーから5種のカラーハーモニーを即生成',
+    description:
+      'カラーピッカーでベースカラーを選ぶだけで補色・類似色・トライアド・テトラド・モノクロマティックの5種類のカラーハーモニーを自動生成。各カラーを HEX / RGB / HSL 形式で表示してワンクリックでコピーできます。',
+    tags: ['カラー', 'デザイン', '開発者向け'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      'ベースカラーから補色・類似色・トライアド・テトラド・モノクロマティックを自動生成',
+      '各カラーを HEX / RGB / HSL 形式で表示',
+      'カラー個別またはパレット全体をワンクリックでコピー',
+      'カラーピッカー + HEX 入力でリアルタイム更新',
+    ],
+    desktopFeatures: ['パレット保存（最大10件）'],
+  },
+  {
     slug: 'aspect-ratio-calculator',
     name: 'Aspect Ratio Calculator',
     tagline: '幅・高さからアスペクト比を即算出。逆算・プリセット対応',
