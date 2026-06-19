@@ -731,6 +731,27 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'character-counter',
+    name: '文字数カウンター',
+    tagline: '文字・単語・バイト数をリアルタイム集計',
+    description:
+      'テキストを貼り付けるだけで文字数・単語数・行数・段落数・バイト数・読了時間・400字詰め原稿用紙換算を即時表示。全角/半角の内訳も確認できます。',
+    tags: ['テキスト', '執筆', '開発者向け'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      '文字数・単語数・行数・段落数をリアルタイム集計',
+      '全角/半角・スペース除外の内訳表示',
+      'バイト数（UTF-8）・読了時間・400字詰め原稿用紙換算',
+      'ワンクリックでテキストをクリア',
+    ],
+    desktopFeatures: [
+      '.txt / .md ファイルのドラッグ&ドロップ読み込み',
+      '頻出単語 Top10 表示',
+    ],
+  },
+  {
     slug: 'pixel-art-palette',
     name: 'Pixel Art Palette',
     tagline: 'パレットを組んでピクセルアートを描き、PNG で書き出す',
