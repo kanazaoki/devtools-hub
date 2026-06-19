@@ -709,6 +709,27 @@ export const tools: Tool[] = [
       'フォルダ内の画像をまとめて一括処理',
     ],
   },
+  {
+    slug: 'pixel-art-palette',
+    name: 'Pixel Art Palette',
+    tagline: 'パレットを組んでピクセルアートを描き、PNG で書き出す',
+    description:
+      'ゲーム開発でよく使う8色プリセット付きのカラーパレットを管理しながら、16×16 / 32×32 のキャンバスにピクセルアートを描画。消しゴム・塗りつぶしツール完備。描いた絵から使用色を抽出し、背景透過 PNG を等倍または×8拡大でダウンロードできます。',
+    tags: ['ゲーム開発', 'デザイン', '画像'],
+    boothUrl: 'https://knkk.booth.pm',
+    hasWebVersion: true,
+    releasedAt: '2026-06-19',
+    features: [
+      'HEX入力でパレットに色を追加・削除、8色ゲームプリセット付き',
+      'ペン・消しゴム・塗りつぶし（BFS）ツールでピクセル描画',
+      '16×16 / 32×32 グリッドサイズ切り替え',
+      '使用色を一覧抽出・背景透過 PNG を等倍/×8 拡大でダウンロード',
+    ],
+    desktopFeatures: [
+      'パレットプリセット保存（最大10件）',
+      '64×64 キャンバスサイズ対応',
+    ],
+  },
 ]
 
 export function getToolBySlug(slug: string): Tool | undefined {
