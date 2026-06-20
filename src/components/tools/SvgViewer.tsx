@@ -109,10 +109,9 @@ export function SvgViewer() {
   const handleDownload = useCallback(() => {
     if (!svgContent) return
     const { w, h } = getSvgDimensions(svgContent)
-    const scale = zoom / 100
     const canvas = document.createElement('canvas')
-    canvas.width = Math.max(1, w * scale)
-    canvas.height = Math.max(1, h * scale)
+    canvas.width = Math.max(1, w)
+    canvas.height = Math.max(1, h)
     const ctx = canvas.getContext('2d')!
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, canvas.width, canvas.height)

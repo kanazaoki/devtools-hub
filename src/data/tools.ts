@@ -810,10 +810,13 @@ export const tools: Tool[] = [
       'viewBox / width / height を自動解析・表示',
       '使用色（fill/stroke）を上位5色まで抽出・表示',
       'ズームスライダーで 25〜400% に拡大縮小',
-      'プレビューを PNG としてダウンロード',
+      'プレビューを PNG としてダウンロード（1x・実寸サイズ）',
       'SVGコードをワンクリックでコピー',
     ],
-    desktopFeatures: [],
+    desktopFeatures: [
+      '.svg ファイルのドラッグ＆ドロップ読み込み',
+      'PNG 書き出し 1x / 2x / 4x（SVG実寸基準・ネイティブ保存ダイアログ）',
+    ],
   },
   {
     slug: 'yaml-json-converter',
@@ -832,7 +835,10 @@ export const tools: Tool[] = [
       '構文エラーをリアルタイム表示',
       '変換結果をワンクリックでコピー',
     ],
-    desktopFeatures: [],
+    desktopFeatures: [
+      '.yaml / .json / .toml ファイルのドラッグ＆ドロップ読み込み',
+      '変換結果をファイルに直接書き出し（Save As・ネイティブ保存ダイアログ）',
+    ],
   },
   {
     slug: 'css-animation-builder',
@@ -851,7 +857,10 @@ export const tools: Tool[] = [
       '再生/一時停止ボタンでアニメーションを確認',
       '生成した @keyframes + animation CSS をワンクリックでコピー',
     ],
-    desktopFeatures: [],
+    desktopFeatures: [
+      'アニメーションプリセットを .json ファイルで保存・読み込み',
+      '生成 CSS を .css ファイルとして直接書き出し',
+    ],
   },
   {
     slug: 'pixel-art-palette',
