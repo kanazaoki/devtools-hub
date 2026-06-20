@@ -1,22 +1,39 @@
 interface BoothCTAProps {
   boothUrl: string
   toolName: string
+  desktopFeatures?: string[]
 }
 
-export function BoothCTA({ boothUrl, toolName }: BoothCTAProps) {
+export function BoothCTA({ boothUrl, toolName, desktopFeatures }: BoothCTAProps) {
   return (
     <div className="rounded-lg border border-teal/30 bg-teal/5 p-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex-1">
           <p className="text-xs font-mono uppercase tracking-widest text-teal mb-1">
             Desktop App
           </p>
           <h3 className="text-base font-semibold text-bright">
             デスクトップ版を入手する
           </h3>
-          <p className="mt-1 text-sm text-dim">
-            Windows 向けアプリ版はすべての機能をフルで使えます。BOOTH で配布中。
-          </p>
+          {desktopFeatures && desktopFeatures.length > 0 ? (
+            <>
+              <p className="mt-1 text-sm text-dim">
+                Web版にはない機能をデスクトップ版で追加しています。
+              </p>
+              <ul className="mt-3 space-y-1">
+                {desktopFeatures.map((f) => (
+                  <li key={f} className="flex items-start gap-2 text-sm text-primary">
+                    <span className="mt-0.5 shrink-0 text-teal" aria-hidden="true">+</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p className="mt-1 text-sm text-dim">
+              Windows 向けアプリ版はすべての機能をフルで使えます。BOOTH で配布中。
+            </p>
+          )}
         </div>
         <a
           href={boothUrl}
