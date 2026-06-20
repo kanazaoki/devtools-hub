@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { YamlJsonConverter } from '@/components/tools/YamlJsonConverter'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 
 const tool = tools.find((t) => t.slug === 'yaml-json-converter')!
 
@@ -76,10 +77,12 @@ export default function YamlJsonConverterPage() {
         </ul>
       </section>
 
+      <DesktopOnlyFeatures tool={tool} />
+
       <hr className="mb-8 border-border" />
 
       <div className="mb-8">
-        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
 
       <AdSense slot="1010101059" format="rectangle" className="mb-12" />
