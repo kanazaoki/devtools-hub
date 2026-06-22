@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -7,6 +7,7 @@ import { ToolCard } from '@/components/ToolCard'
 import { JsonPathTester } from '@/components/tools/JsonPathTester'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'json-path-tester')!
 
@@ -98,9 +99,11 @@ export default function JsonPathTesterPage() {
 
       {tool.boothUrl && (
         <div className="mb-8">
-          <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+          <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
         </div>
       )}
+
+      <SeoArticle slug="json-path-tester" />
 
       <AdSense slot="1010101027" format="rectangle" className="mb-12" />
 

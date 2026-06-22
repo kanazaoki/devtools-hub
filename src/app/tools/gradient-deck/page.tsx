@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -7,6 +7,7 @@ import { ToolCard } from '@/components/ToolCard'
 import { GradientDeck } from '@/components/tools/GradientDeck'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'gradient-deck')!
 
@@ -119,8 +120,10 @@ export default function GradientDeckPage() {
       <hr className="mb-8 border-border" />
 
       <div className="mb-8">
-        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
+
+      <SeoArticle slug="gradient-deck" />
 
       <AdSense slot="4444444444" format="rectangle" className="mb-12" />
 

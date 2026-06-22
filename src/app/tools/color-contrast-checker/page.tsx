@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -7,6 +7,7 @@ import { ToolCard } from '@/components/ToolCard'
 import { ColorContrastChecker } from '@/components/tools/ColorContrastChecker'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'color-contrast-checker')!
 
@@ -98,9 +99,11 @@ export default function ColorContrastCheckerPage() {
 
       {tool.boothUrl && (
         <div className="mb-8">
-          <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+          <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
         </div>
       )}
+
+      <SeoArticle slug="color-contrast-checker" />
 
       <AdSense slot="1010101031" format="rectangle" className="mb-12" />
 

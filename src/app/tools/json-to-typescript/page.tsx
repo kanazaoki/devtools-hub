@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -7,6 +7,7 @@ import { ToolCard } from '@/components/ToolCard'
 import { JsonToTypescript } from '@/components/tools/JsonToTypescript'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'json-to-typescript')!
 
@@ -95,8 +96,10 @@ export default function JsonToTypescriptPage() {
       <hr className="mb-8 border-border" />
 
       <div className="mb-8">
-        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
+
+      <SeoArticle slug="json-to-typescript" />
 
       <AdSense slot="1010101057" format="rectangle" className="mb-12" />
 

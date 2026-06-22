@@ -8,6 +8,7 @@ import { MockupBuilder } from '@/components/tools/MockupBuilder'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 import { PricingComparisonTable } from '@/components/PricingComparisonTable'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'mockup-builder')!
 
@@ -104,6 +105,8 @@ export default function MockupBuilderPage() {
       <div className="mb-8">
         <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
+
+      <SeoArticle slug="mockup-builder" />
 
       <AdSense slot="9999999992" format="rectangle" className="mb-12" />
 

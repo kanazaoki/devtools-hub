@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -7,6 +7,7 @@ import { ToolCard } from '@/components/ToolCard'
 import { Base64Studio } from '@/components/tools/Base64Studio'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'base64-studio')!
 
@@ -95,8 +96,10 @@ export default function Base64StudioPage() {
       <hr className="mb-8 border-border" />
 
       <div className="mb-8">
-        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
+
+      <SeoArticle slug="base64-studio" />
 
       <AdSense slot="1010101011" format="rectangle" className="mb-12" />
 
