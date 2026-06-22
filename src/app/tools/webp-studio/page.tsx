@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -7,6 +7,8 @@ import { ToolCard } from '@/components/ToolCard'
 import { WebpStudio } from '@/components/tools/WebpStudio'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { PricingComparisonTable } from '@/components/PricingComparisonTable'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'webp-studio')!
 
@@ -92,11 +94,19 @@ export default function WebpStudioPage() {
 
       <DesktopOnlyFeatures tool={tool} />
 
+      <PricingComparisonTable
+        webFeatures={tool.features}
+        desktopFeatures={tool.desktopFeatures}
+        boothUrl={tool.boothUrl}
+      />
+
       <hr className="mb-8 border-border" />
 
       <div className="mb-8">
-        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
+
+      <SeoArticle slug="webp-studio" />
 
       <AdSense slot="8888888882" format="rectangle" className="mb-12" />
 

@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { ToolGrid } from '@/components/ToolGrid'
 import { AdSense } from '@/components/AdSense'
+
+const FEATURED_SLUGS = ['webp-studio', 'resize-image', 'mockup-builder'] as const
 
 export const metadata: Metadata = {
   title: 'devtools-hub — 開発者・クリエイター向け無料 Web ツール集',
@@ -10,6 +13,8 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
+  const featuredTools = FEATURED_SLUGS.map((slug) => tools.find((t) => t.slug === slug)!).filter(Boolean)
+
   return (
     <main className="py-12">
       {/* Hero — ドットグリッド背景 */}
@@ -49,6 +54,38 @@ export default function Home() {
 
       {/* AdSense — ヒーロー直下 */}
       <AdSense slot="1234567890" format="horizontal" className="mb-10" />
+
+      {/* 主力ツール */}
+      <section className="mb-10">
+        <p className="mb-4 font-mono text-[11px] uppercase tracking-widest text-muted">Featured</p>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {featuredTools.map((tool) => (
+            <Link
+              key={tool.slug}
+              href={`/tools/${tool.slug}`}
+              className="group flex flex-col rounded-lg border border-border bg-surface p-5 transition-colors hover:border-teal/50"
+            >
+              <div className="mb-3 flex items-center justify-between">
+                <span className="font-mono text-sm font-semibold text-bright group-hover:text-teal transition-colors">
+                  {tool.name}
+                </span>
+                <span className="rounded bg-teal/10 px-2 py-0.5 font-mono text-[10px] text-teal">
+                  Web 無料 + 有料版あり
+                </span>
+              </div>
+              <p className="mb-4 text-xs leading-relaxed text-dim flex-1">{tool.tagline}</p>
+              <div className="space-y-1">
+                {tool.desktopFeatures.slice(0, 2).map((f) => (
+                  <p key={f} className="flex items-start gap-1.5 text-xs text-muted">
+                    <span className="mt-0.5 shrink-0 text-teal">+</span>
+                    {f}
+                  </p>
+                ))}
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       {/* ツールグリッド */}
       <section>

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -7,6 +7,7 @@ import { ToolCard } from '@/components/ToolCard'
 import { MockupBuilder } from '@/components/tools/MockupBuilder'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { PricingComparisonTable } from '@/components/PricingComparisonTable'
 
 const tool = tools.find((t) => t.slug === 'mockup-builder')!
 
@@ -92,10 +93,16 @@ export default function MockupBuilderPage() {
 
       <DesktopOnlyFeatures tool={tool} />
 
+      <PricingComparisonTable
+        webFeatures={tool.features}
+        desktopFeatures={tool.desktopFeatures}
+        boothUrl={tool.boothUrl}
+      />
+
       <hr className="mb-8 border-border" />
 
       <div className="mb-8">
-        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
 
       <AdSense slot="9999999992" format="rectangle" className="mb-12" />

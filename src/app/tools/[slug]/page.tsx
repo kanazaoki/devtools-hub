@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { tools, getToolBySlug } from '@/data/tools'
@@ -6,6 +6,7 @@ import { AdSense } from '@/components/AdSense'
 import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 type Props = {
   params: { slug: string }
@@ -183,8 +184,10 @@ export default function ToolPage({ params }: Props) {
 
       {/* BOOTH CTA */}
       <div className="mb-8">
-        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} />
+        <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
+
+      <SeoArticle slug={params.slug} />
 
       {/* AdSense — CTA直後 */}
       <AdSense slot="2222222222" format="rectangle" className="mb-12" />
