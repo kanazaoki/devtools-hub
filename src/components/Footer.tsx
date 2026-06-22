@@ -28,6 +28,15 @@ export function Footer() {
             >
               BOOTH ショップ →
             </a>
+            <Link href="/about" className="text-sm text-dim hover:text-primary transition-colors">
+              About
+            </Link>
+            <Link href="/contact" className="text-sm text-dim hover:text-primary transition-colors">
+              お問い合わせ
+            </Link>
+            <Link href="/privacy-policy" className="text-sm text-dim hover:text-primary transition-colors">
+              プライバシーポリシー
+            </Link>
           </div>
         </div>
         <p className="mt-8 text-xs text-muted">
