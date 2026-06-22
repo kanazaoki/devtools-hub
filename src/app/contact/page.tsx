@@ -18,10 +18,10 @@ export default function ContactPage() {
         <div className="rounded-lg border border-border bg-surface px-6 py-5">
           <p className="text-xs uppercase tracking-widest text-muted font-mono mb-2">Email</p>
           <a
-            href="mailto:naokki.kn@gmail.com"
+            href="mailto:koma.games26@gmail.com"
             className="text-teal hover:underline font-mono"
           >
-            naokki.kn@gmail.com
+            koma.games26@gmail.com
           </a>
         </div>
 
