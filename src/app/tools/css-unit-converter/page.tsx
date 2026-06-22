@@ -8,15 +8,16 @@ import { CssUnitConverter } from '@/components/tools/CssUnitConverter'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 import { SeoArticle } from '@/components/SeoArticle'
+import { getMetaDescription } from '@/data/seo-content'
 
 const tool = tools.find((t) => t.slug === 'css-unit-converter')!
 
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
-  description: tool.description.substring(0, 150),
+  description: getMetaDescription('css-unit-converter', tool.description),
   openGraph: {
     title: `${tool.name} | devtools-hub`,
-    description: tool.description.substring(0, 150),
+    description: getMetaDescription('css-unit-converter', tool.description),
     images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
   },
 }

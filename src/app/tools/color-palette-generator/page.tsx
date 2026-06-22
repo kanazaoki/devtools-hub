@@ -8,15 +8,16 @@ import { ColorPaletteGenerator } from '@/components/tools/ColorPaletteGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 import { SeoArticle } from '@/components/SeoArticle'
+import { getMetaDescription } from '@/data/seo-content'
 
 const tool = tools.find((t) => t.slug === 'color-palette-generator')!
 
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
-  description: tool.description.substring(0, 150),
+  description: getMetaDescription('color-palette-generator', tool.description),
   openGraph: {
     title: `${tool.name} | devtools-hub`,
-    description: tool.description.substring(0, 150),
+    description: getMetaDescription('color-palette-generator', tool.description),
     images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
   },
 }

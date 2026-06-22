@@ -8,15 +8,16 @@ import { Base64Studio } from '@/components/tools/Base64Studio'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 import { SeoArticle } from '@/components/SeoArticle'
+import { getMetaDescription } from '@/data/seo-content'
 
 const tool = tools.find((t) => t.slug === 'base64-studio')!
 
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
-  description: tool.description.substring(0, 150),
+  description: getMetaDescription('base64-studio', tool.description),
   openGraph: {
     title: `${tool.name} | devtools-hub`,
-    description: tool.description.substring(0, 150),
+    description: getMetaDescription('base64-studio', tool.description),
     images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
   },
 }

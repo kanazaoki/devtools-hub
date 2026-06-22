@@ -8,15 +8,16 @@ import { JsonToTypescript } from '@/components/tools/JsonToTypescript'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 import { SeoArticle } from '@/components/SeoArticle'
+import { getMetaDescription } from '@/data/seo-content'
 
 const tool = tools.find((t) => t.slug === 'json-to-typescript')!
 
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
-  description: tool.description.substring(0, 150),
+  description: getMetaDescription('json-to-typescript', tool.description),
   openGraph: {
     title: `${tool.name} | devtools-hub`,
-    description: tool.description.substring(0, 150),
+    description: getMetaDescription('json-to-typescript', tool.description),
     images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
   },
 }

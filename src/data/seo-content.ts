@@ -515,3 +515,8 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 }
+
+export function getMetaDescription(slug: string, fallback: string): string {
+  const intro = seoContent[slug]?.intro
+  return intro ? intro.substring(0, 160) : fallback.substring(0, 150)
+}

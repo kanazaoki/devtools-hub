@@ -8,15 +8,16 @@ import { JsonStudio } from '@/components/tools/JsonStudio'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 import { SeoArticle } from '@/components/SeoArticle'
+import { getMetaDescription } from '@/data/seo-content'
 
 const tool = tools.find((t) => t.slug === 'json-studio')!
 
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
-  description: tool.description.substring(0, 150),
+  description: getMetaDescription('json-studio', tool.description),
   openGraph: {
     title: `${tool.name} | devtools-hub`,
-    description: tool.description.substring(0, 150),
+    description: getMetaDescription('json-studio', tool.description),
     images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
   },
 }
