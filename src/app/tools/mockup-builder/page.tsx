@@ -7,7 +7,6 @@ import { ToolCard } from '@/components/ToolCard'
 import { MockupBuilder } from '@/components/tools/MockupBuilder'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
-import { PricingComparisonTable } from '@/components/PricingComparisonTable'
 import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'mockup-builder')!
@@ -93,12 +92,6 @@ export default function MockupBuilderPage() {
       </section>
 
       <DesktopOnlyFeatures tool={tool} />
-
-      <PricingComparisonTable
-        webFeatures={tool.features}
-        desktopFeatures={tool.desktopFeatures}
-        boothUrl={tool.boothUrl}
-      />
 
       <hr className="mb-8 border-border" />
 
