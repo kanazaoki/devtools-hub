@@ -504,6 +504,17 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'keyboard-event-tester': {
+    heading: 'KeyboardEvent とは — キーボードイベントの仕組みを理解する',
+    intro: 'ブラウザのキーボードイベント（KeyboardEvent）は、keydown・keyup・keypressの3種類が発火します。それぞれ異なるプロパティを持ち、特に key・code・keyCode の違いを把握することがショートカット実装やゲーム開発で重要になります。Keyboard Event Tester を使えばリアルタイムで各プロパティの値を確認できます。',
+    sections: [
+      { title: 'key と code の違い', body: '`key` プロパティはユーザーが入力した文字・操作名（例: "a"、"Enter"、"ArrowUp"）を返します。一方 `code` はキーボードの物理的な位置（例: "KeyA"、"Enter"、"ArrowUp"）を返します。日本語キーボードと英語キーボードで `key` は異なる値になることがありますが、`code` は物理位置なので同じ値になります。' },
+      { title: 'keyCode は非推奨', body: '`keyCode` はかつて広く使われていましたが、MDN では非推奨（deprecated）とされています。ブラウザ間・キーボードレイアウト間で値が異なる場合があるため、現代の実装では `key` または `code` を使うことが推奨されます。ただし古いコードの読み解きやレガシーブラウザ対応のために値を確認したい場面では Keyboard Event Tester が役立ちます。' },
+      { title: '修飾キーと組み合わせの検出', body: 'Ctrl+S のようなショートカットを実装するには、`ctrlKey`（または Mac では `metaKey`）と `key === "s"` を組み合わせて判定します。`e.ctrlKey && e.key === "s"` のように書くと Windows/Linux で、`e.metaKey && e.key === "s"` と書くと Mac で動きます。クロスプラットフォームにするには両方を OR 条件で判定します。' },
+      { title: 'Keyboard Event Tester の使い方', body: 'ツールエリアをクリックしてフォーカスを当てた後、任意のキーを押すと key・code・keyCode など全プロパティがリアルタイムで表示されます。Ctrl+C や Alt+F4 などの組み合わせも「Ctrl + C」形式で即座に可視化。履歴には最新20件が残るため、複数のキーパターンを比較しながら実装に活用できます。' },
+    ],
+  },
+
   'css-grid-generator': {
     heading: 'CSS Gridの基礎 — グリッドレイアウトで2次元配置をマスターする',
     intro: 'CSS Gridはブラウザネイティブの2次元レイアウトシステムです。Flexboxが1次元（横か縦のどちらか）なのに対し、Gridは行と列を同時に制御できます。複雑なページレイアウトをシンプルなCSSで実現でき、Bootstrap等のフレームワーク不要でプロフェッショナルなレイアウトが組めます。',

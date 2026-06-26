@@ -863,6 +863,29 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'keyboard-event-tester',
+    name: 'Keyboard Event Tester',
+    tagline: 'キーを押してキーボードイベントのプロパティをリアルタイム確認',
+    description:
+      'キーを押すと key / code / keyCode / charCode / altKey / ctrlKey / shiftKey / metaKey など KeyboardEvent の全プロパティを即座に表示。修飾キーの組み合わせを「Ctrl + C」形式で可視化し、操作履歴（最新20件）も記録。ショートカット実装やフォームのキーハンドリング開発に役立ちます。',
+    tags: ['開発者向け', 'ブラウザ', 'JavaScript'],
+    boothUrl: 'https://knkk.booth.pm/items/8547673',
+    hasWebVersion: true,
+    releasedAt: '2026-06-26',
+    features: [
+      'key / code / keyCode / charCode / which をリアルタイム表示',
+      '修飾キー（Ctrl / Alt / Shift / Meta）をバッジで視覚化',
+      '組み合わせキーを「Ctrl + C」形式で表示',
+      'repeat（長押し）と type（keydown）を表示',
+      'キー操作の履歴を最新20件記録・タイムスタンプ付き',
+      'Enter / Escape / Tab / 矢印 / F1〜F12 のキーコード早見表',
+    ],
+    desktopFeatures: [
+      'キーシーケンスをテキストログファイルに書き出し',
+      'ログの自動保存（セッション単位）',
+    ],
+  },
+  {
     slug: 'css-grid-generator',
     name: 'CSS Grid Generator',
     tagline: 'グリッドレイアウトをビジュアルで組み立て・CSSコード生成',
