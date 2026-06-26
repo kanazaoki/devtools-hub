@@ -30,10 +30,7 @@ function kmeans(pixels: RGB[], k: number): ColorResult[] {
       let nearest = 0
       for (let i = 0; i < centroids.length; i++) {
         const d = distance(p, centroids[i])
-        if (d < minDist) {
-          minDist = d
-          nearest = i
-        }
+        if (d < minDist) { minDist = d; nearest = i }
       }
       clusters[nearest].push(p)
     }
@@ -54,10 +51,7 @@ function kmeans(pixels: RGB[], k: number): ColorResult[] {
     let nearest = 0
     for (let i = 0; i < centroids.length; i++) {
       const d = distance(p, centroids[i])
-      if (d < minDist) {
-        minDist = d
-        nearest = i
-      }
+      if (d < minDist) { minDist = d; nearest = i }
     }
     counts[nearest]++
   }
@@ -84,8 +78,7 @@ function toHsl(rgb: RGB): string {
   const b = rgb[2] / 255
   const max = Math.max(r, g, b)
   const min = Math.min(r, g, b)
-  let h = 0
-  let s = 0
+  let h = 0, s = 0
   const l = (max + min) / 2
   if (max !== min) {
     const d = max - min
@@ -149,10 +142,12 @@ function CopyButton({ value }: { value: string }) {
           : 'border-border text-dim hover:border-teal hover:text-teal'
       }`}
     >
-      {copied ? '✓' : 'copy'}
+      {copied ? '✓ copied' : 'copy'}
     </button>
   )
 }
+
+const SPECTRUM_DOTS = ['#e63946', '#f4a261', '#e9c46a', '#2a9d8f', '#457b9d', '#8ecae6', '#c77dff']
 
 export function ImageColorExtractor() {
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null)
@@ -196,11 +191,7 @@ export function ImageColorExtractor() {
     if (file) loadFile(file)
   }, [loadFile])
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
-
+  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true) }
   const handleDragLeave = () => setIsDragging(false)
 
   const fetchImageFromUrl = useCallback(async () => {
@@ -270,19 +261,21 @@ export function ImageColorExtractor() {
     { key: 'hsl', label: 'HSL' },
   ]
 
+  const hasResults = colors.length > 0
+
   return (
     <div className="flex flex-col gap-5">
-      {/* Input tabs */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      {/* Input row */}
+      <div className="grid gap-3 sm:grid-cols-2">
         {/* File upload / drag & drop */}
         <div
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onClick={() => fileInputRef.current?.click()}
-          className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-8 transition-colors ${
+          className={`relative flex cursor-pointer flex-col items-center justify-center gap-2.5 overflow-hidden rounded-lg border-2 border-dashed px-4 py-7 transition-all ${
             isDragging
-              ? 'border-teal bg-teal/5'
+              ? 'border-teal bg-teal/5 scale-[1.01]'
               : 'border-border hover:border-teal/50 hover:bg-surface/30'
           }`}
         >
@@ -293,13 +286,28 @@ export function ImageColorExtractor() {
             className="hidden"
             onChange={handleFileChange}
           />
-          <span className="font-mono text-2xl text-muted">⬆</span>
-          <p className="text-center text-sm text-primary">
-            クリックまたはドロップ
-          </p>
-          <p className="text-xs text-muted">PNG / JPG / WEBP / GIF</p>
+          {/* Image icon SVG */}
+          <svg
+            width="28" height="28" viewBox="0 0 28 28" fill="none"
+            className="text-muted"
+            stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+          >
+            <rect x="2" y="5" width="24" height="18" rx="2" />
+            <circle cx="9" cy="11" r="2" />
+            <path d="M2 20l6-6 5 5 4-4 9 8" />
+          </svg>
+          <div className="text-center">
+            <p className="text-sm font-medium text-primary">クリックまたはドロップ</p>
+            <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-muted">PNG · JPG · WEBP · GIF</p>
+          </div>
+          {/* Spectrum hint dots */}
+          <div className="flex gap-1">
+            {SPECTRUM_DOTS.map((c) => (
+              <div key={c} className="h-2 w-2 rounded-full opacity-50" style={{ backgroundColor: c }} />
+            ))}
+          </div>
           {imageFileName && (
-            <p className="mt-1 max-w-full truncate rounded bg-surface px-2 py-0.5 font-mono text-xs text-teal">
+            <p className="max-w-full truncate rounded bg-teal/10 px-2 py-0.5 font-mono text-[10px] text-teal border border-teal/20">
               {imageFileName}
             </p>
           )}
@@ -307,22 +315,25 @@ export function ImageColorExtractor() {
 
         {/* URL input */}
         <div className="flex flex-col gap-2">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted">URL から取得</p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">URL から取得</p>
           <input
             type="url"
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && fetchImageFromUrl()}
             placeholder="https://example.com/image.png"
-            className="w-full rounded border border-border bg-bg px-3 py-2 font-mono text-sm text-primary placeholder-muted/50 outline-none transition-colors focus:border-teal"
+            className="w-full rounded border border-border bg-bg px-3 py-2 font-mono text-xs text-primary placeholder-muted/40 outline-none transition-colors focus:border-teal"
           />
           <button
             onClick={fetchImageFromUrl}
             disabled={status === 'fetching'}
-            className="rounded border border-border bg-surface px-4 py-2 text-sm text-primary transition-colors hover:border-teal hover:text-teal disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded border border-border bg-surface px-4 py-2 text-xs font-medium text-primary transition-colors hover:border-teal/60 hover:text-teal disabled:cursor-not-allowed disabled:opacity-40"
           >
             {status === 'fetching' ? '取得中…' : '画像を取得'}
           </button>
+          <p className="font-mono text-[10px] text-muted/60 leading-relaxed">
+            CORS 制限を回避するためサーバー経由で画像を取得します
+          </p>
         </div>
       </div>
 
@@ -337,20 +348,21 @@ export function ImageColorExtractor() {
       {/* Image preview + controls */}
       {imageDataUrl && (
         <div className="grid gap-4 lg:grid-cols-[auto_1fr]">
-          {/* Preview */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageDataUrl}
             alt="プレビュー"
-            className="max-h-48 max-w-full rounded-lg border border-border object-contain lg:max-h-56 lg:max-w-xs"
+            className="max-h-48 max-w-full rounded-lg border border-border object-contain lg:max-h-52 lg:max-w-[280px]"
           />
-          {/* Controls */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col justify-between gap-4">
+            {/* Slider */}
             <div className="flex flex-col gap-2">
-              <label className="flex items-center justify-between font-mono text-xs text-muted">
-                <span>抽出色数</span>
-                <span className="text-teal">{colorCount} 色</span>
-              </label>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted">抽出色数</span>
+                <span className="rounded bg-teal/10 px-2 py-0.5 font-mono text-xs font-semibold text-teal">
+                  {colorCount} 色
+                </span>
+              </div>
               <input
                 type="range"
                 min={3}
@@ -359,47 +371,81 @@ export function ImageColorExtractor() {
                 onChange={(e) => setColorCount(Number(e.target.value))}
                 className="w-full accent-teal"
               />
-              <div className="flex justify-between font-mono text-[10px] text-muted">
-                <span>3</span>
-                <span>12</span>
+              {/* Tick marks */}
+              <div className="flex justify-between px-0.5">
+                {Array.from({ length: 10 }, (_, i) => {
+                  const val = i + 3
+                  return (
+                    <div key={val} className="flex flex-col items-center gap-0.5">
+                      <div className={`h-1 w-px ${val <= colorCount ? 'bg-teal' : 'bg-border'}`} />
+                      {(val === 3 || val === 6 || val === 9 || val === 12) && (
+                        <span className="font-mono text-[9px] text-muted">{val}</span>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             </div>
+            {/* Extract button */}
             <button
               onClick={extractColors}
               disabled={status === 'extracting'}
-              className="rounded border border-teal bg-teal px-5 py-2 text-sm font-semibold text-bg transition-all hover:bg-teal/90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded border border-teal bg-teal px-5 py-2.5 text-sm font-semibold text-bg transition-all hover:bg-teal/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {status === 'extracting' ? '抽出中…' : '色を抽出'}
+              {status === 'extracting' ? '解析中…' : '色を抽出'}
             </button>
           </div>
         </div>
       )}
 
-      {/* Extracting state */}
+      {/* Extracting skeleton */}
       {status === 'extracting' && (
-        <div className="flex items-center gap-3 py-4 text-sm text-muted">
-          <span className="animate-pulse">●</span>
-          k-means クラスタリング実行中…
+        <div className="flex flex-col gap-2">
+          <div className="h-10 w-full animate-pulse rounded bg-surface" />
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="flex items-center gap-3 py-2">
+              <div className="h-9 w-9 shrink-0 animate-pulse rounded bg-surface" />
+              <div className="flex-1 space-y-1.5">
+                <div className="h-3 w-32 animate-pulse rounded bg-surface" />
+                <div className="h-2 w-24 animate-pulse rounded bg-surface" />
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
       {/* Results */}
-      {colors.length > 0 && (
-        <div className="flex flex-col gap-3">
-          {/* Format tabs */}
-          <div className="flex items-center justify-between">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted">
-              抽出結果 — <span className="text-teal">{colors.length}</span> 色
+      {hasResults && (
+        <div className="flex flex-col gap-4">
+          {/* Proportional palette strip */}
+          <div>
+            <p className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-muted">
+              カラーフィンガープリント
             </p>
-            <div className="flex gap-0 rounded border border-border">
+            <div className="flex h-10 overflow-hidden rounded-md">
+              {colors.map((c, i) => (
+                <div
+                  key={i}
+                  title={`${toHex(c.rgb)} — ${c.freq}%`}
+                  style={{ backgroundColor: toHex(c.rgb), flex: c.freq }}
+                  className="transition-all hover:brightness-110 cursor-pointer"
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Format switcher + count */}
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+              抽出色 <span className="text-teal">{colors.length}</span> 件
+            </p>
+            <div className="flex overflow-hidden rounded border border-border">
               {FORMATS.map(({ key, label }) => (
                 <button
                   key={key}
                   onClick={() => setFmt(key)}
                   className={`px-3 py-1 font-mono text-xs transition-colors ${
-                    fmt === key
-                      ? 'bg-teal text-bg'
-                      : 'text-muted hover:text-primary'
+                    fmt === key ? 'bg-teal text-bg' : 'text-muted hover:text-primary'
                   }`}
                 >
                   {label}
@@ -408,29 +454,36 @@ export function ImageColorExtractor() {
             </div>
           </div>
 
-          {/* Swatches */}
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+          {/* Swatch list — NOT a uniform grid */}
+          <div className="divide-y divide-border rounded-lg border border-border overflow-hidden">
             {colors.map((c, i) => {
               const hex = toHex(c.rgb)
               const value = formatColor(c.rgb, fmt)
+              const isTop = i === 0
               return (
                 <div
                   key={i}
-                  className="flex flex-col overflow-hidden rounded-lg border border-border"
+                  className="flex items-center gap-3 bg-bg px-3 py-2 hover:bg-surface/30 transition-colors"
                 >
+                  {/* Color block — larger for top color */}
                   <div
-                    className="h-20 w-full"
+                    className={`shrink-0 rounded transition-all ${isTop ? 'h-12 w-12' : 'h-8 w-8'}`}
                     style={{ backgroundColor: hex }}
                   />
-                  <div className="flex flex-col gap-1 bg-bg px-3 py-2">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="min-w-0 flex-1 truncate font-mono text-xs text-primary">
-                        {value}
-                      </span>
-                      <CopyButton value={value} />
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="font-mono text-xs text-primary">{value}</span>
+                    {/* Frequency bar */}
+                    <div className="flex items-center gap-2">
+                      <div className="h-1 flex-1 overflow-hidden rounded-full bg-surface">
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{ width: `${c.freq}%`, backgroundColor: hex }}
+                        />
+                      </div>
+                      <span className="shrink-0 font-mono text-[10px] text-muted">{c.freq}%</span>
                     </div>
-                    <span className="font-mono text-[10px] text-muted">{c.freq}%</span>
                   </div>
+                  <CopyButton value={value} />
                 </div>
               )
             })}
@@ -440,9 +493,26 @@ export function ImageColorExtractor() {
 
       {/* Idle empty state */}
       {!imageDataUrl && status !== 'error' && (
-        <div className="rounded-lg border border-dashed border-border bg-bg/50 px-4 py-10 text-center">
-          <p className="text-sm text-muted">
-            画像をアップロードするか URL を入力して「色を抽出」を押してください
+        <div className="flex flex-col items-center gap-4 rounded-lg border border-dashed border-border bg-bg/50 py-10">
+          {/* Spectrum strip */}
+          <div
+            className="h-1.5 w-48 rounded-full"
+            style={{
+              background:
+                'linear-gradient(to right, #e63946, #f4a261, #e9c46a, #2a9d8f, #457b9d, #8ecae6, #c77dff)',
+            }}
+          />
+          <div className="flex gap-2">
+            {SPECTRUM_DOTS.map((c) => (
+              <div
+                key={c}
+                className="h-5 w-5 rounded"
+                style={{ backgroundColor: c }}
+              />
+            ))}
+          </div>
+          <p className="font-mono text-xs text-muted">
+            画像をアップロードして配色を解析
           </p>
         </div>
       )}
