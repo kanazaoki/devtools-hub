@@ -261,10 +261,7 @@ export function CssGridGenerator() {
           </div>
 
           {/* Visual Grid Preview */}
-          <div
-            className="overflow-auto rounded border border-border bg-bg p-3"
-            style={{ minHeight: '200px' }}
-          >
+          <div className="overflow-auto rounded border border-border bg-bg p-3">
             <div
               className="relative"
               style={{
@@ -381,7 +378,10 @@ export function CssGridGenerator() {
                 </button>
               </div>
             ) : (
-              <p className="text-xs text-muted">アイテムを選択してください</p>
+              <div className="py-4 text-center">
+                <p className="text-xs text-muted">グリッドアイテムをクリックして選択</p>
+                <p className="mt-1 text-xs text-muted opacity-60">空セルをクリックすると新規追加</p>
+              </div>
             )}
           </div>
 
@@ -389,22 +389,22 @@ export function CssGridGenerator() {
           <div className="flex gap-2">
             <button
               onClick={copyCSS}
-              className="flex-1 rounded border border-border px-3 py-2 text-xs text-dim hover:border-teal hover:text-teal transition-colors"
+              className={`flex-1 rounded px-3 py-2 text-xs font-medium transition-all ${copiedCSS ? 'bg-teal text-bg' : 'border border-teal/40 text-teal hover:bg-teal/10'}`}
             >
-              {copiedCSS ? '✓ コピー済み' : 'CSSをコピー'}
+              {copiedCSS ? '✓ コピー済み' : 'CSS をコピー'}
             </button>
             <button
               onClick={copyHTML}
-              className="flex-1 rounded border border-border px-3 py-2 text-xs text-dim hover:border-teal hover:text-teal transition-colors"
+              className={`flex-1 rounded px-3 py-2 text-xs font-medium transition-all ${copiedHTML ? 'bg-teal text-bg' : 'border border-border text-dim hover:border-teal/40 hover:text-teal'}`}
             >
-              {copiedHTML ? '✓ コピー済み' : 'HTMLをコピー'}
+              {copiedHTML ? '✓ コピー済み' : 'HTML をコピー'}
             </button>
           </div>
 
           {/* CSS output */}
           <div>
             <p className="mb-1 text-xs text-muted">生成CSS</p>
-            <pre className="overflow-x-auto rounded border border-border bg-bg p-3 text-xs text-primary leading-relaxed whitespace-pre-wrap break-all">
+            <pre className="overflow-x-auto rounded border border-border bg-bg p-3 text-xs text-primary leading-relaxed whitespace-pre">
               {generateCSS(config)}
             </pre>
           </div>
