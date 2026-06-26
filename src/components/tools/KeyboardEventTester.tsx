@@ -114,8 +114,12 @@ export function KeyboardEventTester() {
       ]
     : []
 
+  const keyLabel = lastEvent
+    ? (lastEvent.key === ' ' ? 'Space' : lastEvent.key.length > 8 ? lastEvent.key.slice(0, 8) + '…' : lastEvent.key)
+    : null
+
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5">
 
       {/* Focus capture area */}
       <div
@@ -127,156 +131,172 @@ export function KeyboardEventTester() {
         onBlur={() => setIsActive(false)}
         onKeyDown={handleKeyDown}
         onClick={() => areaRef.current?.focus()}
-        className={`flex h-28 cursor-pointer select-none items-center justify-center rounded-lg border-2 outline-none transition-all ${
+        className={`relative flex h-24 cursor-pointer select-none items-center justify-center rounded-lg border-2 outline-none transition-all duration-200 ${
           isActive
-            ? 'border-teal bg-teal/5 text-teal'
-            : 'border-border bg-bg text-muted hover:border-teal/40 hover:text-primary'
+            ? 'border-teal bg-teal/5'
+            : 'border-dashed border-border bg-bg hover:border-teal/50'
         }`}
       >
-        {isActive ? (
-          <div className="text-center">
-            <p className="text-sm font-medium">キー入力を待機中...</p>
-            <p className="mt-1 text-xs opacity-60">どのキーでも押してください</p>
-          </div>
-        ) : (
-          <div className="text-center">
-            <p className="text-sm">クリックしてキーを押す</p>
-            <p className="mt-1 text-xs opacity-50">クリックしてフォーカスを当てる</p>
-          </div>
+        {isActive && (
+          <span className="absolute inset-0 animate-ping rounded-lg border border-teal/30 opacity-75" />
         )}
+        <div className="relative text-center">
+          {isActive ? (
+            <>
+              <p className="font-mono text-xs font-medium text-teal">● LISTENING</p>
+              <p className="mt-1 text-xs text-teal/60">どのキーでも押してください</p>
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-muted">クリックしてキーを押す</p>
+              <p className="mt-1 text-xs text-muted/50">クリックしてフォーカスを当てる</p>
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Last key display */}
-      {lastEvent ? (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {/* Big key display */}
-          <div className="rounded-lg border border-border bg-bg p-4">
-            <p className="mb-1 text-xs text-muted">最後に押したキー</p>
-            <p className="font-mono text-4xl font-bold text-bright leading-none">
-              {lastEvent.key === ' ' ? 'Space' : lastEvent.key.length > 6 ? lastEvent.key.slice(0, 6) + '…' : lastEvent.key}
+      {/* Main 2-panel area */}
+      <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+
+        {/* Left: key display + props */}
+        <div className="flex flex-col gap-4">
+
+          {/* Keycap + modifier display */}
+          {lastEvent ? (
+            <div className="rounded-lg border border-border bg-bg p-5">
+              <div className="flex items-start gap-5">
+                {/* Keycap */}
+                <div className="flex min-w-[120px] flex-col items-center justify-center rounded-lg border-2 border-border bg-surface px-4 py-5 shadow-[0_4px_0_0_rgba(0,0,0,0.4)] transition-all">
+                  <span className="font-mono text-5xl font-bold leading-none text-bright">
+                    {keyLabel}
+                  </span>
+                  <span className="mt-2 font-mono text-xs text-teal">{lastEvent.combo}</span>
+                </div>
+
+                {/* Modifier badges + meta */}
+                <div className="flex flex-1 flex-col gap-3">
+                  <div>
+                    <p className="mb-1.5 text-xs text-muted">修飾キー</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {MOD_KEYS.map(({ label, active }) => (
+                        <span
+                          key={label}
+                          className={`rounded border px-2.5 py-1 font-mono text-xs font-semibold transition-all ${
+                            active
+                              ? 'border-teal bg-teal/10 text-teal shadow-[0_0_8px_rgba(20,184,166,0.3)]'
+                              : 'border-border text-dim'
+                          }`}
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className={`rounded border px-2 py-0.5 font-mono text-xs ${
+                      lastEvent.repeat
+                        ? 'border-amber-500/40 bg-amber-500/10 text-amber-400'
+                        : 'border-border text-dim'
+                    }`}>
+                      repeat: {lastEvent.repeat ? 'true' : 'false'}
+                    </span>
+                    <span className="rounded border border-border px-2 py-0.5 font-mono text-xs text-dim">
+                      type: {lastEvent.type}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex h-[132px] items-center justify-center rounded-lg border border-dashed border-border bg-bg text-sm text-muted">
+              キーを押すとここに表示されます
+            </div>
+          )}
+
+          {/* Properties table */}
+          <div className="rounded-lg border border-border bg-bg">
+            <p className="border-b border-border px-4 py-2 font-mono text-xs text-muted">
+              KeyboardEvent properties
             </p>
-            <p className="mt-2 font-mono text-sm text-teal">{lastEvent.combo}</p>
+            {lastEvent ? (
+              <div className="divide-y divide-border">
+                {PROPS.map(({ prop, value }) => (
+                  <div key={prop} className="flex items-center px-4 py-2">
+                    <span className="w-24 shrink-0 font-mono text-xs text-muted">{prop}</span>
+                    <span className={`font-mono text-xs ${
+                      value === 'true' ? 'text-teal' : value === 'false' ? 'text-dim' : 'text-primary'
+                    }`}>{value}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="px-4 py-6 text-center text-xs text-muted">—</p>
+            )}
           </div>
+        </div>
 
-          {/* Modifier keys */}
-          <div className="rounded-lg border border-border bg-bg p-4">
-            <p className="mb-2 text-xs text-muted">修飾キー</p>
-            <div className="flex flex-wrap gap-2">
-              {MOD_KEYS.map(({ label, active }) => (
-                <span
-                  key={label}
-                  className={`rounded px-3 py-1 font-mono text-xs font-semibold transition-colors ${
-                    active ? 'bg-teal text-bg' : 'border border-border text-muted'
-                  }`}
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span
-                className={`rounded px-2 py-0.5 font-mono text-xs ${
-                  lastEvent.repeat
-                    ? 'bg-amber-500/20 text-amber-400'
-                    : 'border border-border text-muted'
-                }`}
-              >
-                repeat: {lastEvent.repeat ? 'true' : 'false'}
-              </span>
-              <span className="rounded border border-border px-2 py-0.5 font-mono text-xs text-dim">
-                type: {lastEvent.type}
-              </span>
-            </div>
+        {/* Right: history */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-xs uppercase tracking-widest text-muted">
+              履歴 <span className="text-teal">{history.length}</span>/20
+            </p>
+            <button
+              onClick={() => { setHistory([]); setLastEvent(null) }}
+              disabled={history.length === 0}
+              className="rounded border border-border px-2 py-0.5 text-xs text-dim transition-colors hover:text-primary disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              クリア
+            </button>
           </div>
-
-          {/* All properties */}
-          <div className="col-span-full rounded-lg border border-border bg-bg p-4">
-            <p className="mb-3 text-xs text-muted">KeyboardEvent プロパティ</p>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 sm:grid-cols-3">
-              {PROPS.map(({ prop, value }) => (
-                <div key={prop} className="flex items-baseline gap-1.5 min-w-0">
-                  <span className="shrink-0 font-mono text-xs text-muted">{prop}:</span>
-                  <span
-                    className={`truncate font-mono text-xs ${
-                      value === 'true'
-                        ? 'text-teal'
-                        : value === 'false'
-                        ? 'text-dim'
-                        : 'text-primary'
+          <div className="h-[360px] overflow-y-auto rounded-lg border border-border bg-bg">
+            {history.length === 0 ? (
+              <div className="flex h-full items-center justify-center text-xs text-muted">
+                履歴なし
+              </div>
+            ) : (
+              <div className="divide-y divide-border">
+                {history.map((item, i) => (
+                  <div
+                    key={item.id}
+                    className={`px-3 py-2 font-mono text-xs transition-colors ${
+                      i === 0 ? 'bg-teal/5' : 'hover:bg-surface/30'
                     }`}
                   >
-                    {value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="rounded-lg border border-dashed border-border bg-bg px-6 py-8 text-center text-sm text-muted">
-          キーを押すとプロパティがここに表示されます
-        </div>
-      )}
-
-      {/* History */}
-      <div>
-        <div className="mb-2 flex items-center justify-between">
-          <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            履歴 ({history.length} / 20)
-          </p>
-          <button
-            onClick={() => { setHistory([]); setLastEvent(null) }}
-            disabled={history.length === 0}
-            className="rounded border border-border px-2.5 py-1 text-xs text-dim transition-colors hover:border-border hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            クリア
-          </button>
-        </div>
-        {history.length === 0 ? (
-          <div className="rounded border border-border bg-bg px-4 py-3 text-center text-xs text-muted">
-            履歴なし
-          </div>
-        ) : (
-          <div className="overflow-x-auto rounded border border-border bg-bg">
-            {history.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-3 border-b border-border px-4 py-2 last:border-b-0 font-mono text-xs"
-              >
-                <span className="shrink-0 text-muted">{item.timestamp}</span>
-                <span className="shrink-0 w-32 truncate text-primary">{item.combo}</span>
-                <span className="text-dim">code: {item.code}</span>
-                <span className="ml-auto shrink-0 text-muted">keyCode: {item.keyCode}</span>
+                    <div className="flex items-center gap-2">
+                      {i === 0 && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-teal" />}
+                      <span className={`truncate font-semibold ${i === 0 ? 'text-teal' : 'text-primary'}`}>
+                        {item.combo}
+                      </span>
+                    </div>
+                    <div className="mt-0.5 flex gap-2 text-muted">
+                      <span>{item.timestamp}</span>
+                      <span className="text-dim">{item.code}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Key reference table */}
+      {/* Key reference: compact 2-col grid */}
       <div>
         <p className="mb-2 font-mono text-xs uppercase tracking-widest text-muted">
           よく使うキーコード早見表
         </p>
-        <div className="overflow-x-auto rounded border border-border">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-border bg-surface">
-                <th className="px-4 py-2 text-left font-mono font-semibold text-muted">key</th>
-                <th className="px-4 py-2 text-left font-mono font-semibold text-muted">code</th>
-                <th className="px-4 py-2 text-left font-mono font-semibold text-muted">keyCode</th>
-              </tr>
-            </thead>
-            <tbody>
-              {KEY_REFERENCE.map((row) => (
-                <tr key={row.code} className="border-b border-border last:border-b-0 hover:bg-surface/50 transition-colors">
-                  <td className="px-4 py-2 font-mono text-bright">{row.key}</td>
-                  <td className="px-4 py-2 font-mono text-primary">{row.code}</td>
-                  <td className="px-4 py-2 font-mono text-teal">{row.keyCode}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid gap-1 sm:grid-cols-2">
+          {KEY_REFERENCE.map((row) => (
+            <div
+              key={row.code}
+              className="flex items-center gap-3 rounded border border-border bg-bg px-3 py-1.5 font-mono text-xs transition-colors hover:bg-surface/50"
+            >
+              <span className="w-10 shrink-0 font-semibold text-bright">{row.key}</span>
+              <span className="flex-1 text-dim">{row.code}</span>
+              <span className="shrink-0 text-teal">{row.keyCode}</span>
+            </div>
+          ))}
         </div>
       </div>
 
