@@ -526,6 +526,17 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'og-tag-preview': {
+    heading: 'OGP（Open Graph Protocol）とは — SNSシェアの見た目を制御する仕組み',
+    intro: 'OGP（Open Graph Protocol）はFacebookが策定したメタデータの仕様で、WebページをSNSでシェアしたときにタイトル・説明文・サムネイル画像をどう表示するかをHTML内のmetaタグで指定します。og:title / og:description / og:image の3つが最低限必要で、これらが未設定だとSNS側が自動推定した内容が表示されます。',
+    sections: [
+      { title: 'og:image のサイズと形式', body: 'og:imageは1200×630px（横長）が最も安全なサイズです。正方形（1:1）はInstagramやWhatsAppで有利ですが、Twitter/Facebookでは横長が推奨されます。形式はJPEG・PNG・GIF・WebPが使えますが、JPEGが最も互換性が高いです。ファイルサイズは8MB未満、最低200×200px以上が必要です。' },
+      { title: 'twitter:card の種類と使い分け', body: 'twitter:cardには4種類あります。summary（正方形サムネイル+テキスト）、summary_large_image（横長大画像）、app（アプリカード）、player（動画/音声）。通常のWebページにはsummary_large_imageを使うと視認性が高くなります。twitter:cardが未設定の場合はsummaryにフォールバックします。og:titleやog:imageはtwitterのフォールバックとしても機能します。' },
+      { title: 'og:urlとog:site_nameの役割', body: 'og:urlはそのページの正規URLを指定します。リダイレクトやクエリパラメータが付いたURLでシェアされた場合でも、SNS側のカウントやキャッシュを正しいURLに統一できます。og:site_nameはWebサイト全体の名称で、Slackなどのプレビューでタイトルの上に表示されます。' },
+      { title: 'OGPキャッシュのリセット方法', body: 'FacebookはURLのOGP情報を一定期間キャッシュします。修正後に反映させるにはFacebook Sharing Debuggerでキャッシュをクリアします。Twitterは現在（2024年以降）OGPのキャッシュクリアツールを廃止しており、しばらく待つかURLにクエリパラメータを付けてシェアするのが現実的な対処法です。' },
+    ],
+  },
+
   'pixel-art-palette': {
     heading: 'ピクセルアートのカラーパレット設計 — レトロゲームの配色術',
     intro: 'ピクセルアートは限られたカラーパレットで最大限の表現をする技術です。NES・GameBoyなどのレトロ機はハードウェアの制約から色数が限られており、その制約がピクセルアート独自の美学を生んでいます。',

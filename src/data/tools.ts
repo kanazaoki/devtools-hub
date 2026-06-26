@@ -886,6 +886,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'og-tag-preview',
+    name: 'OG Tag Preview',
+    tagline: 'URLを入力してSNSシェア時のOGPプレビューを確認',
+    description:
+      'URLを入力するとそのページの og:title / og:description / og:image などの OGP メタタグをサーバーサイドで取得し、Twitter Card・Facebook・Slack の3種類のカードUIでプレビュー表示します。SNSシェア前にサムネイルやタイトルが正しく設定されているかを即確認できます。',
+    tags: ['開発者向け', 'SEO', 'SNS'],
+    boothUrl: 'https://knkk.booth.pm/items/8547674',
+    hasWebVersion: true,
+    releasedAt: '2026-06-26',
+    features: [
+      'URL入力でOGPメタタグをサーバーサイド取得（CORS回避）',
+      'Twitter Card / Facebook / Slack の3種プレビュー表示',
+      'og:title・og:description・og:image・og:type・og:url を表示',
+      'twitter:card・twitter:title・twitter:description・twitter:image を表示',
+      '取得した全metaタグの一覧テーブル＋ワンクリックコピー',
+    ],
+    desktopFeatures: [
+      '複数URL一括チェック（CSVリスト入力）',
+      'チェック結果をCSVファイルにエクスポート',
+    ],
+  },
+  {
     slug: 'css-grid-generator',
     name: 'CSS Grid Generator',
     tagline: 'グリッドレイアウトをビジュアルで組み立て・CSSコード生成',
