@@ -504,6 +504,17 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'css-grid-generator': {
+    heading: 'CSS Gridの基礎 — グリッドレイアウトで2次元配置をマスターする',
+    intro: 'CSS Gridはブラウザネイティブの2次元レイアウトシステムです。Flexboxが1次元（横か縦のどちらか）なのに対し、Gridは行と列を同時に制御できます。複雑なページレイアウトをシンプルなCSSで実現でき、Bootstrap等のフレームワーク不要でプロフェッショナルなレイアウトが組めます。',
+    sections: [
+      { title: 'grid-template-columnsとfr単位の使い方', body: 'grid-template-columnsはグリッドの列幅を定義します。fr（fraction）単位は「利用可能な空きスペースを分割する比率」を表し、`grid-template-columns: 1fr 2fr 1fr`とすると3列のうち中央が2倍の幅になります。`repeat(12, 1fr)`で均等12カラムグリッドを1行で書けます。pxや%との混在も可能で、`250px 1fr`とするとサイドバーを固定幅にして残りをメインエリアに使えます。' },
+      { title: 'grid-columnとgrid-rowでセルを結合する', body: '`grid-column: 1 / 3`は「列ライン1から3まで（つまり2列分）」を意味します。`grid-column: span 2`とするとその要素から数えて2列分を占有します。ヘッダーを全幅にしたい場合は`grid-column: 1 / -1`（最初から最後のラインまで）と書くのが便利です。grid-rowも同様で、縦方向のセル結合が可能です。' },
+      { title: 'Holy Grailレイアウトの実装', body: 'ヘッダー・フッター・左サイドバー・メインコンテンツ・右サイドバーの5エリアからなるHoly Grailレイアウトは、CSS Gridで数行で実現できます。`grid-template-areas`を使うと各エリアに名前を付けて視覚的に配置を記述できます。レスポンシブ対応はmedia queryでgrid-template-areasを書き替えるだけです。' },
+      { title: 'CSS Grid Generatorの使い方', body: 'CSS Grid Generatorでは列数・行数・ギャップをスライダーで設定し、セルをクリックしてスパン幅を指定するとCSSコードがリアルタイムに生成されます。Holy Grail・12カラム・カード3列などのプリセットで素早くベースを作り、そこから細かく調整できます。生成されたCSS・HTMLはワンクリックでコピーできます。' },
+    ],
+  },
+
   'pixel-art-palette': {
     heading: 'ピクセルアートのカラーパレット設計 — レトロゲームの配色術',
     intro: 'ピクセルアートは限られたカラーパレットで最大限の表現をする技術です。NES・GameBoyなどのレトロ機はハードウェアの制約から色数が限られており、その制約がピクセルアート独自の美学を生んでいます。',

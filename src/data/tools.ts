@@ -863,6 +863,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'css-grid-generator',
+    name: 'CSS Grid Generator',
+    tagline: 'グリッドレイアウトをビジュアルで組み立て・CSSコード生成',
+    description:
+      '列数・行数・ギャップをスライダーで設定し、セルをクリックしてスパンを指定するだけでCSS Gridコードが自動生成されます。Holy Grail・12カラムなどのプリセット付き。生成したCSS・HTMLをワンクリックでコピーできます。',
+    tags: ['CSS', '開発者向け', 'レイアウト'],
+    boothUrl: 'https://knkk.booth.pm/items/8547672',
+    hasWebVersion: true,
+    releasedAt: '2026-06-26',
+    features: [
+      '列数・行数（1〜12）・column-gap・row-gapをスライダーで設定',
+      'セルをクリックして選択し、スパン列数・行数をUI指定',
+      'CSS Grid コード（display:grid / grid-template-columns / grid-column 等）をリアルタイム生成',
+      'Holy Grail・12カラム・カード3列などのプリセット収録',
+      'CSS・HTMLスケルトンをワンクリックでコピー',
+    ],
+    desktopFeatures: [
+      'レイアウト定義をJSONファイルとして保存・読み込み',
+      '最近開いたファイル履歴（最大10件）',
+    ],
+  },
+  {
     slug: 'pixel-art-palette',
     name: 'Pixel Art Palette',
     tagline: 'パレットを組んでピクセルアートを描き、PNG で書き出す',
