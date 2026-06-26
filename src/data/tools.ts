@@ -886,6 +886,30 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'image-color-extractor',
+    name: 'Image Color Extractor',
+    tagline: '画像から主要カラーパレットを自動抽出',
+    description:
+      '画像をアップロードまたはURLを指定すると、k-meansクラスタリングで使用されている主要な色を自動抽出します。抽出色数（3〜12色）を調整し、HEX・RGB・HSL形式でコピーできます。デザインの参考画像から配色を素早く取り出す作業に最適です。',
+    tags: ['デザイン', '画像', 'カラー'],
+    boothUrl: 'https://knkk.booth.pm/items/8547675',
+    hasWebVersion: true,
+    releasedAt: '2026-06-26',
+    features: [
+      'PNG / JPG / WEBP / GIF のアップロード対応',
+      'ドラッグ＆ドロップで画像を読み込み',
+      '画像URL指定（サーバーサイドフェッチ）',
+      'k-means クラスタリングで主要色を抽出',
+      '抽出色数スライダー（3〜12色）',
+      '出現頻度（%）をスウォッチと一緒に表示',
+      'HEX / RGB / HSL 形式切り替え＋コピー',
+    ],
+    desktopFeatures: [
+      '複数画像の一括処理',
+      'パレットを CSS 変数 / JSON ファイルにエクスポート',
+    ],
+  },
+  {
     slug: 'og-tag-preview',
     name: 'OG Tag Preview',
     tagline: 'URLを入力してSNSシェア時のOGPプレビューを確認',
