@@ -354,7 +354,7 @@ export function ImageColorExtractor() {
             alt="プレビュー"
             className="max-h-48 max-w-full rounded-lg border border-border object-contain lg:max-h-52 lg:max-w-[280px]"
           />
-          <div className="flex flex-col justify-between gap-4">
+          <div className="flex flex-col gap-4">
             {/* Slider */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
@@ -386,17 +386,18 @@ export function ImageColorExtractor() {
                 })}
               </div>
             </div>
-            {/* Extract button */}
-            <button
-              onClick={extractColors}
-              disabled={status === 'extracting'}
-              className="rounded border border-teal bg-teal px-5 py-2.5 text-sm font-semibold text-bg transition-all hover:bg-teal/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {status === 'extracting' ? '解析中…' : '色を抽出'}
-            </button>
           </div>
         </div>
       )}
+
+      {/* Extract button — always visible */}
+      <button
+        onClick={extractColors}
+        disabled={status === 'extracting'}
+        className="rounded border border-teal bg-teal px-5 py-2.5 text-sm font-semibold text-bg transition-all hover:bg-teal/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        {status === 'extracting' ? '解析中…' : '色を抽出'}
+      </button>
 
       {/* Extracting skeleton */}
       {status === 'extracting' && (
