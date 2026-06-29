@@ -886,6 +886,29 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'css-clip-path-generator',
+    name: 'CSS Clip-Path Generator',
+    tagline: 'ビジュアルエディターで clip-path CSS を生成',
+    description:
+      'polygon / circle / ellipse / inset の4形状をビジュアル操作してclip-pathのCSSコードをリアルタイム生成。プレビュー上でポイントをドラッグするだけで形状を編集でき、矢印・六角形・星型など8種のプリセット形状からも選択可能。生成したCSSはワンクリックでコピーできます。',
+    tags: ['CSS', 'デザイン', 'ジェネレーター'],
+    boothUrl: 'https://knkk.booth.pm/',
+    hasWebVersion: true,
+    releasedAt: '2026-06-29',
+    features: [
+      'polygon / circle / ellipse / inset の4形状タブ切り替え',
+      'ビジュアルエディター（ポイントドラッグで形状編集）',
+      'ポイントの追加・削除（polygon モード）',
+      '矢印・六角形・星型など8種プリセット形状',
+      'リアルタイム CSS 生成＋ワンクリックコピー',
+      'プレビューに実際の clip-path を適用表示',
+    ],
+    desktopFeatures: [
+      'SVG ファイルとして書き出し',
+      '複数形状レイヤー管理（マスク合成）',
+    ],
+  },
+  {
     slug: 'image-color-extractor',
     name: 'Image Color Extractor',
     tagline: '画像から主要カラーパレットを自動抽出',

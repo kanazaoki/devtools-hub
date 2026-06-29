@@ -537,6 +537,17 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'css-clip-path-generator': {
+    heading: 'CSS clip-pathの使い方 — polygon・circle・ellipse・insetで自在な形状クリッピング',
+    intro: 'CSS clip-pathプロパティは要素を任意の形状にトリミング（クリッピング）できる強力なCSSプロパティです。polygon・circle・ellipse・insetの4種の基本形状を使うだけで、ヒーローセクションの斜め切り・アイコンの円形クリッピング・リボン形状UIなど多様な表現が実現できます。',
+    sections: [
+      { title: 'polygon()でポリゴン形状を作る', body: 'polygon()は頂点座標のリストで多角形を定義します。`clip-path: polygon(50% 0%, 100% 100%, 0% 100%)`は正三角形、`polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)`は五角形です。座標はパーセント（要素サイズ基準）またはpx・rem等の固定値で指定できます。頂点の追加で星型・矢印・六角形など複雑な形状も表現できます。' },
+      { title: 'circle()とellipse()の使い方', body: '`clip-path: circle(50% at 50% 50%)`は要素の中心を基点に半径50%の円でクリッピングします。アイコン・アバター画像の円形表示に便利です。ellipse()はX半径・Y半径を別々に指定できる楕円形。`ellipse(50% 30% at 50% 50%)`は横に伸びた楕円になります。atキーワードの後に中心位置を指定することで、中心をずらした非対称なクリッピングも可能です。' },
+      { title: 'inset()で内側切り抜き・角丸との組み合わせ', body: '`clip-path: inset(10% 20% 10% 20%)`は上右下左の順で内側からの距離を指定します。通常のpaddingに似た感覚で使えます。`inset(10% round 20px)`のようにroundキーワードを加えるとborder-radiusのような角丸が付きます。シャドウエフェクトと組み合わせてカード要素に変化をつけるときに重宝します。' },
+      { title: 'CSS clip-pathの実用パターン', body: 'ヒーローセクションの下端を斜めにカットする場合は`clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%)`のように右下の頂点を上げます。CSSトランジションでclip-pathをアニメーションさせると入場エフェクトにも使えます（ただし頂点数が一致する形状間のみ補間可能）。また、SVGのclipPath要素と異なりCSSのclip-pathはレスポンシブに要素サイズに追従します。' },
+    ],
+  },
+
   'image-color-extractor': {
     heading: 'k-means クラスタリングによるカラー抽出の仕組み',
     intro: '画像から代表色を抽出する技術には複数の手法がありますが、k-meansクラスタリングは品質と速度のバランスに優れた定番アルゴリズムです。ピクセルの色空間をk個のクラスタに分割して重心色を求めることで、画像全体の「雰囲気」を代表するN色のパレットを生成できます。',
