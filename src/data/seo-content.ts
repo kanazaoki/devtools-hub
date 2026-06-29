@@ -537,6 +537,29 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'bezier-curve-editor': {
+    heading: 'cubic-bezier()とは？CSSアニメーションのイージング関数を使いこなす',
+    intro: 'CSSアニメーションの動きの「緩急」を制御するのがイージング関数です。cubic-bezier()を使うと、ease・linear・ease-in-outだけでは表現できない独自の加速パターンを作れます。Bezier Curve Editorでビジュアルに確認しながら最適な値を見つけましょう。',
+    sections: [
+      {
+        title: 'cubic-bezier()の4つの引数とは',
+        body: 'cubic-bezier(x1, y1, x2, y2)の4引数はベジェ曲線の2つのコントロールポイント（P1・P2）の座標です。x1・x2は時間軸（0〜1に制限）、y1・y2は進行量（0〜1外も可）を表します。y値を1より大きくするとオーバーシュート（バウンス）、負の値にするとリバウンド効果が生まれます。ease は cubic-bezier(0.25, 0.1, 0.25, 1)、ease-in-out は cubic-bezier(0.42, 0, 0.58, 1) に相当します。',
+      },
+      {
+        title: 'animation-timing-function vs transition-timing-function',
+        body: 'cubic-bezier()はanimation-timing-functionとtransition-timing-functionの両方で使えます。transitionは状態遷移（ホバー・フォーカス等）の補間に、animationは@keyframesアニメーション全体または個別キーフレームのタイミングに適用します。keyframe内に指定すると「そのフレームからの補間」だけに独立したイージングを設定できます。',
+      },
+      {
+        title: 'ease-in-back・ease-out-backのオーバーシュート活用',
+        body: 'y値が0〜1の範囲を超えると要素が目標値を一時的に通り過ぎる「オーバーシュート」が起こります。ease-out-back（cubic-bezier(0.34, 1.56, 0.64, 1)）はy2が1.56のため要素が目標を超えてから戻る動きになります。UIでボタンが少し弾む・ドロワーが勢いよく開くといった「生き生きとした動き」の演出に有効です。ただし使いすぎると酔いやすくなるため、小さな要素への一点使いが推奨されます。',
+      },
+      {
+        title: 'Chrome DevToolsとの連携',
+        body: 'Chrome DevToolsのCSSアニメーションパネルでもcubic-bezier()をビジュアル編集できますが、Bezier Curve Editorはプリセット9種・ループプレビュー・即時コピーが揃い開発フローに素早く組み込めます。生成した値はCSS変数（--ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275)）として定義しておくと、デザインシステム全体で統一した動きを実現できます。',
+      },
+    ],
+  },
+
   'css-clip-path-generator': {
     heading: 'CSS clip-pathの使い方 — polygon・circle・ellipse・insetで自在な形状クリッピング',
     intro: 'CSS clip-pathプロパティは要素を任意の形状にトリミング（クリッピング）できる強力なCSSプロパティです。polygon・circle・ellipse・insetの4種の基本形状を使うだけで、ヒーローセクションの斜め切り・アイコンの円形クリッピング・リボン形状UIなど多様な表現が実現できます。',

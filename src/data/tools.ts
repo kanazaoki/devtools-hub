@@ -886,6 +886,28 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: 'bezier-curve-editor',
+    name: 'Bezier Curve Editor',
+    tagline: 'cubic-bezier() をビジュアル操作で作成',
+    description:
+      'CSSアニメーションのイージング関数 cubic-bezier() をSVGキャンバス上でドラッグ操作して視覚的に作成。ease・ease-in-out・spring など9種のプリセットから始めてコントロールポイントを自由に調整できます。ボールアニメーションで実際の動きを確認しながら、生成したCSS値をワンクリックでコピー。',
+    tags: ['CSS', 'アニメーション', 'ジェネレーター'],
+    boothUrl: 'https://knkk.booth.pm/',
+    hasWebVersion: true,
+    releasedAt: '2026-06-29',
+    features: [
+      'SVGキャンバスでコントロールポイントをドラッグ編集',
+      'リアルタイムで cubic-bezier() 値を生成',
+      'ease / spring / ease-in-out-back など9種プリセット',
+      'ボールアニメーションで実際のイージングを確認',
+      'ワンクリックで CSS をクリップボードにコピー',
+    ],
+    desktopFeatures: [
+      'カスタムプリセットを保存・管理',
+      '複数のベジェ曲線を並べて比較',
+    ],
+  },
+  {
     slug: 'css-clip-path-generator',
     name: 'CSS Clip-Path Generator',
     tagline: 'ビジュアルエディターで clip-path CSS を生成',
