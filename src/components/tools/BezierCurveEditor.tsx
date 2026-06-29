@@ -54,6 +54,7 @@ export function BezierCurveEditor() {
   const [copied, setCopied] = useState(false)
   const [animKey, setAnimKey] = useState(0)
   const [activePreset, setActivePreset] = useState<string | null>('ease')
+  const [inputSeq, setInputSeq] = useState(0)
   const svgRef = useRef<SVGSVGElement>(null)
 
   const fmt = (n: number) => n.toFixed(2)
@@ -80,7 +81,7 @@ export function BezierCurveEditor() {
       else               setP2({ x: bx, y: by })
       setActivePreset(null)
     }
-    const onUp = () => setDrag(null)
+    const onUp = () => { setDrag(null); setInputSeq(s => s + 1) }
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerup', onUp)
     return () => {
@@ -94,6 +95,19 @@ export function BezierCurveEditor() {
     setP2({ x: x2, y: y2 })
     setAnimKey(k => k + 1)
     setActivePreset(name)
+    setInputSeq(s => s + 1)
+  }
+
+  const updateP1 = (axis: 'x' | 'y', raw: number) => {
+    const v = isNaN(raw) ? 0 : axis === 'x' ? Math.max(0, Math.min(1, raw)) : raw
+    setP1(prev => axis === 'x' ? { ...prev, x: v } : { ...prev, y: v })
+    setActivePreset(null)
+  }
+
+  const updateP2 = (axis: 'x' | 'y', raw: number) => {
+    const v = isNaN(raw) ? 0 : axis === 'x' ? Math.max(0, Math.min(1, raw)) : raw
+    setP2(prev => axis === 'x' ? { ...prev, x: v } : { ...prev, y: v })
+    setActivePreset(null)
   }
 
   const copy = async () => {
@@ -125,7 +139,7 @@ export function BezierCurveEditor() {
                 }`}
               >
                 <PresetThumb values={p.values} />
-                <span className="font-mono text-[10px] leading-none">{p.name}</span>
+                <span className="w-full truncate text-center font-mono text-[9px] leading-none sm:text-[10px]">{p.name}</span>
               </button>
             )
           })}
@@ -244,13 +258,25 @@ export function BezierCurveEditor() {
                   <span className="h-2 w-2 rounded-full" style={{ background: '#00C896', boxShadow: '0 0 6px #00C89666' }} />
                   <span className="font-mono text-xs font-semibold" style={{ color: '#00C896' }}>P1</span>
                 </div>
-                <div className="grid grid-cols-2 gap-1">
-                  {['x1', 'y1'].map((lbl, i) => (
-                    <div key={lbl}>
-                      <p className="font-mono text-[10px] text-muted">{lbl}</p>
-                      <p className="font-mono text-base font-bold text-bright">{fmt(i === 0 ? p1.x : p1.y)}</p>
-                    </div>
-                  ))}
+                <div className="grid grid-cols-2 gap-2">
+                  {(['x1', 'y1'] as const).map(lbl => {
+                    const axis = lbl === 'x1' ? 'x' : 'y'
+                    const val = axis === 'x' ? p1.x : p1.y
+                    return (
+                      <div key={lbl}>
+                        <p className="mb-1 font-mono text-[10px] text-muted">{lbl}</p>
+                        <input
+                          key={`${lbl}-${inputSeq}`}
+                          type="number"
+                          step="0.01"
+                          defaultValue={fmt(val)}
+                          onFocus={e => e.target.select()}
+                          onChange={e => updateP1(axis, parseFloat(e.target.value))}
+                          className="w-full rounded border border-border bg-bg px-2 py-1 font-mono text-sm text-bright focus:border-teal focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        />
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
               {/* P2 card */}
@@ -259,13 +285,25 @@ export function BezierCurveEditor() {
                   <span className="h-2 w-2 rounded-full" style={{ background: '#a78bfa', boxShadow: '0 0 6px #a78bfa66' }} />
                   <span className="font-mono text-xs font-semibold" style={{ color: '#a78bfa' }}>P2</span>
                 </div>
-                <div className="grid grid-cols-2 gap-1">
-                  {['x2', 'y2'].map((lbl, i) => (
-                    <div key={lbl}>
-                      <p className="font-mono text-[10px] text-muted">{lbl}</p>
-                      <p className="font-mono text-base font-bold text-bright">{fmt(i === 0 ? p2.x : p2.y)}</p>
-                    </div>
-                  ))}
+                <div className="grid grid-cols-2 gap-2">
+                  {(['x2', 'y2'] as const).map(lbl => {
+                    const axis = lbl === 'x2' ? 'x' : 'y'
+                    const val = axis === 'x' ? p2.x : p2.y
+                    return (
+                      <div key={lbl}>
+                        <p className="mb-1 font-mono text-[10px] text-muted">{lbl}</p>
+                        <input
+                          key={`${lbl}-${inputSeq}`}
+                          type="number"
+                          step="0.01"
+                          defaultValue={fmt(val)}
+                          onFocus={e => e.target.select()}
+                          onChange={e => updateP2(axis, parseFloat(e.target.value))}
+                          className="w-full rounded border border-border bg-bg px-2 py-1 font-mono text-sm text-bright focus:border-teal focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                        />
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             </div>
