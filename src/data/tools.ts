@@ -1230,7 +1230,7 @@ export const tools: Tool[] = [
     description:
       'URLを protocol / username / password / host / port / pathname / query params / hash に分解してリアルタイム表示。クエリパラメータをGUI上で追加・編集・削除でき、変更が即座にURLへ反映されます。エンコード/デコード表示の切り替えや、完全URL・各パーツ単独のコピーにも対応。',
     tags: ['URL', 'Web開発', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8564286',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1249,7 +1249,7 @@ export const tools: Tool[] = [
     description:
       '貼り付けたSQLを自動整形（キーワード大文字化・改行・インデント）するツール。MySQL / PostgreSQL / BigQuery の方言切り替えに対応し、整形（Beautify）と1行圧縮（Minify）を切り替えられます。整形済みSQLをワンクリックでコピー可能。',
     tags: ['SQL', 'データベース', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8564305',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1268,7 +1268,7 @@ export const tools: Tool[] = [
     description:
       '横・縦スクロールのスナップ動作をGUIで設定し、実際にスクロールできるプレビューパネルで即座に確認できるツール。scroll-snap-type（mandatory/proximity）・scroll-snap-align（start/center/end）・scroll-padding・scroll-margin をスライダーで調整し、コンテナ用・アイテム用のCSSを生成・コピーできます。',
     tags: ['CSS', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8564324',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1288,7 +1288,7 @@ export const tools: Tool[] = [
     description:
       '数値を入力すると、カンマ区切り・通貨（JPY/USD/EUR）・パーセント・SI単位（K/M/G/T）・指数表記などを一覧表示。ロケール（ja-JP / en-US / de-DE / zh-CN / fr-FR）を切り替えると桁区切り・小数点・通貨記号がロケールに応じて変化します。各フォーマットをクリックでコピー。',
     tags: ['数値', 'フォーマット', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8564334',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
