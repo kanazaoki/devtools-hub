@@ -1307,7 +1307,7 @@ export const tools: Tool[] = [
     description:
       'HTMLを貼り付けるとReact/JSXに即変換。class→className、for→htmlFor、tabindex→tabIndexなどの属性名変換、インラインstyle文字列→styleオブジェクト記法（camelCase）、onclick→onClick等のイベントハンドラ変換、imgやinputなどvoid要素の自己閉じタグ補完、HTMLコメント→JSXコメント変換をすべて自動で処理します。',
     tags: ['React', 'HTML', '変換', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8564512',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1327,7 +1327,7 @@ export const tools: Tool[] = [
     description:
       '横・縦・斜めストライプ・グリッド・ドット・チェッカーボードの6パターンをGUIで設定し、CSS background-image スニペットを生成するツール。パターン色と背景色をカラーピッカーで指定し、サイズ・ライン幅・透明度・角度（斜めストライプ）をスライダーで調整してリアルタイムプレビュー。生成したCSSをコピーするだけで使えます。',
     tags: ['CSS', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8564613',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1347,7 +1347,7 @@ export const tools: Tool[] = [
     description:
       '入力した文字列を1文字ずつ分解して、各文字のUnicodeコードポイント（U+XXXX）・UTF-8バイト数・文字種カテゴリ（ASCII英字/数字/記号・CJK・絵文字・空白）を色分け表示。文字列全体の総文字数・バイト数・ユニーク文字数を統計として表示。絵文字のサロゲートペア・複合文字も正しく1グリフとして処理します。エンコーディング問題のデバッグやグリフ調査に。',
     tags: ['文字列', 'Unicode', 'エンコーディング', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8564632',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1367,7 +1367,7 @@ export const tools: Tool[] = [
     description:
       '1xx〜5xx 全HTTPステータスコードを番号またはキーワード（日本語可）で検索できるリファレンスツール。各コードに「日本語説明」「典型的な用途」を記載。カテゴリ別カラーコーディングで視覚的に把握しやすく、カードをクリックするとレスポンスヘッダー例が展開表示されます。コード番号はクリックでコピー可能。オフライン環境でも使えるローカル完結型。',
     tags: ['HTTP', 'API', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8564643',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
