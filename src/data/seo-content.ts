@@ -614,6 +614,50 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'JavaScriptからの動的変更', body: 'CSS変数はJavaScriptから `document.documentElement.style.setProperty("--color-primary", "#ff0000")` で動的に変更できます。アニメーション・インタラクション・ユーザー設定の保存など、動的UIの実装に活用できます。CSS Variable Inspectorの出力コードをそのままコピーして貼り付けるだけでテーマ切り替えが実装できます。' },
     ],
   },
+
+  'css-pattern-generator': {
+    heading: 'CSSだけで作る幾何学パターン — repeating-gradient活用ガイド',
+    intro: 'CSSのrepeating-linear-gradient・repeating-conic-gradient・radial-gradientを組み合わせると、画像なしで美しい幾何学パターンを実装できます。CSS Pattern Generatorはこれらのパターンをビジュアルに生成します。',
+    sections: [
+      { title: 'repeating-linear-gradientでストライプを作る', body: '`repeating-linear-gradient(45deg, #14b8a6, #14b8a6 2px, transparent 2px, transparent 20px)` のような記法で斜めストライプが作れます。最初の2値でライン色とライン幅を、後の2値でライン間隔を指定します。0degで横ストライプ、90degで縦ストライプになります。background-sizeは指定不要で自動的に繰り返されます。' },
+      { title: 'グリッドパターンの作り方', body: 'グリッドは水平・垂直2方向のrepeating-linear-gradientを重ねます。`background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 1px, transparent 1px, transparent 20px)` のように2つのグラデーションをカンマで繋ぎます。' },
+      { title: 'チェッカーボードパターン', body: '`repeating-conic-gradient(#000 0% 25%, #fff 0% 50%)` にbackground-sizeを設定するだけでチェッカーボードが作れます。repeating-conic-gradientは回転方向にグラデーションが繰り返されるため、2色を25%ずつ交互に配置するとチェッカー状になります。' },
+      { title: 'ドットパターン', body: '`radial-gradient(circle, #14b8a6 2px, transparent 2px)` にbackground-sizeを指定するとドットパターンになります。background-sizeでドット間隔を、radial-gradientの2pxでドットサイズを制御します。半透明色を使うと奥行き感のあるパターンになります。' },
+    ],
+  },
+
+  'string-inspector': {
+    heading: 'Unicode・UTF-8エンコーディングの基礎知識',
+    intro: 'プログラミングで文字列を扱う際、Unicodeコードポイントとエンコーディング（UTF-8/UTF-16）の違いを理解することは重要です。String Inspectorは文字列を分解して各文字のコードポイントとバイト数を可視化します。',
+    sections: [
+      { title: 'UnicodeコードポイントとUTF-8の違い', body: 'Unicodeはすべての文字に一意の番号（コードポイント）を割り当てる規格です。例えばAはU+0041、「日」はU+65E5です。UTF-8はこのコードポイントをバイト列として表現するエンコーディング方式で、ASCII文字（U+0000〜U+007F）は1バイト、日本語などは3バイト、絵文字は4バイトで表現します。' },
+      { title: '絵文字とサロゲートペアの注意点', body: '現代の絵文字（U+1F000以上）はUTF-16では2つのコード単位（サロゲートペア）で表現されるため、JavaScriptの`length`プロパティが実際の文字数と異なることがあります。例えば🌏は`"🌏".length === 2`です。ES2015以降は`[...str].length`や`for...of`で正確な文字数が取れます。' },
+      { title: 'バイト数が重要な場面', body: 'データベースの文字列カラム（VARCHAR(255) = 255バイトか255文字かはDB設定による）・HTTPヘッダーのContent-Length・ファイルシステムのファイル名上限（多くのOSで255バイト）などではバイト数が重要です。UTF-8では1文字が1〜4バイトになるため、「255文字まで」なのか「255バイトまで」なのかを意識する必要があります。' },
+      { title: 'CJK文字の扱い', body: 'CJK（Chinese, Japanese, Korean）の漢字・仮名・ハングルはUTF-8で3バイトです。Twitterの文字数カウントなどは独自のカウント方法（CJKを2文字分とカウント）を使うサービスもあります。バックエンドのバリデーションとフロントエンドの表示で文字数の定義が違うとバグの原因になります。' },
+    ],
+  },
+
+  'http-status-reference': {
+    heading: 'HTTPステータスコードの設計指針 — REST APIでの適切な使い方',
+    intro: 'HTTPステータスコードは単なる数字ではなく、APIの設計思想を伝える重要なインターフェースです。適切なコードを返すことでクライアントは処理の成否を即座に判断でき、デバッグが容易になります。',
+    sections: [
+      { title: '2xxの使い分け', body: '200 OKはGET・PUT・PATCHの成功に使います。201 CreatedはPOSTでリソース作成成功時に使い、Locationヘッダーで作成されたリソースのURLを返します。204 No ContentはDELETE成功・副作用なしのPUT・副作用なしのPATCHで使います。202 Acceptedはキューへのエンキューなどですぐにはレスポンスが返せない非同期処理の受理を示します。' },
+      { title: '4xxのベストプラクティス', body: '400 Bad Requestはリクエストの構文エラー、422 Unprocessable ContentはバリデーションエラーやビジネスロジックのNG、401はAuthorizationヘッダーがない・無効、403は認証済みだがアクセス権なし、409 Conflictは重複登録・楽観的ロック競合、429 Too Many Requestsはレートリミット超過に使います。エラーレスポンスのボディにはエラーコードと人間が読めるメッセージを含めるとデバッグが楽になります。' },
+      { title: 'リダイレクトコードの違い', body: '301/308は恒久的リダイレクト（SEO評価が引き継がれる）、302/307は一時的リダイレクト（SEO評価は引き継がない）です。301/302はブラウザがPOSTをGETに変換することがありますが、307/308はメソッドを保持します。APIのエンドポイントを移行する場合は308を使うと、クライアントがPOSTリクエストをそのまま新URLに送り直してくれます。' },
+      { title: '5xxのハンドリング', body: '5xxはすべてサーバー側の問題です。500 Internal Server Errorは予期しない例外のフォールバック、502 Bad GatewayはリバースプロキシがバックエンドとTCP接続できない・無効なHTTPレスポンスを受け取った、503 Service Unavailableはメンテナンス・過負荷でRetry-Afterヘッダーで再試行タイミングを示す、504 Gateway Timeoutはバックエンドの処理タイムアウトです。クライアントは5xxに対してエクスポネンシャルバックオフでリトライするのが一般的です。' },
+    ],
+  },
+
+  'html-to-jsx': {
+    heading: 'HTMLからJSXへの変換 — ReactコンポーネントへのHTML移植ガイド',
+    intro: 'HTMLをReactコンポーネントに移植する際には、属性名の変換・スタイルのオブジェクト化・void要素の自己閉じなど複数の変換が必要です。HTML to JSXコンバーターを使えばこれらを自動化できます。',
+    sections: [
+      { title: 'HTMLとJSXの主な違い', body: 'JSXはJavaScript内でHTMLに似た記法を使えますが、いくつかの重要な違いがあります。最も頻出なのが`class`→`className`と`for`→`htmlFor`の変換です。`class`はJavaScriptの予約語であるため、ReactはDOMプロパティ名に合わせて`className`を使います。同様に`for`も`htmlFor`が正しいJSX記法です。' },
+      { title: 'インラインstyleのオブジェクト記法', body: 'HTMLでは`style="color: red; font-size: 14px"`のように文字列で記述しますが、JSXではJavaScriptオブジェクトとして`style={{ color: \'red\', fontSize: \'14px\' }}`の形式で渡します。CSSプロパティ名はキャメルケースに変換します（font-size→fontSize、background-color→backgroundColor）。値は文字列として渡す必要があります（数値はpx省略可）。' },
+      { title: 'Void要素の自己閉じタグ', body: 'HTMLでは`<img src="x">`や`<input>`のようにvoid要素（内容を持てない要素）は終了タグなしで記述できますが、JSXではXMLルールに従い`<img src="x" />`のように自己閉じタグが必須です。対象はimg・input・br・hr・link・meta・area・base・col・embed・param・source・track・wbrなどです。' },
+      { title: 'イベントハンドラの変換', body: 'HTMLのイベント属性`onclick`・`onchange`・`onsubmit`などは、JSXでは`onClick`・`onChange`・`onSubmit`のようにキャメルケースで記述します。また、HTMLでは属性値に直接JavaScriptコードを書きますが（`onclick="handleClick()"`）、JSXでは関数参照を渡すのが一般的です（`onClick={handleClick}`）。' },
+    ],
+  },
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {
