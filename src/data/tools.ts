@@ -1095,7 +1095,7 @@ export const tools: Tool[] = [
     description:
       'mask-image のグラデーション（上下左右・放射状2種の計6方向）をスライダーで設定し、コンテンツのフェードアウト効果を生成。最大3枚のマスクレイヤーを重ね合わせられます。`-webkit-mask-image` と `mask-image` の両方を出力し、クロスブラウザ対応のCSSをコピーできます。',
     tags: ['CSS', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8563390',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1114,7 +1114,7 @@ export const tools: Tool[] = [
     description:
       '基本 meta（title / description / keywords / author）・OGP（og:title / og:description / og:image / og:url / og:type）・Twitter Card の入力フォームを持ち、Google 検索風プレビューと SNS カード風プレビューをリアルタイム表示。title は60字、description は160字で警告カウンターが表示されます。空欄のフィールドは出力に含まれません。',
     tags: ['SEO', 'HTML', 'Web開発'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8563382',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1133,7 +1133,7 @@ export const tools: Tool[] = [
     description:
       'HEXカラーピッカーでベースカラーを選択し、白混じり（Tints）・黒混じり（Shades）・グレー混じり（Tones）の3系統でカラーパレットを生成。ステップ数を5〜10段階でスライダー調整できます。Tailwind の数値キー形式（50〜900）と CSS カスタムプロパティ形式の両方で出力・コピー可能。',
     tags: ['カラー', 'デザイン', 'CSS'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8563373',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
@@ -1152,7 +1152,7 @@ export const tools: Tool[] = [
     description:
       '4コーナー（TL/TR/BR/BL）の水平・垂直半径を個別または一括スライダーで設定し、リアルタイムプレビューで確認しながら CSS を生成。楕円半径（`30px 50px` 形式）にも対応。短縮形と個別プロパティ形式を切り替えてコピーできます。px / % 単位の切り替えも可能。',
     tags: ['CSS', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8563360',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
     desktopFeatures: [],
