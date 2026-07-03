@@ -1387,7 +1387,7 @@ export const tools: Tool[] = [
     description:
       'テキストシャドウを X/Y/blur/color/opacity のスライダーで直感的に設定し、CSS を生成するツール。最大5レイヤーを重ねてグロー・エンボス・ネオンなどの複合エフェクトも作成できます。シンプル・グロー・エンボス・ネオンの4種プリセット付き。生成した CSS はワンクリックでコピー可能。',
     tags: ['CSS', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8574292',
     hasWebVersion: true,
     releasedAt: '2026-07-03',
     desktopFeatures: [],
@@ -1406,7 +1406,7 @@ export const tools: Tool[] = [
     description:
       'セルをクリックして編集できるGUIエディターでMarkdownテーブルを作成するツール。列と行を追加・削除し、各列の配置（左/中央/右）を切り替えると区切り行（`:---`/`:---:`/`---:`）に即反映。CSVテキストを貼り付けて一括インポートも可能。生成されたMarkdownをリアルタイムプレビューとともにコピーできます。',
     tags: ['Markdown', 'テキスト', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8574337',
     hasWebVersion: true,
     releasedAt: '2026-07-03',
     desktopFeatures: [],
