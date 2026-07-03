@@ -6,7 +6,7 @@
 
 ---
 
-## ツール一覧（63本）
+## ツール一覧（67本）
 
 ### CSS系
 | ツール | 機能 |
@@ -35,6 +35,7 @@
 | [Color Shade Generator](https://devtools-hub.vercel.app/tools/color-shade-generator) | Tints/Shades/Tones・CSS変数/Tailwind形式で出力 |
 | [Color Contrast Checker](https://devtools-hub.vercel.app/tools/color-contrast-checker) | WCAG 2.1 コントラスト比チェック・AA/AAA 判定 |
 | [Color Blindness Simulator](https://devtools-hub.vercel.app/tools/color-blindness-simulator) | 5種の色覚シミュレーション・WCAG コントラスト比判定 |
+| [Color Token Generator](https://devtools-hub.vercel.app/tools/color-token-generator) | カラーパレットを CSS変数 / Tailwind / SCSS / JSON トークンで一括出力 |
 
 ### JSON・データ変換系
 | ツール | 機能 |
@@ -45,6 +46,8 @@
 | [YAML / JSON / TOML Converter](https://devtools-hub.vercel.app/tools/yaml-json-converter) | 3形式のリアルタイム相互変換 |
 | [HTML to JSX](https://devtools-hub.vercel.app/tools/html-to-jsx) | HTML → React/JSX 変換（class→className など） |
 | [Markdown Table Generator](https://devtools-hub.vercel.app/tools/markdown-table-generator) | GUI でMarkdownテーブルを作成・CSVインポート対応 |
+| [JSON Schema Validator](https://devtools-hub.vercel.app/tools/json-schema-validator) | JSON と JSON Schema を並べてリアルタイムバリデーション |
+| [cURL to Code](https://devtools-hub.vercel.app/tools/curl-to-code) | cURL コマンドを fetch / axios / Python requests / wget に自動変換 |
 
 ### テキスト・文字列系
 | ツール | 機能 |
@@ -102,6 +105,7 @@
 | [Sheet Studio](https://devtools-hub.vercel.app/tools/sheet-studio) | スプライトシートのパック & スライス |
 | [AI Prompt Manager](https://devtools-hub.vercel.app/tools/ai-prompt-manager) | AI画像生成プロンプトの管理・自動組み立て |
 | [Text Deck](https://devtools-hub.vercel.app/tools/text-deck) | スニペットランチャー（定型文・コードスニペット管理） |
+| [Mermaid Preview](https://devtools-hub.vercel.app/tools/mermaid-preview) | Mermaid 記法でダイアグラムをリアルタイムプレビュー・SVG/PNG ダウンロード |
 
 ---
 

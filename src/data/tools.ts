@@ -1425,10 +1425,13 @@ export const tools: Tool[] = [
     description:
       'カラーに名前と HEX 値を設定すると、CSS カスタムプロパティ（:root）・Tailwind theme.colors・Sass 変数・Style Dictionary JSON の4形式でトークンコードを生成。最大10色まで追加でき、カラーピッカーと HEX 入力の両方で色を設定できます。デザインシステム構築時のトークン定義作業を高速化。',
     tags: ['カラー', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8575370',
     hasWebVersion: true,
     releasedAt: '2026-07-03',
-    desktopFeatures: [],
+    desktopFeatures: [
+      'パレット設定を JSON ファイルで保存・読み込み（プロジェクト間で再利用）',
+      'トークンを各形式のファイルとして書き出し（.css / tailwind.config.js / .scss / .json）',
+    ],
     features: [
       'CSS変数 / Tailwind config / Sass変数 / Style Dictionary JSON の4形式で出力',
       '最大10色を追加・削除、カラーピッカーと HEX 入力で色指定',
@@ -1443,10 +1446,13 @@ export const tools: Tool[] = [
     description:
       'JSON Schema（type / required / properties / minimum / maximum / minLength / pattern / items など）と JSON テキストを並べて入力すると、バリデーション結果とエラー箇所のパスをリアルタイム表示。有効なら ✅ Valid、違反があれば ❌ Invalid と詳細エラー一覧を表示します。ユーザー・配列・ネストオブジェクトの3種プリセット付き。',
     tags: ['JSON', '開発者向け', 'API'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8575363',
     hasWebVersion: true,
     releasedAt: '2026-07-03',
-    desktopFeatures: [],
+    desktopFeatures: [
+      '.json ファイルをダイアログで開いてスキーマ・JSONペインに展開',
+      'バリデーション結果をテキストレポートとしてダイアログ経由で保存',
+    ],
     features: [
       'JSON Schema と JSON を並べてリアルタイムバリデーション',
       'エラー箇所を JSONPath 形式（/name など）で表示',
@@ -1461,10 +1467,13 @@ export const tools: Tool[] = [
     description:
       'cURL コマンドを貼り付けると fetch（JavaScript）・axios（JavaScript）・Python requests・HTTPie の4形式に即変換。-H ヘッダー・-d ボディ・-u 認証・-b クッキーなど主要オプションに対応。各形式をタブで切り替えてワンクリックでコピーできます。',
     tags: ['開発者向け', 'API', 'Web開発'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8575356',
     hasWebVersion: true,
     releasedAt: '2026-07-03',
-    desktopFeatures: [],
+    desktopFeatures: [
+      '変換結果を .js / .py / .sh ファイルとしてダイアログ経由で保存',
+      '変換履歴（最新10件）をサイドパネルに表示、クリックで再利用',
+    ],
     features: [
       'cURL → fetch / axios / Python requests / HTTPie の4形式に変換',
       '-H（ヘッダー）・-d（ボディ）・-u（Basic認証）・-b（クッキー）などに対応',
@@ -1479,10 +1488,14 @@ export const tools: Tool[] = [
     description:
       'Mermaid 記法を入力するとフローチャート・シーケンス図・ER図・ガントチャートをリアルタイムでプレビュー。4種類のサンプルプリセットからすぐ試せます。レンダリング済みダイアグラムを SVG または PNG でダウンロード可能。構文エラーはエラーバナーで即時表示されます。',
     tags: ['開発者向け', 'ダイアグラム', 'ドキュメント'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8575331',
     hasWebVersion: true,
     releasedAt: '2026-07-03',
-    desktopFeatures: [],
+    desktopFeatures: [
+      '.mmd / .md ファイルをダイアログで開いてコードエリアに展開',
+      'SVG ファイルをダイアログ経由で任意の場所に保存',
+      'PNG ファイルを 2x 高解像度でダイアログ経由で保存',
+    ],
     features: [
       'flowchart / sequenceDiagram / erDiagram / gantt をリアルタイムプレビュー',
       '4種のサンプルプリセットですぐ試せる',
