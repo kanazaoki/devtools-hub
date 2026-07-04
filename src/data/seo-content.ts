@@ -1032,6 +1032,17 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'フロントエンド学習での活用方法', body: 'HTML Playgroundはフロントエンド学習にも最適です。MDNやQiitaで見たコードスニペットをその場でコピー＆ペーストして動作確認できます。CSSのflexboxやgridのプロパティを変えながら視覚的に学べ、JavaScriptのDOM操作も即座に試せます。クリアボタンで全体をリセットして別のコードを試すサイクルを素早く繰り返せます。' },
     ],
   },
+
+  'gitignore-generator': {
+    heading: '.gitignoreの書き方 — 言語・フレームワーク別の設定ガイド',
+    intro: '.gitignoreはGitで追跡しないファイル・フォルダを指定するファイルです。node_modules/やbuild/などをリポジトリに含めないようにすることで、不要なファイルのコミット・プッシュを防ぎ、チーム開発を円滑にします。',
+    sections: [
+      { title: '.gitignoreの基本ルール', body: '.gitignoreでは1行1パターンでIgnoreするパスを指定します。末尾に/をつけるとディレクトリを指定、先頭に!をつけると例外（追跡する）になります。*は任意の文字（スラッシュ除く）、**は任意のパスにマッチします。#から始まる行はコメントです。一度追跡してしまったファイルはgit rm --cachedで追跡を解除する必要があります。' },
+      { title: 'node_modulesを.gitignoreに追加する理由', body: 'node_modulesにはnpm/yarnでインストールした依存パッケージが入っており、数万〜数十万ファイルになることがあります。package.jsonとpackage-lock.jsonがあれば誰でもnpm installで再現できるため、gitに含める必要はありません。誤ってコミットするとリポジトリが巨大になりpushが遅くなります。' },
+      { title: 'フレームワーク別の代表的なIgnoreパターン', body: 'Next.jsは.next/（ビルド成果物）とout/（静的エクスポート）を除外します。Unityは/Library/・/Temp/・/Build/を除外し、アセット（/Assets/）とProjectSettingsはコミット対象です。Goはバイナリ（*.exe・*.dll）とvendor/を除外します。Rustは/target/のみで十分です。' },
+      { title: 'グローバル.gitignoreで個人設定を分離する', body: 'macOSの.DS_StoreやJetBrains IDEの.ideaフォルダなど、個人の環境固有のファイルはリポジトリの.gitignoreではなくグローバル.gitignoreで管理するのがベストプラクティスです。git config --global core.excludesfile ~/.gitignore_globalで設定できます。チーム全員のIDEが同じとは限らないため、IDE固有パターンをリポジトリに含めるとコンフリクトの原因になります。' },
+    ],
+  },
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {

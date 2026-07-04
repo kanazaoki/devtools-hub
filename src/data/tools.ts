@@ -1830,6 +1830,25 @@ export const tools: Tool[] = [
       '64×64 キャンバスサイズ対応',
     ],
   },
+  {
+    slug: 'gitignore-generator',
+    name: '.gitignore Generator',
+    tagline: '言語・フレームワーク別テンプレートを組み合わせて .gitignore を即生成',
+    description:
+      'Node / Python / Unity / Go / Rust / Java / Swift / Kotlin / C++ / C# / React / Next.js / Electron / macOS / Windows / Linux / JetBrains / VSCode / Xcode の19種テンプレートから選んで組み合わせ。重複行を自動除去してマージした .gitignore をコピーまたはダウンロード。すべてブラウザ内処理でAPIアクセスなし。',
+    tags: ['Git', 'Web開発', '開発ツール'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-04',
+    features: [
+      '19種テンプレート（言語・フレームワーク・OS・IDE）から複数選択',
+      '選択したテンプレートをマージ・重複行を自動除去',
+      '生成した .gitignore をワンクリックでコピー',
+      '.gitignore ファイルとしてダウンロード',
+      'テンプレートが空のときは出力も空',
+    ],
+    desktopFeatures: ['生成した .gitignore を任意のパスにファイル保存'],
+  },
 ]
 
 export function getToolBySlug(slug: string): Tool | undefined {

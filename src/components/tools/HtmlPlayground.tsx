@@ -51,7 +51,7 @@ export function HtmlPlayground() {
   const [css, setCss] = useState(DEFAULT_CSS)
   const [js, setJs] = useState(DEFAULT_JS)
   const [visible, setVisible] = useState<Record<PaneId, boolean>>({ html: true, css: true, js: true })
-  const [previewWidth, setPreviewWidth] = useState(100)
+  const [previewWidth, setPreviewWidth] = useState(60)
   const [srcdoc, setSrcdoc] = useState(() => buildSrcdoc(DEFAULT_HTML, DEFAULT_CSS, DEFAULT_JS))
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -122,10 +122,13 @@ export function HtmlPlayground() {
       </div>
 
       {/* Editors + Preview */}
-      <div className="flex gap-3" style={{ minHeight: '420px' }}>
+      <div className="flex gap-3 overflow-hidden" style={{ minHeight: '420px' }}>
         {/* Code panes */}
         {visiblePanes.length > 0 && (
-          <div className={`flex flex-col gap-3 ${previewWidth < 100 ? 'w-[40%]' : 'flex-1'}`} style={{ minWidth: 0 }}>
+          <div
+            className="flex flex-col gap-3 flex-shrink-0"
+            style={{ width: `${100 - previewWidth}%`, minWidth: 0 }}
+          >
             {visiblePanes.map(p => (
               <div key={p.id} className="flex-1 flex flex-col min-h-0">
                 <div className={`mb-1 text-xs font-mono font-semibold uppercase tracking-widest ${p.color}`}>
@@ -145,8 +148,8 @@ export function HtmlPlayground() {
 
         {/* Preview */}
         <div
-          className="flex-shrink-0 flex flex-col"
-          style={{ width: visiblePanes.length > 0 ? `${previewWidth}%` : '100%', maxWidth: '100%' }}
+          className="flex-1 flex flex-col"
+          style={{ minWidth: 0 }}
         >
           <div className="mb-1 text-xs font-mono font-semibold uppercase tracking-widest text-muted">
             Preview
