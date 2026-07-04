@@ -80,16 +80,13 @@ export function ToolCard({ tool, isNew = false }: ToolCardProps) {
       )}
 
       <div className="relative flex h-full flex-col gap-3 p-5 pl-6">
-        {/* ツール名・タグライン・説明 */}
+        {/* ツール名・タグライン */}
         <div>
           <h2 className="font-mono text-sm font-semibold text-bright transition-colors duration-150 group-hover:text-teal">
             {tool.name}
           </h2>
-          <p className="mt-0.5 text-xs font-medium text-teal/70">
+          <p className="mt-1 text-sm leading-relaxed text-teal/70">
             {tool.tagline}
-          </p>
-          <p className="mt-1.5 text-xs leading-relaxed text-muted line-clamp-2">
-            {tool.description}
           </p>
         </div>
 
