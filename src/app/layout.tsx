@@ -3,6 +3,7 @@ import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
+import { BackToTop } from '@/components/BackToTop'
 import { ADSENSE_CLIENT } from '@/components/AdSense'
 import './globals.css'
 
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Header />
         <div className="mx-auto max-w-6xl px-4">{children}</div>
         <Footer />
+        <BackToTop />
 
         {ADSENSE_CLIENT && (
           <Script
