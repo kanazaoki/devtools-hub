@@ -658,6 +658,336 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'イベントハンドラの変換', body: 'HTMLのイベント属性`onclick`・`onchange`・`onsubmit`などは、JSXでは`onClick`・`onChange`・`onSubmit`のようにキャメルケースで記述します。また、HTMLでは属性値に直接JavaScriptコードを書きますが（`onclick="handleClick()"`）、JSXでは関数参照を渡すのが一般的です（`onClick={handleClick}`）。' },
     ],
   },
+
+  'css-flexbox-generator': {
+    heading: 'CSS Flexboxの使い方 — justify-content・align-items・flex-wrapの完全ガイド',
+    intro: 'CSS Flexbox（Flexible Box Layout）は1次元のレイアウトシステムで、要素を横または縦に並べて柔軟に配置できます。floatやtable-cellによる旧来の手法を置き換え、レスポンシブデザインの中心的な技術となっています。',
+    sections: [
+      { title: 'flex-directionとflex-wrapの基本', body: 'flex-directionはフレックスアイテムの並ぶ方向を指定します。row（横並び・デフォルト）・row-reverse（逆順横）・column（縦並び）・column-reverse（逆順縦）の4つがあります。flex-wrapはアイテムがコンテナをはみ出したときの折り返しを制御し、nowrap（折り返しなし）・wrap（折り返しあり）・wrap-reverse（逆順折り返し）を指定できます。' },
+      { title: 'justify-contentとalign-itemsの違い', body: 'justify-contentはメイン軸（flex-directionの方向）のアイテム配置を制御します。flex-start・flex-end・center・space-between・space-around・space-evenlyが使えます。align-itemsはクロス軸（メイン軸と垂直）の配置を制御し、stretch（デフォルト）・flex-start・flex-end・center・baselineが選べます。' },
+      { title: 'flex-grow・flex-shrink・flex-basisとは', body: 'flex-growはアイテムがコンテナの余白をどれだけ分け合うかを指定します。全アイテムにflex-grow: 1を指定すると等幅になります。flex-shrinkはコンテナが不足したときの縮小割合、flex-basisはアイテムの基本サイズを指定します。省略記法flex: 1 1 autoが一般的です。' },
+      { title: 'よくあるFlexboxパターン', body: '水平中央寄せはdisplay: flex; justify-content: center; align-items: center; で実現できます。ナビゲーションバーのロゴ左・メニュー右はjustify-content: space-between、フッターを画面下に固定するSticky FooterはminHeight: 100vh + flex-direction: column + margin-top: auto（コンテンツ）で実装できます。' },
+    ],
+  },
+
+  'css-stacking-inspector': {
+    heading: 'CSSのz-indexとスタッキングコンテキスト — 重なり順の仕組みを理解する',
+    intro: 'z-indexが効かない・意図しない要素が前面に出てくる・モーダルが隠れてしまう、といった問題の多くはCSSのスタッキングコンテキストの理解不足によって起こります。重なり順のルールを正しく把握することでこれらの問題をスムーズに解決できます。',
+    sections: [
+      { title: 'z-indexが効かない理由', body: 'z-indexは静的配置（position: static）の要素には効きません。position: relative / absolute / fixed / sticky のいずれかを設定した要素にのみ有効です。また、z-indexの値は同じスタッキングコンテキスト内での比較になるため、親要素のスタッキングコンテキストが分離していると子要素のz-indexを大きくしても他のコンテキストの要素より前面に出せません。' },
+      { title: 'スタッキングコンテキストが生成される条件', body: '新しいスタッキングコンテキストは①position + z-index（auto以外）、②opacity（1未満）、③transform（none以外）、④filter（none以外）、⑤will-change、⑥isolation: isolate などで生成されます。AnimationやTransitionの途中でも生成されることがあります。CSSライブラリやUIコンポーネントが予期せずコンテキストを作っていることもあります。' },
+      { title: '要素の重なり順のルール', body: 'スタッキングコンテキスト内の重なり順は①z-indexが負の要素（最背面）、②ブロックレベル要素、③フローティング要素、④インライン要素、⑤z-index: 0の要素、⑥z-indexが正の要素（最前面）の順です。同じz-indexでは後から書かれた要素が前面に来ます。' },
+      { title: 'CSS Stacking Inspectorの活用方法', body: 'CSS Stacking InspectorにHTMLコードを貼り付けると、スタッキングコンテキストのツリー構造・各要素のz-indexとコンテキストの関係・潜在的な競合箇所をビジュアルで確認できます。モーダル・ドロップダウン・ツールチップが意図どおりに重なっているかのデバッグに役立ちます。' },
+    ],
+  },
+
+  'css-transform-explorer': {
+    heading: 'CSS transformの使い方 — translate・rotate・scale・skewと3Dモード',
+    intro: 'CSS transformはJavaScriptを使わずに要素の移動・回転・拡大縮小・傾斜をGPUアクセラレーションで実行できます。レイアウトに影響を与えずにアニメーションできるため、高パフォーマンスなUIエフェクトの基本技術です。',
+    sections: [
+      { title: 'translate・rotate・scale・skewの基本', body: 'translateX(50px) は要素を右に50pxずらします。translateY(-20px) は上に20pxです。rotate(45deg) は45度時計回りに回転します。scale(1.5) は1.5倍に拡大します（scale(2, 0.5) で横2倍・縦0.5倍）。skewX(15deg) はX軸方向に15度傾斜させます。複数のtransformは半角スペースで連結してtransform: translate(10px, 20px) rotate(30deg) scale(1.1) のように書きます。' },
+      { title: 'transform-originとは', body: 'transform-originは変形の基点を指定します。デフォルトはcenter（50% 50%）で要素の中心が基点です。transform-origin: top left にするとrotateが左上を軸に回転します。時計の秒針のようなアニメーションはtransform-origin: center bottom + rotate で実現できます。9点グリッドや具体的な座標（px・%）で指定できます。' },
+      { title: '3D transformとperspective', body: 'CSS transformは3Dも扱えます。rotateX()・rotateY()・rotateZ()で各軸の回転、translateZ()で奥行き方向の移動が可能です。3D効果を有効にするには親要素にperspective（例: perspective: 500px）を設定する必要があります。値が小さいほど誇張された透視効果になります。カードフリップアニメーションはrotateY(180deg) とbackface-visibility: hidden で実装します。' },
+      { title: 'transformとlayoutの関係', body: 'CSS transformはレイアウト（通常フロー）に影響を与えません。transformで移動・拡大した要素は周囲の要素の位置に影響しません。これは頻繁に動くアニメーションに有利で、top/left変更（レイアウト再計算が発生）よりtransformを使う方が高パフォーマンスです。Googleのパフォーマンスガイドラインでもアニメーションにはtransformとopacityを推奨しています。' },
+    ],
+  },
+
+  'typography-scale-generator': {
+    heading: 'モジュラースケールによるタイポグラフィ — 美しいフォントサイズ設計の基礎',
+    intro: 'タイポグラフィスケールは見出し・本文・キャプションなどのフォントサイズを数学的な比率で決定する手法です。音楽の音階のように一定の比率（ratio）でサイズを増減させることで、視覚的に調和したフォントサイズの体系を作れます。',
+    sections: [
+      { title: 'モジュラースケールとは', body: 'モジュラースケールはベースサイズ（多くの場合16px）に対して一定の比率を掛け続けることでフォントサイズの段階を作る手法です。比率1.25（Major Third）なら16・20・25・31・39pxといった段階になります。Figmaや印刷デザインでも使われる普遍的な手法で、設計者の「感覚」に頼らず論理的なスケールを実現できます。' },
+      { title: '代表的なスケール比率', body: 'Minor Second（1.067）は密度が高く情報量の多いUIに向きます。Major Second（1.125）は本文と見出しのバランスが取りやすい標準的な比率です。Minor Third（1.2）・Major Third（1.25）は見出しにダイナミックな差をつけたいときに有効です。Perfect Fourth（1.333）・Golden Ratio（1.618）は大きなディスプレイや印刷物でのランディングページなどに映えます。' },
+      { title: 'CSS変数としての出力', body: 'Typography Scale Generatorで生成したスケールはCSS変数（カスタムプロパティ）形式で出力できます。--text-xs・--text-sm・--text-base・--text-lg・--text-xl・--text-2xlのように名前を付けてrootに定義することで、デザインシステム全体で一貫したフォントサイズを参照できます。Tailwind CSSのextend設定にも転用できます。' },
+      { title: 'px・remでの使い分け', body: 'ブラウザのデフォルトフォントサイズは16pxです。Webアクセシビリティの観点から、font-sizeにはpxよりremを使うことが推奨されています。remを使うとユーザーがブラウザのフォントサイズ設定を変更したときに全体が追従します。Typography Scale Generatorではpxとremどちらの値でも確認・コピーができます。' },
+    ],
+  },
+
+  'color-blindness-simulator': {
+    heading: '色覚シミュレーションとアクセシビリティ — 色だけに頼らないデザインの実践',
+    intro: '色覚多様性（色盲・色弱）は世界の男性の約8%、女性の約0.5%に見られます。デザインやUIが色だけで情報を伝えている場合、色覚多様性のあるユーザーにとって情報が失われる可能性があります。',
+    sections: [
+      { title: '色覚の種類と特徴', body: '第1色盲（Protanopia）は赤の錐体が機能せず赤と緑の区別が難しくなります。第2色盲（Deuteranopia）は緑の錐体が機能せず同じく赤緑の判別が困難です。この2種類が最も多く見られます。第3色盲（Tritanopia）は青と黄の区別が難しくなります。全色盲（Achromatopsia）は色の区別がほぼできない状態で稀です。Color Blindness Simulatorで各色覚の見え方をBrettel行列で正確にシミュレートできます。' },
+      { title: 'カラーユニバーサルデザインの原則', body: 'カラーユニバーサルデザインの基本は「色だけで情報を伝えない」ことです。グラフの折れ線は色の違いに加えて線の形状（実線・破線・点線）でも区別する、フォームのエラーは赤色テキストだけでなくアイコンや文章でも伝える、ステータスは色だけでなくテキストラベルも表示するといった工夫が有効です。' },
+      { title: 'WCAGとコントラスト比', body: 'WCAG（Web Content Accessibility Guidelines）ではコントラスト比の基準を設けています。通常テキストはAA水準で4.5:1以上が必要です。Color Blindness Simulatorでシミュレーション後にコントラスト比を確認することで、色覚多様性を持つユーザーにとっても十分な視認性があるかを検証できます。' },
+      { title: 'デザイン検証のワークフロー', body: 'デザイン完成後にColor Blindness Simulatorで2色のHEXを入力し、5種類の色覚でどう見えるかを確認します。特に重要なのはエラー・成功・警告を表すカラー、グラフのデータシリーズのカラー、CTAボタンのカラーです。シミュレーション結果に問題があれば、色の明度差を大きくするか、アイコンやパターンを追加して情報を補完します。' },
+    ],
+  },
+
+  'border-radius-generator': {
+    heading: 'CSS border-radiusの使い方 — 角丸・楕円・非対称角丸の作り方',
+    intro: 'CSS border-radiusは要素の角を丸くするプロパティです。単純な角丸から楕円・ピル形状・非対称の複雑な角丸まで、border-radiusだけでさまざまな形状を作ることができます。',
+    sections: [
+      { title: 'border-radiusの4隅の指定方法', body: 'border-radiusは4隅を個別に指定できます。border-radius: 10px は全角を10pxに。border-radius: 10px 20px 30px 40px は左上・右上・右下・左下の順です（時計回り）。border-top-left-radius・border-top-right-radius・border-bottom-right-radius・border-bottom-left-radius で個別に設定することもできます。' },
+      { title: '%指定と楕円形の角丸', body: 'border-radiusに%を使うと要素のサイズに比例した角丸になります。border-radius: 50% を正方形に適用すると完全な円になります。border-radius: 50% 20% のように縦横比率を変えると楕円的な角丸になります。スラッシュ（/）区切りで水平半径と垂直半径を個別指定できます（例: border-radius: 30px / 50px）。' },
+      { title: 'ピル形状・タグ形状の作り方', body: 'border-radius: 999px（またはborder-radius: 9999px）のような非常に大きな値を指定すると、幅に関わらず半円の端を持つピル形状になります。バッジ・ラベル・タグUIによく使われます。border-radius: 0 で角丸を削除してシャープな角にできます。' },
+      { title: 'Border Radius Generatorの活用', body: 'Border Radius Generatorでは8つのスライダーで左上・右上・右下・左下の水平・垂直半径をそれぞれ独立して調整できます。一括/個別モード切り替え・px/%単位の切り替えに対応し、生成したborder-radiusのCSSコードをすぐにコピーできます。複雑な非対称形状のCSS生成に役立ちます。' },
+    ],
+  },
+
+  'color-shade-generator': {
+    heading: 'カラーシェード・ティント・トーンの使い分け — デザインシステムのカラーパレット設計',
+    intro: 'デザインシステムでは1つのブランドカラーから複数の明暗バリエーションを用意し、ホバー・無効・背景などの状態に対応します。Tint（白を混ぜた明るい色）・Shade（黒を混ぜた暗い色）・Tone（グレーを混ぜた彩度を下げた色）の3種類があります。',
+    sections: [
+      { title: 'Tint・Shade・Toneとは', body: 'Tintは色に白を混ぜて明るくした色です。背景色・セカンダリボタン・ホバー状態に使われます。Shadeは色に黒を混ぜて暗くした色です。テキスト・ボーダー・フォーカス状態に活用されます。Toneはグレーを混ぜて彩度を下げた色で、落ち着いた印象が必要な場面に向いています。' },
+      { title: 'Tailwindのカラースケール設計', body: 'Tailwind CSSのカラーシステムは50〜950の10段階スケールで設計されています（例: blue-50が最も薄く、blue-950が最も暗い）。Color Shade GeneratorはTailwind形式での出力に対応しており、ブランドカラーからTailwind互換のカラーパレットを生成してtailwind.config.jsに貼り付けられます。' },
+      { title: 'カラーパレットのステップ数の選び方', body: '5ステップは小規模プロジェクトや試作品向けで手軽です。7ステップはbalancedな中間的な選択です。10ステップはTailwindのような包括的なデザインシステム向けです。ステップを増やすほど細かい状態（ホバー・フォーカス・アクティブ・無効）に対応しやすくなりますが、管理するクラスも増えます。' },
+      { title: 'CSS変数での利用', body: 'Color Shade GeneratorはCSS変数・SCSS変数形式での出力に対応しています。--color-primary-100から--color-primary-900のようにスケールをCSS変数として定義することで、ダークモード切り替えや将来のカラーシステム変更にも柔軟に対応できます。root要素とprefers-color-schemeメディアクエリを組み合わせることでダークモードの自動切り替えが実現できます。' },
+    ],
+  },
+
+  'meta-tag-generator': {
+    heading: 'HTMLメタタグとOGP・Twitter Cardの設定方法 — SEOとSNSシェア最適化',
+    intro: 'HTMLのメタタグはページのタイトル・説明・キーワードを検索エンジンに伝えると同時に、SNSでのシェア表示（OGP・Twitter Card）を制御します。適切に設定することで検索クリック率の向上とSNSでのリッチプレビューが実現できます。',
+    sections: [
+      { title: '基本的なメタタグ', body: '<meta name="description">はGoogleの検索結果に表示される説明文で、推奨は120〜160文字です。<meta name="robots">はクローラーの動作を制御し、index・noindex・follow・nofollowなどを指定します。<meta charset="UTF-8">は文字コードの宣言で、<html lang="ja">とセットで必須です。<meta name="viewport">はモバイル対応に必要です。' },
+      { title: 'OGP（Open Graph Protocol）タグ', body: 'OGPはFacebook・LINE・Slackなどでページをシェアしたときのカード表示を制御します。og:title（タイトル）・og:description（説明）・og:image（サムネイル）・og:url（正規URL）・og:type（コンテンツタイプ）が基本の4タグです。og:imageは1200×630pxのJPGかPNGを推奨し、ファイルサイズは1MB以下にします。' },
+      { title: 'Twitter Card', body: 'Twitter（X）ではtwitter:card・twitter:title・twitter:description・twitter:imageを設定します。twitter:card は summary（小画像カード）・summary_large_image（大画像カード）・app・playerの4種類があります。Webサービスのシェアにはsummary_large_imageが効果的です。OGPタグと併用すると他のSNSにも対応できます。' },
+      { title: 'Google検索プレビューの確認', body: 'Meta Tag GeneratorではGoogleの検索結果カード・OGPカード・Twitter Cardの3パターンのプレビューをリアルタイムで確認しながら設定できます。タイトルは60文字以内、descriptionは160文字以内の文字数ガイドも表示されるため、切れないコピーを設計できます。完成したタグはHTMLコードとして一括コピーできます。' },
+    ],
+  },
+
+  'css-mask-generator': {
+    heading: 'CSS mask-imageの使い方 — グラデーションマスクとフェードアウト効果',
+    intro: 'CSS mask-imageは要素に「マスク」をかけて表示・非表示を制御するプロパティです。グラデーションをマスクに使うと要素の端を徐々にフェードアウトさせる効果を作れます。画像・テキスト・動的コンテンツに独自の視覚表現を加える手法として活用されています。',
+    sections: [
+      { title: 'mask-imageとclip-pathの違い', body: 'mask-imageは透明度（アルファ）によって要素の表示を制御します。白（不透明）の部分は表示され、黒（透明）の部分は非表示になります。これに対しclip-pathは形状の内側か外側かで表示を決定し、透明度のグラデーションは作れません。フェードアウトのような滑らかな表示/非表示にはmask-imageが必要です。' },
+      { title: 'グラデーションマスクの書き方', body: 'mask-image: linear-gradient(to bottom, black 0%, transparent 100%) で上から下に向かってフェードアウトします。mask-image: linear-gradient(to right, transparent 0%, black 30%, black 70%, transparent 100%) で両端をフェードさせ中央だけ表示するマスクになります。横スクロールコンテナの端に使うと自然なフェード効果を作れます。' },
+      { title: '-webkit-プレフィックスの必要性', body: 'CSS Maskの実装状況はブラウザによって異なります。特にSafari（WebKit系）では-webkit-mask-imageが必要です。CSS Mask Generatorはmask-imageと-webkit-mask-imageの両方を出力するため、Safari・Chrome・Firefoxを含む主要ブラウザに対応したコードが得られます。' },
+      { title: '複数マスクの重ね合わせ', body: 'CSS maskは複数のマスクをカンマ区切りで重ねられます。横方向と縦方向のグラデーションマスクを組み合わせて四辺フェードを作れます。mask-composite: excludeなどのコンポジット操作でマスクの合成方法を変えることも可能です。CSS Mask Generatorは最大3つのマスクレイヤーに対応しています。' },
+    ],
+  },
+
+  'text-shadow-generator': {
+    heading: 'CSS text-shadowの使い方 — ネオン・グロー・長い影などのエフェクト',
+    intro: 'CSS text-shadowはテキストに影を付けるプロパティで、複数の影を重ねることでネオンサイン・グロー・立体的な長い影など多彩な表現が可能です。JavaScriptを使わず純粋なCSSで実装できる表現力の高いエフェクトです。',
+    sections: [
+      { title: 'text-shadowの基本構文', body: 'text-shadow: X軸オフセット Y軸オフセット ぼかし半径 色 で指定します。text-shadow: 2px 2px 4px rgba(0,0,0,0.5) は右下方向に4pxのぼかしで半透明の黒い影が付きます。複数の影はカンマで区切って重ねられます。text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #0ff のように書くとネオングロー効果になります。' },
+      { title: 'ネオン・グローエフェクトの作り方', body: 'ネオン効果はオフセットなし（0 0）のぼかしを複数重ねることで作ります。ぼかし半径を段階的に大きくし（5px・10px・20px・40px）、色には明るい蛍光色（シアン・マゼンタ・ライムなど）を使います。暗い背景色と組み合わせるとネオンサインらしい発光感が出ます。グローの強さはアルファ値やレイヤー数で調整します。' },
+      { title: '長い影（Long Shadow）効果', body: 'Long Shadow（長い影）は複数のtext-shadowを斜め方向に少しずつずらして重ねることで、45度方向に伸びる長い影を作ります。CSSのみで実現しますが、影の数が多いほどファイルサイズが増えます。CSS Text Shadow Generatorでは最大5レイヤーの影を設定でき、Long Shadow専用プリセットから手軽に試せます。' },
+      { title: '印刷・レタリングへの応用', body: 'text-shadowはWebだけでなくSVGでも利用できます。font-weight: boldな太いフォントにtext-shadow: 1px 1px 0 #000のような細い影を付けるとエングレービング風の高級感が出ます。多色の影を重ねた3Dレタリング効果も可能です。CSS Text Shadow Generatorでプリセットを選びながら自分のフォント・色でカスタマイズできます。' },
+    ],
+  },
+
+  'markdown-table-generator': {
+    heading: 'Markdownのテーブル記法 — 書き方・整形・HTMLテーブルとの比較',
+    intro: 'Markdownでテーブルを書く機能はGitHub Flavored Markdown（GFM）の拡張で広く普及しています。コードレビュー・READMEの仕様表・技術文書などで使われますが、手書きでは桁合わせが面倒なためジェネレーターを使うと効率的です。',
+    sections: [
+      { title: 'Markdownテーブルの記法', body: 'ヘッダー行と本文をパイプ（|）で区切り、2行目に区切り線（:---・:---:・---:）を入れます。区切り線の書き方で列の揃え方（左・中央・右）が決まります。例: | 名前 | 年齢 |\n|:---|---:|\n| 田中 | 28 | のように書きます。スペースの数は揃えなくてもレンダリングは同じですが、読みやすさのために整形するのが慣例です。' },
+      { title: 'CSVからMarkdownテーブルへの変換', body: 'スプレッドシートのデータをMarkdownテーブルにするにはCSVとして書き出した後、ツールで変換するのが最速です。Markdown Table GeneratorではCSVを貼り付けるだけでMarkdown形式に変換できます。ExcelやGoogleスプレッドシートから直接コピーした値をそのまま入力欄に貼ると自動でCSV認識します。' },
+      { title: 'Markdown・HTMLテーブルの使い分け', body: 'GitHubのREADMEやdocs・Zenn・Notionなどは基本的にMarkdownテーブルをサポートしています。WordPressやCMSでは場合によってHTMLテーブルが必要です。Markdown Table GeneratorはMarkdown形式とHTML形式の両方で出力できます。また、ヘッダー行・列数・行数をGUIで管理でき、手書きより素早く正確にテーブルを作れます。' },
+      { title: 'テーブルのアクセシビリティ', body: 'データテーブルには適切なマークアップが重要です。HTMLテーブルではscopeやthead・thead要素でヘッダーと本文を明確にすることでスクリーンリーダーが正しく読み上げます。Markdownテーブルは自動的に1行目がヘッダーとして扱われるため、表の最初の行には必ず列名を入れるようにしましょう。' },
+    ],
+  },
+
+  'mermaid-preview': {
+    heading: 'Mermaid記法でダイアグラムを作る — フローチャート・シーケンス・ER図の書き方',
+    intro: 'Mermaidはテキストでダイアグラムを記述できる記法で、GitHubのMarkdownやNotion・Obsidianなどで直接レンダリングされます。グラフィックツールを使わずコードでダイアグラムを管理できるため、ドキュメントをコードと一緒にバージョン管理するのに適しています。',
+    sections: [
+      { title: 'フローチャートの基本', body: 'flowchart LR（左から右）またはTD（上から下）で始め、ノードと矢印を記述します。A[テキスト]（矩形）・A(丸角)・A{分岐}・A((円形))などでノード形状を変えられます。A --> B（実線矢印）・A --- B（実線）・A -.-> B（点線矢印）で接続します。A -- テキスト --> B でラベル付き矢印になります。' },
+      { title: 'シーケンス図の書き方', body: 'sequenceDiagramで始め、participant（参加者）とメッセージを定義します。User->>Server: リクエスト のように参加者名とメッセージを書きます。ダブル矢印は実線・->>は点線です。activate・deactivateで処理中の時間帯を表現でき、loop・alt・optでループや条件分岐を表せます。' },
+      { title: 'ER図とクラス図', body: 'erDiagramでエンティティとリレーションシップを定義できます。User ||--o{ Order : places のように書くと1対多のリレーションを表せます。classDiagramではclass定義・継承・実装関係を描けます。システム設計のドキュメント化やデータベース設計の共有に役立ちます。' },
+      { title: 'ガントチャートとPie・Git Graph', body: 'ganttでプロジェクトスケジュールのガントチャートを作れます。section・task・日付を指定してタイムラインを描きます。pieでは円グラフを即座に作成できます。gitGraphはgitのブランチ戦略を可視化するダイアグラムで、feature・main・developブランチの流れを表現できます。Mermaid Previewではリアルタイムプレビューしながら記述を確認できます。' },
+    ],
+  },
+
+  'curl-to-code': {
+    heading: 'cURLコマンドをPython・JavaScript・Shellに変換する方法',
+    intro: 'cURLはコマンドラインでHTTPリクエストを送るユーティリティで、APIドキュメントや開発者ツールからコマンドをコピーできます。しかしアプリケーションコードに組み込む際はPython requestsやfetch APIなどに書き換える必要があり、この変換をツールで自動化できます。',
+    sections: [
+      { title: 'cURLの基本オプション', body: '-X（HTTPメソッド: GET/POST/PUT/DELETE等）・-H（ヘッダー）・-d（リクエストボディ）・-u（Basic認証）・-b（Cookie）・-F（フォームデータ）が主要なオプションです。開発者ツール（DevTools）のNetworkタブで任意のリクエストを右クリック→「cURLとしてコピー」で実際のリクエストをcURLに変換できます。' },
+      { title: 'Python requestsへの変換', body: 'curlをPythonに変換するとrequests.get() / requests.post()などの形式になります。-Hオプションはheaders辞書に、-dはjson=またはdata=引数に対応します。import requestsが必要で、response.json()でレスポンスをPythonオブジェクトとして取得できます。' },
+      { title: 'JavaScript fetchとaxiosの違い', body: 'fetchはブラウザ標準APIでNode.js 18以降でも使えます。fetch(url, { method, headers, body })の形式です。axiosはサードパーティライブラリですがJSONの自動パース・エラーハンドリングが便利です。axios.post(url, data, { headers })で使います。cURL to Codeはfetchとaxiosどちらのコードも生成します。' },
+      { title: '変換履歴とAPIテスト活用法', body: 'cURL to Codeは直近10件の変換履歴を保存します。APIのテスト中に同じcURLコマンドを繰り返し変換する場面で便利です。生成したコードはそのままJupyter Notebook・VSCodeの補完と組み合わせて即座に実行できます。複数言語のコードを並べて比較することで各言語のHTTPライブラリの書き方を学ぶ教材にもなります。' },
+    ],
+  },
+
+  'json-schema-validator': {
+    heading: 'JSON Schemaとは — バリデーションルールの書き方とAPI設計への応用',
+    intro: 'JSON SchemaはJSONデータの構造・型・制約を記述するための仕様です。APIのリクエスト/レスポンスの検証・設定ファイルのバリデーション・フォームの入力チェックなど、データの整合性を保証するために広く使われています。',
+    sections: [
+      { title: 'JSON Schemaの基本構造', body: 'JSON Schemaは$schema（バージョン宣言）・type（型）・properties（オブジェクトのプロパティ定義）・required（必須フィールド一覧）が基本要素です。typeにはstring・number・integer・boolean・array・object・nullが使えます。タイトルやdescriptionも付けられドキュメントとしても機能します。' },
+      { title: '文字列・数値の制約', body: '文字列にはminLength・maxLength・pattern（正規表現）・format（email・uri・date-timeなど）で制約を追加できます。数値にはminimum・maximum・exclusiveMinimum・exclusiveMaximum・multipleOfが使えます。enumで取りうる値を限定することもできます。' },
+      { title: 'ネスト・配列・oneOf/anyOf', body: 'propertiesをネストすることでオブジェクトの入れ子構造を定義できます。配列はtype: arrayにitemsでアイテムのスキーマを指定します。oneOfは指定されたスキーマのうちちょうど1つに一致する必要があり、anyOfは1つ以上に一致する必要があります。allOfで複数のスキーマを満たす条件を組み合わせられます。' },
+      { title: 'JSON Schema Validatorの活用', body: 'JSON Schema ValidatorにスキーマJSONとデータJSONを貼り付けるとリアルタイムで検証し、日本語でエラー内容を表示します。どのフィールドが・どの制約で・なぜ不正なのかを即座に確認できます。OpenAPI/Swaggerのスキーマ定義の検証にも使えます。検証レポートはテキストファイルとして保存できます。' },
+    ],
+  },
+
+  'color-token-generator': {
+    heading: 'デザイントークンとは — CSS変数・Tailwind・SCSSでカラーシステムを設計する',
+    intro: 'デザイントークンは色・フォント・スペーシングなどのデザイン上の決定事項を名前付きの変数として管理する概念です。トークンを一元管理することでデザインシステムの一貫性を保ち、テーマの変更やダークモード対応が容易になります。',
+    sections: [
+      { title: 'デザイントークンとハードコードの違い', body: 'ボタンの背景色を#3B82F6と直接書くのがハードコードで、--color-primary: #3B82F6 として変数に抽象化するのがトークン化です。ハードコードでは色を変える際に全ファイルを検索・置換する必要があります。トークンなら変数の値を一箇所変えるだけで全体に反映されます。' },
+      { title: 'CSS変数でのカラートークン', body: ':root { --color-primary: #3B82F6; --color-primary-hover: #2563EB; } のようにrootに定義し、color: var(--color-primary) で参照します。ダークモードは@media (prefers-color-scheme: dark) { :root { --color-primary: #60A5FA; } } で上書きできます。全コンポーネントが変数を参照するだけでテーマ切り替えが完成します。' },
+      { title: 'Tailwindカスタムカラーへの転用', body: 'Color Token GeneratorはTailwind CSS形式での出力に対応しています。生成したパレットをtailwind.config.jsのtheme.extend.colorsにコピーするだけでprimary-500・primary-600などのカスタムクラスが使えるようになります。' },
+      { title: 'JSON・SCSSトークンの活用', body: 'Color Token GeneratorはCSS変数・Tailwind設定・SCSS変数・JSONの4形式で出力できます。Style Dictionary・theo・token-transformerなどのデザイントークン変換ツールではJSONが入力として使えます。デザインツール（Figma）とコードの間でトークンを共有するワークフローに活用できます。' },
+    ],
+  },
+
+  'favicon-generator': {
+    heading: 'faviconの作り方 — 絵文字・テキストからWebサイトアイコンを作成する',
+    intro: 'faviconはブラウザのタブやブックマークに表示されるWebサイトのアイコンです。視認性が高いfaviconは他のタブに埋もれず、ブランド認知の向上にもつながります。絵文字やテキストを使えばデザインスキルなしで個性的なfaviconを素早く作れます。',
+    sections: [
+      { title: 'faviconのファイル形式と推奨サイズ', body: '従来のfavicon.icoは16×16・32×32の複数サイズを1ファイルに含めます。現代的なWebサイトではSVG（favicon.svg）・PNG・WebPが使えます。apple-touch-icon（180×180px）はiOSのホーム画面追加時に使われます。Androidでは192×192・512×512pxのPNGが推奨されます。' },
+      { title: 'HTMLでのfavicon設定', body: '<link rel="icon" href="/favicon.ico">（ICO形式）・<link rel="icon" type="image/png" href="/favicon.png">（PNG）・<link rel="icon" type="image/svg+xml" href="/favicon.svg">（SVG）でheadに指定します。SVGのfaviconはベクター形式なのでどんなサイズでも鮮明に表示されます。' },
+      { title: '絵文字faviconの活点', body: '絵文字faviconはVercel・Linear・Figmaなど多くのサービスで採用されています。色の意味（赤=緊急・緑=完了・青=情報など）を持たせると複数タブを開いた状態でも状態が一目でわかります。Favicon GeneratorはOSとブラウザのフォントに依存しない一定の描画を実現するため、OSを超えた見え方の確認にも役立ちます。' },
+      { title: 'Next.jsでのfavicon設定', body: 'Next.js App Routerではapp/favicon.icoを置くだけで自動的に<link rel="icon">が生成されます。app/icon.pngやapp/apple-icon.pngも同様に自動対応しています。generateメタデータ関数でicon・appleTouchIconを指定するプログラマティックな設定も可能です。' },
+    ],
+  },
+
+  'json-csv-converter': {
+    heading: 'JSONとCSVの相互変換 — データ形式の違いと変換ルール',
+    intro: 'JSONはAPIやWebアプリのデータ形式として標準的で、CSVはスプレッドシート・データ分析・ETLツールで広く使われます。この2つの形式間を変換する場面は開発・データ処理の現場で頻繁に発生します。',
+    sections: [
+      { title: 'JSONとCSVの構造の違い', body: 'JSONはネスト（入れ子）・配列・型（string/number/boolean/null）を持つ柔軟なフォーマットです。CSVはフラットな表形式で、型の概念がなくすべて文字列として扱われます。JSONをCSVに変換する際にはネスト構造をどう表現するか（フラット化・JSON文字列化）を決める必要があります。' },
+      { title: 'JSON配列からCSVへの変換', body: '最も単純なケースはオブジェクトの配列（[{"name":"田中","age":28},...]）です。この場合、各オブジェクトの1件が1行、キーがCSVのヘッダー行になります。JSON → CSV Converterでは配列を貼り付けるとヘッダー行が自動抽出され、テーブルプレビューで確認しながら変換できます。' },
+      { title: 'CSVからJSONへの変換とRFC 4180', body: 'CSVにはカンマを含む値をダブルクォートで囲む・改行を含む値の扱いなどのRFC 4180仕様があります。JSON ↔ CSV ConverterはRFC 4180に準拠しているため、スプレッドシートから書き出したCSVでも正確に変換できます。変換後のJSONはそのままAPIのモックデータや設定ファイルとして使えます。' },
+      { title: '変換ツールの活用シーン', body: 'スプレッドシートのデータをAPIに投入するJSON変換・REST APIのレスポンスをExcel分析用CSVへ変換・データベースのエクスポートCSVをアプリ用JSONに変換など、開発・データ業務で頻繁に使う変換を効率化できます。テーブルプレビューで変換結果をすぐ確認できるため、変換ミスを素早く検出できます。' },
+    ],
+  },
+
+  'date-calculator': {
+    heading: '日付計算の方法 — 差分・加算・営業日カウントのJavaScript実装',
+    intro: '日付計算はWebアプリ開発でよく必要になる処理です。2つの日付の差分・期限の計算・営業日（土日祝日除外）のカウントなど、日付操作には様々な落とし穴があります。',
+    sections: [
+      { title: '日付差分の計算', body: '2つの日付の差分はDate.getTime()の差をミリ秒で求め、日数に換算（÷86400000）します。JavaScriptのDateオブジェクトはタイムゾーンの影響を受けるため、異なるタイムゾーン間での計算には注意が必要です。Date Calculator（差分モード）では2つの日付を選ぶだけで年/月/日/時間の差分を正確に計算します。' },
+      { title: '日数加算と期限計算', body: '特定の日付から「30日後」「3ヶ月後」を求めるには注意が必要です。30日加算はDate.setDate(date.getDate() + 30)で求まりますが、月をまたぐ場合や月末日の扱いに気をつける必要があります。「3ヶ月後」はDate.setMonth(date.getMonth() + 3)ですが、3月31日の3ヶ月後は6月31日（存在しない）になるため、月によって結果が変わります。' },
+      { title: '営業日カウント', body: '営業日計算では土曜・日曜を除外します。日本では祝日も除外する必要があり、祝日データを別途管理する必要があります。Date Calculatorの営業日モードでは土日を自動除外してカウントします。「5営業日以内に発送」のような納期計算や「20営業日後の期限日」の算出に使えます。' },
+      { title: 'タイムゾーンと日付フォーマット', body: 'UTCとJSTでは9時間の差があります。サーバーがUTCで動作している場合、フロントエンドで日付を表示する際にはタイムゾーン変換が必要です。JavaScriptのIntl.DateTimeFormatやdate-fnsのformat関数でロケール別の日付フォーマット（YYYY/MM/DD・MM/DD/YYYY等）を指定できます。Date Calculatorでは結果を各フォーマットでコピーできます。' },
+    ],
+  },
+
+  'placeholder-image-generator': {
+    heading: 'プレースホルダー画像の使い方 — デザイン・開発でダミー画像を活用する',
+    intro: 'プレースホルダー画像はWebデザインや開発の初期段階で、実際の画像が用意できていない箇所に配置するダミー画像です。サイズ・色・テキストを指定して即座に生成でき、プロトタイプ制作からコードのテストまで幅広く活用されます。',
+    sections: [
+      { title: 'プレースホルダー画像の用途', body: 'Wireframe・プロトタイプの段階では実際の画像がまだ用意できていないことが多く、サイズだけ決まっているスペースを埋めるためにプレースホルダーを使います。開発段階では本番画像の代わりにダミーを使うことでAPI依存なしにUIを確認できます。レイアウト確認・コンポーネントの汎用テスト・スクリーンショットの代替などに使われます。' },
+      { title: 'Data URLとimgタグの使い方', body: 'Placeholder Image GeneratorはData URL（base64エンコードされたインライン画像）としても出力できます。Data URLを<img src="...">に直接貼り付けることで外部ファイルなしに表示できます。HTMLのimgタグごとコピーする機能もあり、そのままソースコードに貼り付けて使えます。' },
+      { title: 'サイズ・色・テキストのカスタマイズ', body: '幅・高さをpxで指定（例: 1200×630でOGP画像サイズ）し、背景色・テキスト色・表示テキストをカスタマイズできます。テキストを空にするとサイズ情報（例: 1200×630）が自動で表示されます。OGP画像・サムネイル・アバター・カード画像など用途ごとのサイズプリセットから選ぶことも可能です。' },
+      { title: 'オンラインプレースホルダーサービスとの違い', body: 'placehold.jpなどのオンラインサービスはネット接続が必要で外部依存が発生します。Placeholder Image GeneratorはブラウザのCanvas APIで完全にローカル生成するため、オフラインでも動作します。生成された画像はPNGとして保存することも、Data URLとしてそのまま使うこともできます。' },
+    ],
+  },
+
+  'cidr-calculator': {
+    heading: 'IPアドレスとCIDR記法 — ネットワーク設計の基礎知識',
+    intro: 'CIDR（Classless Inter-Domain Routing）はIPアドレスのネットワーク部とホスト部を柔軟に定義する記法です。192.168.1.0/24 のように「IPアドレス/プレフィックス長」で表し、クラウドのVPC設計・ファイアウォールルール・ルーティングの設定に広く使われます。',
+    sections: [
+      { title: 'CIDR記法の読み方', body: '192.168.1.0/24 の/24はネットワーク部が24ビットであることを意味します。残り8ビット（32-24=8）がホスト部なので2^8=256個のIPアドレスが含まれます（実際に使えるホストアドレスは254個、ネットワークアドレスとブロードキャストアドレスを除く）。/16は65536個、/32は1個のIPアドレスを示します。' },
+      { title: 'サブネットマスクとの関係', body: 'プレフィックス長24は255.255.255.0のサブネットマスクと同じです。/16は255.255.0.0、/8は255.0.0.0に対応します。クラウド（AWS VPC・Azure VNet等）の設定ではCIDR記法が標準で使われます。IP/CIDR Calculatorでは入力したCIDR記法からネットワークアドレス・ブロードキャストアドレス・ホスト数・サブネットマスクを自動計算します。' },
+      { title: 'プライベートIPアドレスの範囲', body: 'RFC 1918で定義されたプライベートIPアドレス範囲は①10.0.0.0/8（10.x.x.x）・②172.16.0.0/12（172.16.x.x〜172.31.x.x）・③192.168.0.0/16（192.168.x.x）の3つです。インターネットには直接ルーティングされず、社内LAN・クラウドの内部ネットワーク・自宅NATルーターで使われます。' },
+      { title: 'CIDRとクラウドのネットワーク設計', body: 'AWS VPCのCIDRブロックは/16（65536アドレス）〜/28（16アドレス）の範囲で指定します。サブネットをCIDRで分割してPublic Subnet（インターネット接続あり）とPrivate Subnet（なし）に分けるのが一般的な設計です。IP/CIDR Calculatorで設計したサブネット構成の重複や漏れを確認できます。' },
+    ],
+  },
+
+  'env-file-parser': {
+    heading: '.envファイルの使い方 — 環境変数の管理とセキュリティのベストプラクティス',
+    intro: '.envファイルは環境ごとに異なる設定値（APIキー・データベース接続文字列・フラグ）をコードから分離して管理するための設定ファイルです。開発・ステージング・本番で設定を切り替える際に中心的な役割を果たします。',
+    sections: [
+      { title: '.envファイルの基本構文', body: '.envファイルはKEY=VALUEの形式で1行に1変数を記述します。コメントは#で始まります。値にスペースや特殊文字を含む場合はダブルクォート（"value with spaces"）で囲みます。空行は無視されます。Node.jsではdotenvライブラリで読み込み、process.env.KEY_NAMEでアクセスします。' },
+      { title: '.env系ファイルの種類と使い分け', body: '.env（基本設定）・.env.local（ローカル上書き・gitignore対象）・.env.development（開発環境）・.env.production（本番環境）・.env.test（テスト環境）を使い分けるのが慣例です。Next.jsやViteはこれらのファイルを自動で読み込み、NEXT_PUBLIC_やVITE_プレフィックスが付いた変数だけをブラウザに公開します。' },
+      { title: 'セキュリティのベストプラクティス', body: '.envファイルは絶対にgitにコミットしてはいけません。.gitignoreに.env・.env.localを追加します。代わりに.env.exampleに変数名だけ（値は空）を記載してリポジトリに含め、チームメンバーが何を設定すべきかを伝えます。GitHub上でAPIキーが露出した場合は即座に再発行が必要です。' },
+      { title: '.env File Parserの活用', body: '.envを貼り付けるとkey/valueの表形式で内容を可視化します。VALUE列にはマスク（●●●）で機密情報を隠す機能があります。JSON形式・.env形式でのエクスポートに対応し、チームへの共有・別サービスへの設定移行に使えます。変数のタイポや重複キーの確認にも役立ちます。' },
+    ],
+  },
+
+  'http-headers-reference': {
+    heading: 'HTTPヘッダーの種類と用途 — セキュリティ・キャッシュ・認証ヘッダーの完全ガイド',
+    intro: 'HTTPヘッダーはブラウザとサーバーがリクエスト/レスポンスに付加するメタデータです。認証・キャッシュ制御・CORSのアクセス制御・セキュリティポリシーなど、Webアプリの動作の多くがヘッダーによって制御されます。',
+    sections: [
+      { title: 'リクエストヘッダーの主要なもの', body: 'Authorization（認証情報）・Content-Type（リクエストボディの形式）・Accept（受け入れ可能なレスポンス形式）・User-Agent（クライアント識別）・Cookie（セッション情報）・Origin（リクエスト元オリジン）・Referer（参照元URL）が代表的なリクエストヘッダーです。Authorizationは Bearer {token}（JWT）やBasic {base64}（Basic認証）の形式で送られます。' },
+      { title: 'セキュリティ関連ヘッダー', body: 'Content-Security-Policy（CSP）はXSS対策としてスクリプトの読み込み元を制限します。X-Frame-Optionsはクリックジャッキング対策で、SAMEORIGIN を設定するとiframe内への埋め込みを自サイトのみ許可します。Strict-Transport-Security（HSTS）はHTTPS接続を強制します。X-Content-Type-Optionsのnosniffはブラウザのコンテンツタイプ推測を防ぎます。' },
+      { title: 'キャッシュ制御ヘッダー', body: 'Cache-Controlは最も重要なキャッシュ制御ヘッダーです。no-cache（毎回検証）・no-store（キャッシュしない）・max-age=3600（3600秒キャッシュ）・public/privateなどを指定できます。ETagはリソースのハッシュ値で、If-None-Matchと組み合わせてリソースが変化していないか確認するための条件付きGETに使われます。' },
+      { title: 'CORSヘッダーの仕組み', body: 'CORS（Cross-Origin Resource Sharing）はオリジンをまたいだHTTPリクエストを制御する仕組みです。Access-Control-Allow-Originで許可するオリジンを指定します（*で全許可）。Cookieを含むリクエストにはAccess-Control-Allow-Credentials: trueも必要です。PUTやDELETEなどの非シンプルリクエストには事前にOPTIONSリクエスト（プリフライト）が送られます。' },
+    ],
+  },
+
+  'chmod-calculator': {
+    heading: 'chmodコマンドとUnixパーミッションの完全ガイド — 755・644・777の意味',
+    intro: 'chmodはLinux/macOSのファイルパーミッションを変更するコマンドです。755や644などの数値（octal記法）はファイルの読み書き実行権限を8進数で表したものです。Webサーバーやスクリプトの実行時にパーミッションエラーが起きた際の理解が重要です。',
+    sections: [
+      { title: 'rwxとoctal記法の対応', body: 'Unixのパーミッションはowner（所有者）・group（グループ）・others（その他）の3グループに対してr（read=4）・w（write=2）・x（execute=1）の権限を設定します。755はowner=7（rwx）・group=5（r-x）・others=5（r-x）を意味します。644はowner=6（rw-）・group=4（r--）・others=4（r--）です。' },
+      { title: '代表的なパーミッション値の意味', body: '755は実行可能なファイルやディレクトリの標準設定で、所有者は全操作可・グループ/その他は読み実行のみです。644はHTMLやCSSなどのWebファイルに多く、所有者は読み書き・グループ/その他は読みのみです。777は全員が全権限を持つ設定で、セキュリティリスクがあり通常は使いません。600はSSH秘密鍵のように所有者のみがアクセスできる設定です。' },
+      { title: 'setuid・setgid・sticky bitとは', body: 'setuid（4000）はそのファイルをファイル所有者権限で実行します（/usr/bin/passwdなどで使用）。setgid（2000）はそのファイルをグループ権限で実行します。sticky bit（1000）はディレクトリに設定すると、ファイルの削除を所有者のみに制限します（/tmpディレクトリで使用）。Chmod Calculatorでこれらの特殊ビットの設定もGUIで確認できます。' },
+      { title: 'chmodコマンドの使い方', body: 'chmod 755 script.sh でscript.shのパーミッションを755に設定します。chmod -R 755 directory/ でdirectoryとその中身を再帰的に変更します。シンボリック記法ではchmod u+x file（所有者に実行権付与）・chmod go-w file（グループ・その他の書き込み権削除）のように使えます。Chmod Calculatorでチェックボックスを操作するとchmodコマンドが自動生成されます。' },
+    ],
+  },
+
+  'json-to-zod': {
+    heading: 'Zodとは — TypeScriptで実行時バリデーションを実現するスキーマライブラリ',
+    intro: 'ZodはTypeScriptファーストのスキーマバリデーションライブラリです。型定義とバリデーションを一箇所で管理でき、APIのレスポンス検証・フォームバリデーション・環境変数の型安全な読み込みなどに広く使われています。',
+    sections: [
+      { title: 'Zodの基本的な使い方', body: 'import { z } from "zod" でインポートし、z.object({name: z.string(), age: z.number()})のようにスキーマを定義します。schema.parse(data) で検証し失敗時はエラーをthrow、schema.safeParse(data) で{success, data/error}オブジェクトを返します。z.infer<typeof schema> でTypeScriptの型を自動抽出できます。' },
+      { title: 'JSONからZodスキーマを生成するメリット', body: 'APIのレスポンスを手動でZodスキーマに変換する作業はミスが起きやすく時間がかかります。JSON to ZodにJSONを貼り付けるとネスト・配列・null・boolean・数値を含む構造を自動解析してZodスキーマを生成します。生成されたスキーマは必要に応じて.optional()を追加したりバリデーションルールを強化して使います。' },
+      { title: 'よく使うZodメソッド', body: 'z.string().min(1)（最小文字数）・z.string().email()（メールアドレス）・z.string().url()（URL）・z.number().int()（整数のみ）・z.number().min(0)（0以上）・z.array(z.string())（文字列配列）・z.union([z.string(), z.null()])（nullableな文字列）などが頻出です。z.enum(["a","b","c"])で取りうる値を限定できます。' },
+      { title: 'Zodの活用シーン', body: 'Next.jsのAPIルートでリクエストボディを検証する・React Hook Formのresolverとして使う・環境変数をz.object({DATABASE_URL: z.string().url()})で型安全に読み込む・tRPCのルーター定義に使うなど、TypeScriptプロジェクトの様々な場面でZodは活躍します。JSON to Zodで生成したスキーマをベースにプロジェクト固有のバリデーションルールを追加できます。' },
+    ],
+  },
+
+  'user-agent-parser': {
+    heading: 'User Agentとは — ブラウザ識別文字列の構造と解析方法',
+    intro: 'User Agent（UA）文字列はブラウザやボットがサーバーに送るHTTPヘッダーで、ブラウザ名・バージョン・OS・デバイス種別の情報を含みます。アクセス解析・コンテンツ出し分け・ボット検出などに活用されます。',
+    sections: [
+      { title: 'User Agent文字列の構造', body: 'Chromeの典型的なUAはMozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36のように見えます。歴史的な互換性の理由で多くのブラウザがMozilla/5.0を含みます。WindowsはWindows NT 10.0、macOSはMacintosh、iOSはiPhone、AndroidはAndroidと記述されます。' },
+      { title: 'ブラウザとレンダリングエンジンの識別', body: 'レンダリングエンジンはChromeとEdgeがBlink（WebKit派生）、FirefoxがGecko、SafariがWebKit、旧IEがTridentを使います。UAのAppleWebKitの有無でWebKitベースか判断しますが、ChromeもAppleWebKitを含むため、Chromeの識別には続くChrome/バージョン番号を確認します。' },
+      { title: 'モバイル・ボットの判定', body: 'モバイル判定はMobileキーワードの有無で行うのが一般的です。iPhone・Androidデバイスは多くの場合UAにMobileを含みます。Googlebotのような検索ボットはbot・spider・crawlerなどのキーワードを含みます。User Agent Parserでは自動でデスクトップ/モバイル/タブレット/Botを判定し色分けバッジで表示します。' },
+      { title: 'UAによるコンテンツ出し分けの注意点', body: 'UAによるデバイス判定はSafariがiPadOSでデスクトップUAを送るなど、必ずしも正確ではありません。CSSメディアクエリやJavaScriptのwindow.innerWidthによるビューポートベースの判定の方が信頼性が高い場合があります。ボット検出においてもUA偽装が可能なため、IPアドレスや行動パターンも併用することが推奨されます。' },
+    ],
+  },
+
+  'media-query-builder': {
+    heading: 'CSSメディアクエリの書き方 — レスポンシブデザインの基礎とTailwindのブレークポイント',
+    intro: 'CSSメディアクエリは画面サイズ・解像度・カラースキームなどに応じてスタイルを切り替える仕組みで、レスポンシブWebデザインの核心技術です。Tailwind CSSやBootstrapのブレークポイントも内部でメディアクエリを使っています。',
+    sections: [
+      { title: 'メディアクエリの基本構文', body: '@media (max-width: 768px) { ... } のように@mediaに続いて条件を書き、中括弧内にそのとき適用するCSSを書きます。min-width（この幅以上）・max-width（この幅以下）が最もよく使われます。複数条件はandで結合します（@media (min-width: 768px) and (max-width: 1024px)）。' },
+      { title: 'Tailwind CSSのブレークポイント', body: 'TailwindのデフォルトブレークポイントはSM: 640px・MD: 768px・LG: 1024px・XL: 1280px・2XL: 1536pxです。これらはmin-widthベースのモバイルファーストです。CSS Media Query BuilderにはTailwindのプリセットが用意されており、ワンクリックでこれらのブレークポイントをメディアクエリとして生成できます。' },
+      { title: 'prefers-color-schemeとダークモード', body: '@media (prefers-color-scheme: dark) でユーザーのOSのダークモード設定を検知できます。Tailwind CSSのdarkモードをmedia設定にすると、このメディアクエリに基づいて自動でダークテーマが適用されます。prefers-reduced-motionはアニメーションの軽減を要求するユーザーを検知し、アクセシビリティ向上に使えます。' },
+      { title: 'メディアクエリのデバッグ', body: 'CSS Media Query BuilderのmatchMedia確認機能では、作成したクエリが現在のウィンドウサイズにマッチするかリアルタイムで表示します。ブラウザの開発者ツール（DevTools）のデバイスモードやリサイズと組み合わせて、各ブレークポイントでのレイアウトを確認できます。Media QueriesをCSS変数と組み合わせることでコンポーネントの状態をCSSだけで管理することも可能です。' },
+    ],
+  },
+
+  'url-parser-builder': {
+    heading: 'URLの構造 — スキーム・ホスト・パス・クエリ・フラグメントの解説',
+    intro: 'URLはWebリソースを一意に識別するアドレスで、複数の部品から構成されています。Webアプリ開発ではURLを正確にパースし構築する場面が頻繁にあります。JavaScriptのURL APIを使った処理の基礎を理解しておくことが重要です。',
+    sections: [
+      { title: 'URLの各コンポーネント', body: 'https://user:pass@example.com:8080/path/page?key=value&foo=bar#section を分解すると、スキーム（https）・認証情報（user:pass）・ホスト（example.com）・ポート（8080）・パス（/path/page）・クエリ（key=value&foo=bar）・フラグメント（section）になります。クエリ文字列のパラメータはURLSearchParamsで扱います。' },
+      { title: 'JavaScriptのURL API', body: 'const url = new URL("https://example.com/path?q=hello") で URL オブジェクトを作成できます。url.hostname・url.pathname・url.searchParams.get("q")でそれぞれの部品にアクセスできます。searchParamsはURLSearchParamsオブジェクトでset・get・delete・forEach等のメソッドが使えます。' },
+      { title: 'URLエンコードとデコード', body: 'URLに日本語や特殊文字を含む場合はパーセントエンコードが必要です。encodeURIComponent("日本語")は%E6%97%A5%E6%9C%AC%E8%AA%9Eになります。encodeURI はURL全体をエンコードし、: / ? & = などは変換しません。decodeURIComponent でデコードします。クエリパラメータの値には encodeURIComponent を使うのが正しいです。' },
+      { title: 'URLパースツールの活用', body: 'URL Parser & Builderに任意のURLを貼り付けるとスキーム・ホスト・パス・クエリパラメータ・フラグメントを分解して表示します。クエリパラメータは一覧表示され、追加・編集・削除が可能です。変更後のURLを再構築してコピーする機能もあり、複雑なURLの生成やAPIのクエリパラメータ確認に便利です。' },
+    ],
+  },
+
+  'sql-formatter': {
+    heading: 'SQLフォーマットとクエリの読みやすさ — インデント・大文字化の慣例',
+    intro: 'SQLはデータベースの操作言語で、整形されていないクエリは長さに関係なく非常に読みにくくなります。適切なフォーマット（インデント・キーワードの大文字化・改行）によって可読性を大幅に向上させ、デバッグや共同作業を効率化できます。',
+    sections: [
+      { title: 'SQLフォーマットの慣例', body: 'SELECT・FROM・WHERE・JOIN・GROUP BY・ORDER BY・HAVINGなどのSQLキーワードは大文字で書くのが一般的です。列名・テーブル名・エイリアスは小文字またはスネークケースが多く使われます。各キーワードを新しい行の先頭に揃えるとSELECT節・FROM節・WHERE節が明確になります。' },
+      { title: 'インデントと複雑なクエリの整形', body: 'サブクエリ・CASE式・WITH句（CTE）などはインデントで入れ子構造を表現します。JOINが複数ある場合はON条件をJOINと同じ行またはインデントして続けます。長いWHERE条件はAND/ORで改行して揃えると読みやすくなります。SQL Formatterはこれらのフォーマット規則を自動適用します。' },
+      { title: 'MySQL・PostgreSQL・SQLiteの方言', body: 'SQLには標準SQLの他にデータベースごとの方言があります。文字列結合はMySQLがCONCAT()・PostgreSQLが||・SQLiteが両方対応します。日付関数はデータベースによって大きく異なります。SQL FormatterはMySQL・PostgreSQL・SQLiteの構文を意識したフォーマットに対応しています。' },
+      { title: 'パフォーマンスとインデックスの基礎', body: 'クエリのパフォーマンスはインデックスの有無に大きく依存します。WHERE句の条件に使うカラム・JOIN条件・ORDER BYのカラムにはインデックスを作成することを検討します。EXPLAIN（MySQL・PostgreSQL）でクエリの実行計画を確認し、フルスキャンが発生していないかを確認します。整形されたSQLはEXPLAINの結果と対応づけて理解しやすくなります。' },
+    ],
+  },
+
+  'css-scroll-snap-generator': {
+    heading: 'CSS Scroll Snapの使い方 — スライダーとページングUIをCSSだけで実装',
+    intro: 'CSS Scroll Snapはスクロール位置を特定の要素にスナップさせる機能で、JavaScriptなしでページング・スライダー・カルーセルUIを実装できます。モバイルフレンドリーなスワイプUIの実装にも使われます。',
+    sections: [
+      { title: 'scroll-snap-typeとscroll-snap-alignの基本', body: 'scroll-snap-typeをスクロールコンテナ（overflow: scroll）に設定します。x mandatory（水平方向の強制スナップ）・y mandatory（垂直方向）・both mandatoryが使えます。mandatoryは必ずスナップ位置に止まり、proximityは近い場合のみスナップします。各アイテムにscroll-snap-align: start / center / endでスナップ位置を指定します。' },
+      { title: '水平スライダーの実装', body: '.slider { display: flex; overflow-x: scroll; scroll-snap-type: x mandatory; scroll-behavior: smooth; } .slide { flex: 0 0 100%; scroll-snap-align: start; } でフルページスライダーが実装できます。scroll-behavior: smoothをつけるとスクロールアニメーションがなめらかになります。スクロールバーをhiddenにするとスワイプUIらしくなります。' },
+      { title: 'scroll-padding・scroll-marginの活用', body: 'scroll-padding-topはfixedヘッダーがある場合にスナップ位置をずらす用途に使います。例えば固定ヘッダーが60pxの場合、scroll-padding-top: 60pxをhtml要素に設定することで、アンカーリンクのスクロール先がヘッダーに隠れなくなります。scroll-marginはスナップアイテム側に余白を設定できます。' },
+      { title: 'ScrollSnapとJavaScriptの組み合わせ', body: 'CSS Scroll Snapは純粋なCSSで動作しますが、現在のスナップ位置の取得には scrollLeft/scrollTopやIntersection Observerを使います。前/次ボタンはscrollToやscrollByで特定のアイテムにスクロールします。CSS Scroll Snap Generatorでコンテナとアイテムの設定を組み合わせてCSSコードを生成し、実際の動作をプレビューできます。' },
+    ],
+  },
+
+  'number-formatter': {
+    heading: '数値フォーマットの国際化 — Intl.NumberFormatと桁区切り・通貨・パーセント表示',
+    intro: '数値の表示形式は国や言語によって異なります。1,000,000（英語）・1.000.000（ドイツ語）・1 000 000（フランス語）など桁区切り記号が違い、通貨表示やパーセント記号の位置も国際的に差異があります。JavaScriptのIntl.NumberFormatを使うと国際化対応が容易です。',
+    sections: [
+      { title: 'Intl.NumberFormatの使い方', body: 'new Intl.NumberFormat("ja-JP").format(1000000) で「1,000,000」、new Intl.NumberFormat("de-DE").format(1000000) で「1.000.000」になります。通貨はnew Intl.NumberFormat("ja-JP", {style: "currency", currency: "JPY"}).format(1500) で「¥1,500」になります。localesには"en-US"・"ja-JP"・"de-DE"・"fr-FR"など任意のロケールが使えます。' },
+      { title: '桁区切り・小数点の国際的な違い', body: '英語圏はカンマ（,）が千の区切り・ドット（.）が小数点です。ヨーロッパ（ドイツ・フランス等）はドット（.）が千の区切り・カンマ（,）が小数点という逆の表記が一般的です。スイスはアポストロフィ（\'）が千の区切りです。Webアプリを国際展開する際はロケールに応じた数値表示が必要です。' },
+      { title: '有効数字・固定小数点・指数表示', body: 'new Intl.NumberFormat("en", {maximumFractionDigits: 2}).format(3.14159) で「3.14」、{notation: "compact"} で 1,000,000 が「1M」のようにコンパクト表示になります。{notation: "scientific"} で科学的表記（1.5E3）、{style: "percent"} でパーセント表示になります。Number FormatterではこれらをGUIで試しながら出力できます。' },
+      { title: 'ゼロ埋め・固定幅の数値表示', body: '数値を固定桁で表示するにはnew Intl.NumberFormat("en", {minimumIntegerDigits: 3}).format(5) で「005」のようなゼロ埋めができます。String(n).padStart(3, "0") も同様の効果があります。IDの表示・タイマーの桁数固定・進捗表示などで使います。Number Formatterでは様々なフォーマットオプションを組み合わせてリアルタイムプレビューできます。' },
+    ],
+  },
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {
