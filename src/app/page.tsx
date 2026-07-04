@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { ToolGrid } from '@/components/ToolGrid'
@@ -56,7 +56,7 @@ export default function Home() {
       </section>
 
       {/* AdSense — ヒーロー直下 */}
-      <AdSense slot="1234567890" format="horizontal" className="mb-10" />
+      <AdSense slot="1651467900" format="horizontal" className="mb-10" />
 
       {/* 主力ツール */}
       <section className="mb-10">
@@ -151,7 +151,7 @@ export default function Home() {
       </section>
 
       {/* AdSense — グリッド下 */}
-      <AdSense slot="0987654321" format="horizontal" className="mt-12" />
+      <AdSense slot="1651467900" format="horizontal" className="mt-12" />
     </main>
   )
 }

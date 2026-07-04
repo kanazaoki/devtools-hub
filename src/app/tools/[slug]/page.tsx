@@ -114,7 +114,7 @@ export default function ToolPage({ params }: Props) {
       </p>
 
       {/* AdSense — 説明文直後 */}
-      <AdSense slot="1111111111" format="horizontal" className="mb-8" />
+      <AdSense slot="1651467900" format="horizontal" className="mb-8" />
 
       {/* デモエリア */}
       <section
@@ -193,7 +193,7 @@ export default function ToolPage({ params }: Props) {
       <SeoArticle slug={params.slug} />
 
       {/* AdSense — CTA直後 */}
-      <AdSense slot="2222222222" format="rectangle" className="mb-12" />
+      <AdSense slot="6712222897" format="rectangle" className="mb-12" />
 
       {/* 関連ツール */}
       {relatedTools.length > 0 && (

@@ -72,7 +72,7 @@ export default function WebpStudioPage() {
 
       <p className="mb-8 max-w-2xl text-sm leading-relaxed text-primary">{tool.description}</p>
 
-      <AdSense slot="8888888881" format="horizontal" className="mb-8" />
+      <AdSense slot="1651467900" format="horizontal" className="mb-8" />
 
       <section className="mb-8 overflow-hidden rounded-lg border border-border bg-surface" aria-label="WebP Studio ツール">
         <div className="border-b border-border px-5 py-3">
@@ -105,7 +105,7 @@ export default function WebpStudioPage() {
 
       <SeoArticle slug="webp-studio" />
 
-      <AdSense slot="8888888882" format="rectangle" className="mb-12" />
+      <AdSense slot="6712222897" format="rectangle" className="mb-12" />
 
       {relatedTools.length > 0 && (
         <section>

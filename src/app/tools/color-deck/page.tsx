@@ -88,7 +88,7 @@ export default function ColorDeckPage() {
         {tool.description}
       </p>
 
-      <AdSense slot="1111111111" format="horizontal" className="mb-8" />
+      <AdSense slot="1651467900" format="horizontal" className="mb-8" />
 
       {/* Tool */}
       <section
@@ -129,7 +129,7 @@ export default function ColorDeckPage() {
 
       <SeoArticle slug="color-deck" />
 
-      <AdSense slot="2222222222" format="rectangle" className="mb-12" />
+      <AdSense slot="6712222897" format="rectangle" className="mb-12" />
 
       {relatedTools.length > 0 && (
         <section>

@@ -72,7 +72,7 @@ export default function TextDeckPage() {
 
       <p className="mb-8 max-w-2xl text-sm leading-relaxed text-primary">{tool.description}</p>
 
-      <AdSense slot="6666666661" format="horizontal" className="mb-8" />
+      <AdSense slot="1651467900" format="horizontal" className="mb-8" />
 
       <section className="mb-8 overflow-hidden rounded-lg border border-border bg-surface" aria-label="text-deck ツール">
         <div className="border-b border-border px-5 py-3">
@@ -105,7 +105,7 @@ export default function TextDeckPage() {
 
       <SeoArticle slug="text-deck" />
 
-      <AdSense slot="6666666662" format="rectangle" className="mb-12" />
+      <AdSense slot="6712222897" format="rectangle" className="mb-12" />
 
       {relatedTools.length > 0 && (
         <section>

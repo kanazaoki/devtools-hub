@@ -57,7 +57,7 @@ export default function CssVariableInspectorPage() {
 
       <p className="mb-8 max-w-2xl text-sm leading-relaxed text-primary">{tool.description}</p>
 
-      <AdSense slot="1010101040" format="horizontal" className="mb-8" />
+      <AdSense slot="1651467900" format="horizontal" className="mb-8" />
 
       <section className="mb-8 overflow-hidden rounded-lg border border-border bg-surface" aria-label="CSS Variable Inspector ツール">
         <div className="border-b border-border px-5 py-3">
@@ -84,7 +84,7 @@ export default function CssVariableInspectorPage() {
 
       <SeoArticle slug="css-variable-inspector" />
 
-      <AdSense slot="1010101041" format="rectangle" className="mb-12" />
+      <AdSense slot="6712222897" format="rectangle" className="mb-12" />
 
       {relatedTools.length > 0 && (
         <section>

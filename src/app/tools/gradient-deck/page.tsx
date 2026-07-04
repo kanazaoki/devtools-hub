@@ -88,7 +88,7 @@ export default function GradientDeckPage() {
         {tool.description}
       </p>
 
-      <AdSense slot="3333333333" format="horizontal" className="mb-8" />
+      <AdSense slot="1651467900" format="horizontal" className="mb-8" />
 
       {/* Tool */}
       <section
@@ -129,7 +129,7 @@ export default function GradientDeckPage() {
 
       <SeoArticle slug="gradient-deck" />
 
-      <AdSense slot="4444444444" format="rectangle" className="mb-12" />
+      <AdSense slot="6712222897" format="rectangle" className="mb-12" />
 
       {relatedTools.length > 0 && (
         <section>
