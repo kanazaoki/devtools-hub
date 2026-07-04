@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useMemo } from 'react'
 
 // ─── Zod schema generator ────────────────────────────────────────────────────
 
@@ -65,26 +65,19 @@ const EXAMPLE_JSON = `{
 
 export function JsonToZod() {
   const [input, setInput] = useState(EXAMPLE_JSON)
-  const [error, setError] = useState('')
   const [opts, setOpts] = useState<Options>({ allOptional: false, intForIntegers: true })
   const [copied, setCopied] = useState(false)
 
-  const generate = useCallback(
-    (json: string, options: Options): string => {
-      try {
-        const parsed = JSON.parse(json)
-        setError('')
-        const schema = generateZodSchema(parsed, 0, options)
-        return `import { z } from 'zod'\n\nexport const schema = ${schema}`
-      } catch (e) {
-        setError(e instanceof Error ? e.message : '無効な JSON です')
-        return ''
-      }
-    },
-    [],
-  )
-
-  const output = input.trim() ? generate(input, opts) : ''
+  const { output, error } = useMemo(() => {
+    if (!input.trim()) return { output: '', error: '' }
+    try {
+      const parsed = JSON.parse(input)
+      const schema = generateZodSchema(parsed, 0, opts)
+      return { output: `import { z } from 'zod'\n\nexport const schema = ${schema}`, error: '' }
+    } catch (e) {
+      return { output: '', error: e instanceof Error ? e.message : '無効な JSON です' }
+    }
+  }, [input, opts])
 
   function handleCopy() {
     if (!output) return
@@ -92,14 +85,6 @@ export function JsonToZod() {
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     })
-  }
-
-  function handleInputChange(val: string) {
-    setInput(val)
-    if (!val.trim()) { setError(''); return }
-    try { JSON.parse(val); setError('') } catch (e) {
-      setError(e instanceof Error ? e.message : '無効な JSON です')
-    }
   }
 
   function toggleOpt<K extends keyof Options>(key: K) {
@@ -145,7 +130,7 @@ export function JsonToZod() {
           </div>
           <textarea
             value={input}
-            onChange={(e) => handleInputChange(e.target.value)}
+            onChange={(e) => setInput(e.target.value)}
             spellCheck={false}
             className="h-80 w-full resize-none rounded border border-border bg-base p-3 font-mono text-xs text-primary focus:border-teal focus:outline-none"
             placeholder='{"key": "value"}'
