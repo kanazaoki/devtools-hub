@@ -37,6 +37,9 @@ export function Footer() {
             <Link href="/privacy-policy" className="text-sm text-dim hover:text-primary transition-colors">
               プライバシーポリシー
             </Link>
+            <Link href="/terms" className="text-sm text-dim hover:text-primary transition-colors">
+              利用規約
+            </Link>
           </div>
         </div>
         <p className="mt-8 text-xs text-muted">

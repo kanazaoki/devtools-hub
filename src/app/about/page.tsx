@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { tools } from '@/data/tools'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -22,7 +23,8 @@ export default function AboutPage() {
             ものを自作して公開しているツール集です。
           </p>
           <p className="mt-2">
-            JSON フォーマッター、カラーパレット生成、画像変換、テキスト処理など 40 以上のツールをブラウザで無料で使えます。
+            JSON フォーマッター、カラーパレット生成、CSS ジェネレーター、画像変換、テキスト処理など
+            現在 <strong className="text-bright">{tools.length} 種類</strong>のツールをブラウザで無料で使えます。
             インストール不要で、入力データはすべてブラウザ上で処理されるためサーバーには送信されません。
           </p>
         </section>

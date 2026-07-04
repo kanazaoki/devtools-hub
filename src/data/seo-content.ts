@@ -988,6 +988,50 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'ゼロ埋め・固定幅の数値表示', body: '数値を固定桁で表示するにはnew Intl.NumberFormat("en", {minimumIntegerDigits: 3}).format(5) で「005」のようなゼロ埋めができます。String(n).padStart(3, "0") も同様の効果があります。IDの表示・タイマーの桁数固定・進捗表示などで使います。Number Formatterでは様々なフォーマットオプションを組み合わせてリアルタイムプレビューできます。' },
     ],
   },
+
+  'slug-generator': {
+    heading: 'URLスラグとは — SEOに強いURL設計とスラグ生成のベストプラクティス',
+    intro: 'URLスラグとはURLのパスの最後の部分で、ページの内容を表す人間が読める文字列です。/blog/how-to-use-css-grid のcss-gridの部分がスラグです。適切なスラグはSEO・共有のしやすさ・ユーザビリティに直結します。',
+    sections: [
+      { title: 'URLスラグの基本ルール', body: '良いスラグは小文字のみ・単語をハイフンで区切る・特殊文字なし・短くて意味がある の4原則を満たします。/my-awesome-post は良い例、/My_Awesome_Post!! は悪い例です。スペースはハイフンに変換し、アンダースコアはGoogleがワードの区切りと認識しない場合があるためハイフンが推奨されます。' },
+      { title: '日本語URLとパーセントエンコード', body: '日本語をURLに含めると%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AFのようにパーセントエンコードされ、URLが非常に長くなります。ローマ字に変換してからスラグにすることでシンプルなURLを保てます。Slug Generatorは日本語テキストを自動でローマ字変換してURL-safeなスラグを生成します。' },
+      { title: 'SEOとURLスラグの関係', body: 'GoogleはURLに含まれるキーワードをランキングシグナルの一つとして使います。記事タイトルのキーワードをスラグに含めることでSEO効果が期待できます。ただしURLは一度公開すると変更が難しいため（301リダイレクトが必要）、最初から適切なスラグを設定することが重要です。' },
+      { title: 'スラグの生成と一括変換', body: 'Slug Generatorはリアルタイムでスラグを生成し、区切り文字（ハイフン/アンダースコア）や大文字小文字モードを切り替えられます。デスクトップ版では複数のテキストを一括でスラグ変換し.txtファイルに保存できます。ブログ記事・ECサイトの商品URL・多言語サイトのURL設計に活用できます。' },
+    ],
+  },
+
+  'css-to-tailwind': {
+    heading: 'CSS to Tailwind CSS — 変換の仕組みとTailwind CSS移行のベストプラクティス',
+    intro: 'CSSからTailwind CSSへの移行は、既存のスタイルシートを読み解きながら対応するユーティリティクラスを特定する作業です。CSS to Tailwindツールはこのプロセスを自動化し、margin・padding・font・color・flex・gridなどの主要プロパティを瞬時に変換します。',
+    sections: [
+      { title: 'Tailwind CSSのスペーシングシステム', body: 'Tailwindのスペーシングは4px=1単位のスケールを使います。m-4がmargin: 16px、p-2がpadding: 8pxに対応します。このスケールはデザインの一貫性を保ちやすく、チームでの開発で「なぜこのサイズ？」という迷いを減らします。CSS to Tailwindツールでは最も近いTailwindスケールに自動的に変換します。' },
+      { title: 'フレックスボックスとグリッドのTailwind変換', body: 'display: flexはflex、justify-content: space-betweenはjustify-between、align-items: centerはitems-centerに変換されます。Tailwindではflexとgridのユーティリティが充実しており、複雑なレイアウトもクラスの組み合わせで実現できます。gap-4でgap: 16pxを表現するなど直感的に記述できます。' },
+      { title: 'カラーシステムの変換方法', body: 'TailwindはHSLベースのカラーパレット（gray-100〜gray-900、blue-500など）を提供します。#3b82f6はblue-500、#ef4444はred-500に対応します。ただしカスタムカラーはTailwindの標準パレットにない場合が多く、そのような場合はtailwind.config.jsでカスタムカラーを定義するか、bg-[#カラーコード]の任意値構文を使います。' },
+      { title: 'CSSからTailwindへ移行するときの注意点', body: 'CSSからTailwindへの移行では、すべてのプロパティに対応するクラスがあるわけではありません。複雑なアニメーション・カスタムフォント・複雑なclip-pathなどは対応外になります。CSS to Tailwindツールでは変換できないプロパティを「対応なし」として別表示するので、それらは任意値構文（例: top-[42px]）やCSSモジュールを併用して対応します。' },
+    ],
+  },
+
+  'svg-to-react': {
+    heading: 'SVG を React コンポーネントに変換する — JSX変換の仕組みと実践的なアイコン管理',
+    intro: 'ReactでSVGを使う方法はいくつかありますが、Reactコンポーネントとして扱うと最も柔軟に活用できます。SVG to Reactツールは、SVGコードをTypeScript対応のReactコンポーネントに自動変換し、開発効率を大幅に向上させます。',
+    sections: [
+      { title: 'SVGをReactで使う3つの方法', body: 'ReactでSVGを使う方法は①imgタグで埋め込む②インラインSVGをJSXに直接書く③Reactコンポーネントとして扱うの3つがあります。コンポーネントとして扱うと、propsでfill・stroke・sizeを動的に変更でき、TypeScriptの型チェックも効き、スタイリングが最も柔軟になります。SVG to Reactはこの変換を自動化します。' },
+      { title: 'JSXで必要なSVG属性の変換ルール', body: 'JSXではHTMLの属性名がキャメルケースになります。class→className、stroke-width→strokeWidth、fill-rule→fillRule、clip-path→clipPathなどが代表例です。また、style属性はオブジェクト形式style={{color: "red"}}に変換する必要があります。SVG to Reactはこれらを全自動で変換するため、変換ミスによるエラーを防げます。' },
+      { title: 'fill/strokeをpropsで受け取る設計', body: 'アイコンコンポーネントではfillとstrokeを固定値にせず、propsで受け取ることで再利用性が高まります。デフォルト値をcurrentColorにするとCSSのcolorプロパティを継承でき、<MyIcon style={{color: "#3b82f6"}} />のように親コンポーネントから色を制御できます。SVG to Reactのfill/stroke propsオプションでこのパターンを自動生成できます。' },
+      { title: 'Figmaアイコンをコンポーネント化する方法', body: 'FigmaからSVGをエクスポートするにはレイヤーを右クリック→「Export」→SVGを選択します。エクスポートしたSVGには不要な属性（data-*、id、Figma固有の属性）が含まれる場合があります。SVG to Reactで変換後、不要な属性を手動で削除し、パスが多い複雑なアイコンはreact-svgかSVGRのCLIツールを使った一括変換も検討します。' },
+    ],
+  },
+
+  'html-playground': {
+    heading: 'HTML Playground — ブラウザで HTML/CSS/JS をリアルタイム検証する方法',
+    intro: 'HTMLやCSSのスニペットを素早く検証したいとき、ローカル環境を立ち上げるのは手間がかかります。HTML Playgroundはブラウザ内で HTML・CSS・JavaScript をリアルタイムに編集・プレビューできる開発者向けツールです。',
+    sections: [
+      { title: 'iframeサンドボックスでの安全なプレビュー', body: 'HTML Playgroundはプレビューにsandbox属性付きiframeを使用しています。allow-scriptsのみを許可し、ファイルアクセスや親フレームへのアクセスを制限することで、任意のJavaScriptを安全に実行できます。CodePenやJSFiddleと同じアプローチで、ローカル環境なしにフロントエンドコードを素早く検証できます。' },
+      { title: 'debounceで快適なリアルタイム更新', body: 'キー入力のたびにiframeを再レンダリングすると、タイピング中にちらつきが発生しパフォーマンスが落ちます。HTML Playgroundでは500msのdebounceを実装し、入力が止まってから0.5秒後にプレビューを自動更新します。手動リフレッシュボタンを使えば即時反映も可能で、debounceとの使い分けで快適な編集体験を実現しています。' },
+      { title: 'HTML/CSS/JSを分けて管理するメリット', body: '3ペイン構成にすることでHTML構造・スタイル・ロジックを分離して編集できます。不要なペインは非表示にでき、CSSのみのアニメーションを試す場合はHTMLとCSSだけ表示するといった使い方が便利です。プレビュー幅スライダーでレスポンシブデザインのブレークポイント検証も可能で、異なる画面幅での表示確認に役立ちます。' },
+      { title: 'フロントエンド学習での活用方法', body: 'HTML Playgroundはフロントエンド学習にも最適です。MDNやQiitaで見たコードスニペットをその場でコピー＆ペーストして動作確認できます。CSSのflexboxやgridのプロパティを変えながら視覚的に学べ、JavaScriptのDOM操作も即座に試せます。クリアボタンで全体をリセットして別のコードを試すサイクルを素早く繰り返せます。' },
+    ],
+  },
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {

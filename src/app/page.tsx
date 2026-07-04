@@ -98,6 +98,35 @@ export default function Home() {
         <ToolGrid />
       </section>
 
+      {/* サービス紹介 */}
+      <section className="mt-16 mb-6 grid gap-6 sm:grid-cols-3 text-sm">
+        <div className="rounded-lg border border-border bg-surface p-6">
+          <p className="font-mono text-xs uppercase tracking-widest text-teal mb-3">No Install</p>
+          <h2 className="font-semibold text-bright mb-2">インストール不要</h2>
+          <p className="text-dim leading-relaxed">
+            すべてのツールはブラウザだけで動作します。
+            アカウント登録なしで、開いてすぐに使えます。
+          </p>
+        </div>
+        <div className="rounded-lg border border-border bg-surface p-6">
+          <p className="font-mono text-xs uppercase tracking-widest text-teal mb-3">Privacy First</p>
+          <h2 className="font-semibold text-bright mb-2">データはブラウザ内で完結</h2>
+          <p className="text-dim leading-relaxed">
+            入力したテキスト・画像・コードはサーバーに送信されません。
+            すべての処理はあなたのブラウザ内で行われます。
+          </p>
+        </div>
+        <div className="rounded-lg border border-border bg-surface p-6">
+          <p className="font-mono text-xs uppercase tracking-widest text-teal mb-3">Desktop Apps</p>
+          <h2 className="font-semibold text-bright mb-2">デスクトップ版も提供</h2>
+          <p className="text-dim leading-relaxed">
+            一部ツールはファイル保存・ドラッグ＆ドロップ対応のデスクトップアプリを
+            <a href="https://knkk.booth.pm/" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline ml-1">BOOTH</a>
+            で配布しています。
+          </p>
+        </div>
+      </section>
+
       {/* ツールリクエスト */}
       <section className="mt-12 rounded-xl border border-border bg-surface px-8 py-10 text-center">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal mb-3">Request</p>
