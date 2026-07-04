@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { EnvFileParser } from '@/components/tools/EnvFileParser'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 
 const tool = tools.find((t) => t.slug === 'env-file-parser')!
@@ -85,6 +86,8 @@ export default function EnvFileParserPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="env-file-parser" />
 
       {relatedTools.length > 0 && (
         <section>

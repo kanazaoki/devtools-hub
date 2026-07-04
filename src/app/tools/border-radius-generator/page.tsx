@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { BorderRadiusGenerator } from '@/components/tools/BorderRadiusGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'border-radius-generator')!
 
@@ -86,6 +87,8 @@ export default function BorderRadiusGeneratorPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="border-radius-generator" />
 
       {relatedTools.length > 0 && (
         <section>

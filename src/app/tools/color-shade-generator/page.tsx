@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { ColorShadeGenerator } from '@/components/tools/ColorShadeGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'color-shade-generator')!
 
@@ -86,6 +87,8 @@ export default function ColorShadeGeneratorPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="color-shade-generator" />
 
       {relatedTools.length > 0 && (
         <section>

@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { CssPatternGenerator } from '@/components/tools/CssPatternGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'css-pattern-generator')!
 
@@ -82,6 +83,8 @@ export default function CssPatternGeneratorPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="css-pattern-generator" />
 
       {relatedTools.length > 0 && (
         <section>

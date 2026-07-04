@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { JsonCsvConverter } from '@/components/tools/JsonCsvConverter'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'json-csv-converter')!
 
@@ -82,6 +83,8 @@ export default function JsonCsvConverterPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="json-csv-converter" />
 
       {relatedTools.length > 0 && (
         <section>

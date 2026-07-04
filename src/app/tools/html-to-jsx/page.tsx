@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { HtmlToJsx } from '@/components/tools/HtmlToJsx'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'html-to-jsx')!
 
@@ -82,6 +83,8 @@ export default function HtmlToJsxPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="html-to-jsx" />
 
       {relatedTools.length > 0 && (
         <section>

@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { JsonToZod } from '@/components/tools/JsonToZod'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 
 const tool = tools.find((t) => t.slug === 'json-to-zod')!
@@ -85,6 +86,8 @@ export default function JsonToZodPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="json-to-zod" />
 
       {relatedTools.length > 0 && (
         <section>

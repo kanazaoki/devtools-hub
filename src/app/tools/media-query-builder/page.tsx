@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { MediaQueryBuilder } from '@/components/tools/MediaQueryBuilder'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'media-query-builder')!
 
@@ -82,6 +83,8 @@ export default function MediaQueryBuilderPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="media-query-builder" />
 
       {relatedTools.length > 0 && (
         <section>

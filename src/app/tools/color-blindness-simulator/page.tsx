@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { ColorBlindnessSimulator } from '@/components/tools/ColorBlindnessSimulator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'color-blindness-simulator')!
 
@@ -86,6 +87,8 @@ export default function ColorBlindnessSimulatorPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="color-blindness-simulator" />
 
       {relatedTools.length > 0 && (
         <section>

@@ -5,6 +5,7 @@ import { AdSense } from '@/components/AdSense'
 import { ToolCard } from '@/components/ToolCard'
 import { CssStackingInspector } from '@/components/tools/CssStackingInspector'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'css-stacking-inspector')!
 
@@ -79,6 +80,8 @@ export default function CssStackingInspectorPage() {
       </section>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="css-stacking-inspector" />
 
       {relatedTools.length > 0 && (
         <section>

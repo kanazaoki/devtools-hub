@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { DateCalculator } from '@/components/tools/DateCalculator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'date-calculator')!
 
@@ -82,6 +83,8 @@ export default function DateCalculatorPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="date-calculator" />
 
       {relatedTools.length > 0 && (
         <section>

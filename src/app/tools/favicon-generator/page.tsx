@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { FaviconGenerator } from '@/components/tools/FaviconGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'favicon-generator')!
 
@@ -82,6 +83,8 @@ export default function FaviconGeneratorPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="favicon-generator" />
 
       {relatedTools.length > 0 && (
         <section>

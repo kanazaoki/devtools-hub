@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { UrlParserBuilder } from '@/components/tools/UrlParserBuilder'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'url-parser-builder')!
 
@@ -82,6 +83,8 @@ export default function UrlParserBuilderPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="url-parser-builder" />
 
       {relatedTools.length > 0 && (
         <section>

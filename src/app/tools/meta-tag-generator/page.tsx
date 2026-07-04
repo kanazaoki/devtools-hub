@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { MetaTagGenerator } from '@/components/tools/MetaTagGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'meta-tag-generator')!
 
@@ -86,6 +87,8 @@ export default function MetaTagGeneratorPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="meta-tag-generator" />
 
       {relatedTools.length > 0 && (
         <section>

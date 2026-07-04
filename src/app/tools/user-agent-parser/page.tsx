@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { UserAgentParser } from '@/components/tools/UserAgentParser'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 
 const tool = tools.find((t) => t.slug === 'user-agent-parser')!
@@ -85,6 +86,8 @@ export default function UserAgentParserPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="user-agent-parser" />
 
       {relatedTools.length > 0 && (
         <section>

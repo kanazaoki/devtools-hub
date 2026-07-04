@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { HttpHeadersReference } from '@/components/tools/HttpHeadersReference'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'http-headers-reference')!
 
@@ -82,6 +83,8 @@ export default function HttpHeadersReferencePage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="http-headers-reference" />
 
       {relatedTools.length > 0 && (
         <section>

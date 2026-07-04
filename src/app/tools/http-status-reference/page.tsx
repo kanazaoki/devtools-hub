@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { HttpStatusReference } from '@/components/tools/HttpStatusReference'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'http-status-reference')!
 
@@ -82,6 +83,8 @@ export default function HttpStatusReferencePage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="http-status-reference" />
 
       {relatedTools.length > 0 && (
         <section>

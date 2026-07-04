@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { PlaceholderImageGenerator } from '@/components/tools/PlaceholderImageGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { SeoArticle } from '@/components/SeoArticle'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
 
 const tool = tools.find((t) => t.slug === 'placeholder-image-generator')!
@@ -85,6 +86,8 @@ export default function PlaceholderImageGeneratorPage() {
       </div>
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
+
+      <SeoArticle slug="placeholder-image-generator" />
 
       {relatedTools.length > 0 && (
         <section>
