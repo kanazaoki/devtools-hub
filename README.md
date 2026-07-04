@@ -6,7 +6,7 @@
 
 ---
 
-## ツール一覧（67本）
+## ツール一覧（70本）
 
 ### CSS系
 | ツール | 機能 |
@@ -106,6 +106,9 @@
 | [AI Prompt Manager](https://devtools-hub.vercel.app/tools/ai-prompt-manager) | AI画像生成プロンプトの管理・自動組み立て |
 | [Text Deck](https://devtools-hub.vercel.app/tools/text-deck) | スニペットランチャー（定型文・コードスニペット管理） |
 | [Mermaid Preview](https://devtools-hub.vercel.app/tools/mermaid-preview) | Mermaid 記法でダイアグラムをリアルタイムプレビュー・SVG/PNG ダウンロード |
+| [Favicon Generator](https://devtools-hub.vercel.app/tools/favicon-generator) | 絵文字・テキストから 16/32/64px favicon PNG を即生成 |
+| [JSON ↔ CSV Converter](https://devtools-hub.vercel.app/tools/json-csv-converter) | JSON 配列と CSV を双方向変換・テーブルプレビュー付き |
+| [Date / Time Calculator](https://devtools-hub.vercel.app/tools/date-calculator) | 差分計算・日数加算・営業日カウントが 1 画面で |
 
 ---
 
