@@ -1837,7 +1837,7 @@ export const tools: Tool[] = [
     description:
       'Node / Python / Unity / Go / Rust / Java / Swift / Kotlin / C++ / C# / React / Next.js / Electron / macOS / Windows / Linux / JetBrains / VSCode / Xcode の19種テンプレートから選んで組み合わせ。重複行を自動除去してマージした .gitignore をコピーまたはダウンロード。すべてブラウザ内処理でAPIアクセスなし。',
     tags: ['Git', 'Web開発', '開発ツール'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8579117',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
     features: [
@@ -1848,6 +1848,25 @@ export const tools: Tool[] = [
       'テンプレートが空のときは出力も空',
     ],
     desktopFeatures: ['生成した .gitignore を任意のパスにファイル保存'],
+  },
+  {
+    slug: 'glob-pattern-tester',
+    name: 'Glob Pattern Tester',
+    tagline: 'glob パターンのマッチングをリアルタイムで確認',
+    description:
+      '* ** ? {} [] に対応した自前実装のグロブエンジンで、入力したファイルパスリストとパターンを即座に照合。マッチしたパスを緑でハイライト表示。ブレース展開や文字クラスも完全対応。',
+    tags: ['CLI', 'Web開発', '開発ツール'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-04',
+    features: [
+      'glob パターン入力（*, **, ?, {}, []）',
+      'ファイルパスリストを複数行で入力',
+      'マッチしたパスをリアルタイムでハイライト表示',
+      'マッチ数（X / N paths matched）を表示',
+      'パターン構文リファレンス内蔵',
+    ],
+    desktopFeatures: ['テキストファイルからパスリストを読み込み'],
   },
 ]
 

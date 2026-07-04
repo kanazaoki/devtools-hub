@@ -1043,6 +1043,16 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'グローバル.gitignoreで個人設定を分離する', body: 'macOSの.DS_StoreやJetBrains IDEの.ideaフォルダなど、個人の環境固有のファイルはリポジトリの.gitignoreではなくグローバル.gitignoreで管理するのがベストプラクティスです。git config --global core.excludesfile ~/.gitignore_globalで設定できます。チーム全員のIDEが同じとは限らないため、IDE固有パターンをリポジトリに含めるとコンフリクトの原因になります。' },
     ],
   },
+  'glob-pattern-tester': {
+    heading: 'globパターン入門 — *, **, ?, {}, [] の使い方',
+    intro: 'globパターンはファイルパスのワイルドカードマッチング構文です。gitignore・webpack・ESLint・vitest・VS CodeなどほぼすべてのCLIツールで使われており、「どのファイルを対象にするか」を一行で表現できます。',
+    sections: [
+      { title: '* と ** の違い', body: '単一の*はスラッシュを含まない任意の文字列にマッチします。例えば*.tsはsrc/utils/format.tsにはマッチしますが、src/*.tsはトップレベルのsrc/直下のTSファイルにしかマッチしません。一方**（ダブルスター）はスラッシュを含む任意のパスにマッチします。src/**/*.tsはsrc/以下どの深さにあるTSファイルにもマッチするため、ディレクトリ構造を問わず対象にしたいときに使います。' },
+      { title: 'ブレース展開 {a,b,c}', body: '{ts,tsx}はtsまたはtsxのどちらかにマッチするOR条件です。**/*.{js,ts,jsx,tsx}のように複数の拡張子をまとめて指定できます。ブレース内はカンマ区切りで複数の候補を列挙でき、部分文字列として機能するため{test,spec}.tsのような使い方も可能です。多くのglob実装でサポートされていますが、一部のBashバージョンでは動作が異なります。' },
+      { title: '文字クラス [abc] と ? の使い方', body: '[abc]は角括弧内の任意の1文字にマッチします。[a-z]のような範囲指定も使えます。?は任意の1文字（スラッシュ除く）にマッチします。例えばsrc/app?.tsはsrc/app1.tsやsrc/appA.tsにマッチします。実用頻度は*や**より低いですが、バージョン番号のような単一桁の違いを扱うときに便利です。' },
+      { title: 'globパターンを使うツール一覧', body: 'gitignoreはglobパターンで追跡除外ファイルを指定します。webpackのentry・moduleRules・resolveは**/*.{ts,tsx}などのglob形式を受け取ります。ESLintのignorePatterns、vitestのinclude/exclude、GitHub Actionsのpaths/paths-ignoreもglobを使います。tsconfig.jsonのinclude/excludeもglobパターンで対象ファイルを絞れます。' },
+    ],
+  },
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {
