@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { tools } from '@/data/tools'
 import { ToolCard } from './ToolCard'
 
@@ -11,6 +11,7 @@ export function ToolGrid() {
   const [activeFilter, setActiveFilter] = useState<string | null>(null)
   const [visitedSlugs, setVisitedSlugs] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState('')
+  const searchRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     try {
@@ -19,6 +20,18 @@ export function ToolGrid() {
     } catch {
       // ignore
     }
+  }, [])
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        searchRef.current?.focus()
+        searchRef.current?.select()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
   function isNew(slug: string, releasedAt: string): boolean {
@@ -53,10 +66,11 @@ export function ToolGrid() {
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
         <input
+          ref={searchRef}
           type="search"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="ツール名・機能で検索…"
+          placeholder="ツール名・機能で検索… (⌘K)"
           aria-label="ツールを検索"
           className="w-full rounded-lg border border-border bg-surface pl-9 pr-4 py-2 font-mono text-sm text-primary placeholder:text-muted focus:border-teal focus:outline-none transition-colors duration-150"
         />

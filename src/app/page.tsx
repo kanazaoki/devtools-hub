@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { ToolGrid } from '@/components/ToolGrid'
+import { RecentlyViewed } from '@/components/RecentlyViewed'
 import { AdSense } from '@/components/AdSense'
 
 const FEATURED_SLUGS = ['webp-studio', 'resize-image', 'mockup-builder'] as const
@@ -89,6 +90,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* 最近見たツール */}
+      <RecentlyViewed />
 
       {/* ツールグリッド */}
       <section>

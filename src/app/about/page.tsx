@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { tools } from '@/data/tools'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="py-12 max-w-2xl">
-      <h1 className="font-mono text-2xl font-bold text-bright mb-8">About</h1>
+      <h1 className="font-mono text-2xl font-bold text-bright mb-8">このサイトについて</h1>
 
       <div className="space-y-10 text-sm leading-relaxed text-primary">
         <section>
@@ -21,7 +22,7 @@ export default function AboutPage() {
           <p>
             devtools-hub は、開発者・クリエイターが日々の作業で使える Web ツールを無料で提供するサイトです。
             JSON フォーマッター、カラーコード変換、CSS ジェネレーター、画像変換、正規表現テスターなど
-            90 本以上のツールを公開しています。
+            {tools.length} 本以上のツールを公開しています。
           </p>
           <p className="mt-3">
             すべてのツールはブラウザ上で完結し、入力データがサーバーに送信されることはありません。
