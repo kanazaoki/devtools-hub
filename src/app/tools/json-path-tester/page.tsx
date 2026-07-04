@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('json-path-tester', tool.description),
-    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: '/tools/json-path-tester/opengraph-image', width: 1200, height: 630 }],
   },
 }
 

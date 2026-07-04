@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('og-tag-preview', tool.description),
-    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: '/tools/og-tag-preview/opengraph-image', width: 1200, height: 630 }],
   },
 }
 

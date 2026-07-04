@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('lorem-ipsum-generator', tool.description),
-    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: '/tools/lorem-ipsum-generator/opengraph-image', width: 1200, height: 630 }],
   },
 }
 

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('curl-to-code', tool.description),
-    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: '/tools/curl-to-code/opengraph-image', width: 1200, height: 630 }],
   },
 }
 

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('sheet-studio', tool.description),
-    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: '/tools/sheet-studio/opengraph-image', width: 1200, height: 630 }],
   },
 }
 

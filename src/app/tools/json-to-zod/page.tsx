@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: tool.description,
-    images: [{ url: '/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: '/tools/json-to-zod/opengraph-image', width: 1200, height: 630 }],
   },
 }
 
