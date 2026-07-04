@@ -123,6 +123,14 @@ export function ToolGrid() {
         </div>
       </div>
 
+      {/* 件数表示（絞り込み中のみ） */}
+      {(q || activeFilter) && (
+        <p className="mb-3 font-mono text-xs text-muted">
+          {filteredTools.length === 0 ? '0件' : `${filteredTools.length} 件`}
+          {activeFilter && <span className="ml-1">/ {activeFilter}</span>}
+        </p>
+      )}
+
       {/* ツールグリッド */}
       {filteredTools.length === 0 ? (
         <p className="py-16 text-center font-mono text-sm text-muted">
