@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'character-counter')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('character-counter', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/character-counter',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('character-counter', tool.description),

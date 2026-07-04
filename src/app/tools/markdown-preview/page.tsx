@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'markdown-preview')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('markdown-preview', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/markdown-preview',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('markdown-preview', tool.description),

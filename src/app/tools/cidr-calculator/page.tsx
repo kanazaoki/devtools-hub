@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -13,6 +13,9 @@ const tool = tools.find((t) => t.slug === 'cidr-calculator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: tool.description,
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/cidr-calculator',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: tool.description,

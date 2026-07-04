@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'json-path-tester')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-path-tester', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/json-path-tester',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('json-path-tester', tool.description),

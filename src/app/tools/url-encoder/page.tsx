@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'url-encoder')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('url-encoder', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/url-encoder',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('url-encoder', tool.description),

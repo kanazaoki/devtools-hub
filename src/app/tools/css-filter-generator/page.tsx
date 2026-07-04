@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'css-filter-generator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('css-filter-generator', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/css-filter-generator',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('css-filter-generator', tool.description),

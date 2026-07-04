@@ -3,6 +3,9 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'プライバシーポリシー',
   description: 'devtools-hub のプライバシーポリシーです。Cookie、広告、アクセス解析に関する情報をご確認ください。',
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/privacy-policy',
+  },
 }
 
 export default function PrivacyPolicyPage() {

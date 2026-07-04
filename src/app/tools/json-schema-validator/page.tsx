@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'json-schema-validator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-schema-validator', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/json-schema-validator',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('json-schema-validator', tool.description),

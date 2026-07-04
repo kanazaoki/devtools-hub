@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'yaml-json-converter')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('yaml-json-converter', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/yaml-json-converter',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('yaml-json-converter', tool.description),

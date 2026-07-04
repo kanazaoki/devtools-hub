@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'color-format-converter')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('color-format-converter', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/color-format-converter',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('color-format-converter', tool.description),

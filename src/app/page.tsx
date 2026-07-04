@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: 'devtools-hub — 開発者・クリエイター向け無料 Web ツール集',
   description:
     '個人開発者が作った開発・デザイン向けツールを無料公開。カラーコード変換、グラデーションエディタ、画像変換、テキストレイアウト確認など。デスクトップ版は BOOTH で販売中。',
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app',
+  },
 }
 
 export default function Home() {

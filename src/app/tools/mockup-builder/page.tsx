@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'mockup-builder')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('mockup-builder', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/mockup-builder',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('mockup-builder', tool.description),

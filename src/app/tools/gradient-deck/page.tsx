@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'gradient-deck')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('gradient-deck', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/gradient-deck',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('gradient-deck', tool.description),

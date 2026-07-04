@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'qr-code')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('qr-code', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/qr-code',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('qr-code', tool.description),

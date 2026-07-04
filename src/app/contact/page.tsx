@@ -3,6 +3,9 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'お問い合わせ',
   description: 'devtools-hub へのお問い合わせはメールにてお受けしています。',
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/contact',
+  },
 }
 
 export default function ContactPage() {

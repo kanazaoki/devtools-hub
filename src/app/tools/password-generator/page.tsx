@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'password-generator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('password-generator', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/password-generator',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('password-generator', tool.description),

@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'box-shadow-generator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('box-shadow-generator', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/box-shadow-generator',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('box-shadow-generator', tool.description),

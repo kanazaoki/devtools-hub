@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'jwt-decoder')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('jwt-decoder', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/jwt-decoder',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('jwt-decoder', tool.description),

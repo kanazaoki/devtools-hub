@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'ai-prompt-manager')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('ai-prompt-manager', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/ai-prompt-manager',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('ai-prompt-manager', tool.description),

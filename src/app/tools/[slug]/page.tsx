@@ -27,6 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${tool.name} — ${tool.tagline}`,
     description: tool.description.substring(0, 150),
+    alternates: {
+      canonical: `https://devtools-hub.vercel.app/tools/${params.slug}`,
+    },
     openGraph: {
       title: `${tool.name} | devtools-hub`,
       description: tool.description.substring(0, 150),

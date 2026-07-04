@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'html-entity-encoder')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('html-entity-encoder', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/html-entity-encoder',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('html-entity-encoder', tool.description),

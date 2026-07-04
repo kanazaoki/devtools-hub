@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'webp-studio')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('webp-studio', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/webp-studio',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('webp-studio', tool.description),

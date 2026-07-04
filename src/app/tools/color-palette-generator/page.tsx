@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'color-palette-generator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('color-palette-generator', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/color-palette-generator',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('color-palette-generator', tool.description),

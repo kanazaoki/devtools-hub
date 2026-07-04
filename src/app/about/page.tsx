@@ -4,6 +4,9 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'About',
   description: 'devtools-hub は個人開発者が作った、開発者・クリエイター向けの無料 Web ツール集です。',
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/about',
+  },
 }
 
 export default function AboutPage() {

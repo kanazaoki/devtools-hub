@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'sheet-studio')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('sheet-studio', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/sheet-studio',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('sheet-studio', tool.description),

@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'color-deck')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('color-deck', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/color-deck',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('color-deck', tool.description),

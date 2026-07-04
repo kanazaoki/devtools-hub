@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'cron-builder')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('cron-builder', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/cron-builder',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('cron-builder', tool.description),

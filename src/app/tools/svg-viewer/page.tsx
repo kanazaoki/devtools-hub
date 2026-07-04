@@ -15,6 +15,9 @@ const tool = tools.find((t) => t.slug === 'svg-viewer')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('svg-viewer', tool.description),
+  alternates: {
+    canonical: 'https://devtools-hub.vercel.app/tools/svg-viewer',
+  },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('svg-viewer', tool.description),
