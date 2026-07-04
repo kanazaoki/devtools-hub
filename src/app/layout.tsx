@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { BackToTop } from '@/components/BackToTop'
+import { PageProgress } from '@/components/PageProgress'
 import { ADSENSE_CLIENT } from '@/components/AdSense'
 import './globals.css'
 
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="min-h-screen bg-bg text-primary antialiased">
+        <PageProgress />
         <Header />
         <div className="mx-auto max-w-6xl px-4">{children}</div>
         <Footer />

@@ -49,9 +49,11 @@ const DEFAULT_ACCENT = '#36363F'
 interface ToolCardProps {
   tool: Tool
   isNew?: boolean
+  isFavorited?: boolean
+  onToggleFavorite?: () => void
 }
 
-export function ToolCard({ tool, isNew = false }: ToolCardProps) {
+export function ToolCard({ tool, isNew = false, isFavorited = false, onToggleFavorite }: ToolCardProps) {
   const accentColor = ACCENT_HEX[tool.tags[0]] ?? DEFAULT_ACCENT
 
   return (
@@ -106,9 +108,22 @@ export function ToolCard({ tool, isNew = false }: ToolCardProps) {
 
         {/* フッター行 */}
         <div className="mt-auto flex items-center justify-between">
-          <p className="text-xs text-muted transition-colors duration-150 group-hover:text-dim">
-            使ってみる →
-          </p>
+          <div className="flex items-center gap-2">
+            {onToggleFavorite && (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleFavorite() }}
+                className={`relative z-20 transition-colors duration-150 ${isFavorited ? 'text-amber-400 hover:text-amber-300' : 'text-muted hover:text-dim'}`}
+                aria-label={isFavorited ? 'お気に入りから削除' : 'お気に入りに追加'}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill={isFavorited ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              </button>
+            )}
+            <p className="text-xs text-muted transition-colors duration-150 group-hover:text-dim">
+              使ってみる →
+            </p>
+          </div>
           <a
             href={tool.boothUrl}
             target="_blank"
