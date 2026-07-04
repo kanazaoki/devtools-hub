@@ -1053,6 +1053,26 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'globパターンを使うツール一覧', body: 'gitignoreはglobパターンで追跡除外ファイルを指定します。webpackのentry・moduleRules・resolveは**/*.{ts,tsx}などのglob形式を受け取ります。ESLintのignorePatterns、vitestのinclude/exclude、GitHub Actionsのpaths/paths-ignoreもglobを使います。tsconfig.jsonのinclude/excludeもglobパターンで対象ファイルを絞れます。' },
     ],
   },
+  'color-mix-previewer': {
+    heading: 'CSS color-mix() 完全ガイド — 色空間と混合率の使い方',
+    intro: 'CSS color-mix()はCSS Color Level 5で定義された関数で、2つの色を指定した色空間で混合します。JavaScriptを使わずにCSSだけでグラデーションの中間色計算やテーマカラーのバリエーション生成が可能になります。',
+    sections: [
+      { title: 'color-mix()の基本構文', body: 'color-mix(in colorspace, color1 percentage, color2)の形式で書きます。in srgbはsRGB色空間での混合を意味し、最もシンプルです。percentageを省略すると50%（均等混合）になります。color1とcolor2にはhex・rgb()・hsl()・named colorなど任意のCSS色値が使えます。Chrome 111、Firefox 113、Safari 16.2以降でサポートされています。' },
+      { title: '色空間による混合結果の違い', body: '同じ2色でも色空間によって混合結果が大きく変わります。srgbは最も一般的でPhotoshopのレイヤー合成に近い結果になります。hslは人間の知覚に近く、中間色が自然に見えます。oklchとoklabはCSSが推奨する知覚均一色空間で、どの色の組み合わせでも均一に明るい中間色が得られます。lchはoklchの非線形版で、特定の色域で明るすぎる中間色が出ることがあります。' },
+      { title: 'デザインシステムでの活用', body: 'color-mix()はCSS変数（カスタムプロパティ）と組み合わせると強力です。--color-primary: #0066cc; --color-primary-light: color-mix(in srgb, var(--color-primary) 30%, white);のように書けば、JavaScriptなしでブランドカラーのバリエーションを自動生成できます。ダークモードへの対応もprefers-color-schemeと組み合わせてCSSだけで実装できます。' },
+      { title: 'color-mix()の注意点とフォールバック', body: 'color-mix()はCSS Color Level 5の比較的新しい機能です。@supportsを使ってサポート状況を確認し、未対応ブラウザ向けにフォールバックを用意することが重要です。また、色空間によってはhdr（高ダイナミックレンジ）の値が生成される場合があり、sRGBの範囲を超える色がクリップされることがあります。本番利用前に主要ブラウザで確認してください。' },
+    ],
+  },
+  'robots-txt-generator': {
+    heading: 'robots.txt 完全ガイド — クローラー制御の書き方と設定例',
+    intro: 'robots.txtはWebサイトのルートに置くテキストファイルで、検索エンジンのクローラー（Googlebot など）にどのページをクロールしてよいかを指示します。適切に設定することでクロール予算を最適化し、意図しないページのインデックスを防げます。',
+    sections: [
+      { title: 'robots.txtの基本構文', body: 'robots.txtはUser-agent（対象ボット）、Allow（許可するURL）、Disallow（禁止するURL）のディレクティブで構成されます。User-agent: *はすべてのボットを意味します。Disallow: /は全ページのクロール禁止です。Disallow: （空欄）は全ページの許可になります。1ファイルに複数のUser-agentブロックを記述できます。各ブロックは空行で区切ります。' },
+      { title: 'Googlebot向けの設定例', body: 'User-agent: Googlebot / Disallow: /admin/ / Disallow: /private/ / Allow: / のように管理ページやプライベートエリアを除外しつつ、一般ページを許可するのが基本パターンです。Sitemap: https://example.com/sitemap.xmlを追記するとGoogleがサイトマップを自動検出します。検索Console での認証なしにサイトマップを知らせる最も簡単な方法です。' },
+      { title: 'Crawl-delay でクロール頻度を制御', body: 'Crawl-delay: 10のように秒数を指定すると、クローラーがページ間でその秒数だけ待機します。サーバー負荷が高い場合に有効ですが、Googleはこのディレクティブを現在無視しています（Google Search Consoleのクロールレート設定を使う）。Bingは対応しています。過剰なCrawl-delayはインデックス速度の低下につながります。' },
+      { title: 'robots.txtとnoindexの違い', body: 'robots.txtのDisallowはクロールを禁止しますが、インデックスを保証しません。他のサイトからリンクされていれば、クロールせずにURLをインデックスする場合があります。インデックスを完全に防ぐにはmetaタグのnoindexかX-Robots-TagヘッダーにnoindexをHTTPレスポンスで含める必要があります。Disallowしたページにnoindexは届かないため、両方を組み合わせることが重要です。' },
+    ],
+  },
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {

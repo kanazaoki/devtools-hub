@@ -1856,7 +1856,7 @@ export const tools: Tool[] = [
     description:
       '* ** ? {} [] に対応した自前実装のグロブエンジンで、入力したファイルパスリストとパターンを即座に照合。マッチしたパスを緑でハイライト表示。ブレース展開や文字クラスも完全対応。',
     tags: ['CLI', 'Web開発', '開発ツール'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8579190',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
     features: [
@@ -1867,6 +1867,44 @@ export const tools: Tool[] = [
       'パターン構文リファレンス内蔵',
     ],
     desktopFeatures: ['テキストファイルからパスリストを読み込み'],
+  },
+  {
+    slug: 'color-mix-previewer',
+    name: 'CSS color-mix() Previewer',
+    tagline: 'ブラウザ標準 color-mix() で2色の混合結果をリアルタイムプレビュー',
+    description:
+      'カラーピッカーで2色を選び、混合割合と色空間（srgb / hsl / oklch など8種）を変えながら color-mix() の結果を即確認。生成した CSS コードはワンクリックでコピー。HEX・RGB・HSL 値も同時表示。',
+    tags: ['CSS', 'Web開発', 'デザイン'],
+    boothUrl: 'https://knkk.booth.pm/items/8579219',
+    hasWebVersion: true,
+    releasedAt: '2026-07-04',
+    features: [
+      '2色をカラーピッカーで選択（HEX 直接入力も可）',
+      '混合割合スライダー（0〜100%）',
+      '色空間を8種から選択（srgb / srgb-linear / hsl / hwb / lch / oklch / lab / oklab）',
+      '混合結果のプレビューと HEX / RGB / HSL 値表示',
+      'color-mix() CSS コードをワンクリックコピー',
+    ],
+    desktopFeatures: ['生成した CSS コードを .css ファイルとして保存'],
+  },
+  {
+    slug: 'robots-txt-generator',
+    name: 'robots.txt Generator',
+    tagline: 'User-agent ルール・Sitemap URL を GUI で設定して robots.txt を即生成',
+    description:
+      'ボット名・Allow/Disallow ルール・Crawl-delay・Sitemap URL を GUI で入力するだけでリアルタイムに robots.txt を生成。コピーまたは .txt ファイルとしてダウンロード可能。',
+    tags: ['SEO', 'Web開発', '開発ツール'],
+    boothUrl: 'https://knkk.booth.pm/items/8579248',
+    hasWebVersion: true,
+    releasedAt: '2026-07-04',
+    features: [
+      'User-agent ルールを複数追加（* または個別ボット名）',
+      'Allow / Disallow パスを各 User-agent に複数追加・削除',
+      'Crawl-delay を User-agent ごとに設定',
+      'Sitemap URL を複数追加',
+      'リアルタイムプレビュー + コピー / ダウンロード',
+    ],
+    desktopFeatures: ['生成した robots.txt を任意のパスにファイル保存'],
   },
 ]
 
