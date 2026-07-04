@@ -29,7 +29,7 @@ export function Footer() {
               BOOTH ショップ →
             </a>
             <Link href="/about" className="text-sm text-dim hover:text-primary transition-colors">
-              About
+              このサイトについて
             </Link>
             <Link href="/contact" className="text-sm text-dim hover:text-primary transition-colors">
               お問い合わせ

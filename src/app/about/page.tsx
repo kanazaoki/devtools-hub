@@ -22,7 +22,7 @@ export default function AboutPage() {
           <p>
             devtools-hub は、開発者・クリエイターが日々の作業で使える Web ツールを無料で提供するサイトです。
             JSON フォーマッター、カラーコード変換、CSS ジェネレーター、画像変換、正規表現テスターなど
-            {tools.length} 本以上のツールを公開しています。
+            {tools.length} 本のツールを公開しています。
           </p>
           <p className="mt-3">
             すべてのツールはブラウザ上で完結し、入力データがサーバーに送信されることはありません。
