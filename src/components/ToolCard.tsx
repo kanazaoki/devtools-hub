@@ -85,7 +85,7 @@ export function ToolCard({ tool, isNew = false }: ToolCardProps) {
           <h2 className="font-mono text-sm font-semibold text-bright transition-colors duration-150 group-hover:text-teal">
             {tool.name}
           </h2>
-          <p className="mt-1 text-sm leading-relaxed text-teal/70">
+          <p className="mt-1 text-sm leading-relaxed text-teal/60 transition-colors duration-150 group-hover:text-teal/35">
             {tool.tagline}
           </p>
         </div>
