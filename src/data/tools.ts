@@ -1894,7 +1894,7 @@ export const tools: Tool[] = [
     description:
       '30都市以上のタイムゾーンプリセットから最大5都市を選択し、基準日時を入力すると全タイムゾーンの時刻を即変換。各タイムゾーンの現在時刻を1秒単位でリアルタイム表示します。24時間タイムラインにビジネスアワー（9〜18時）を重ね、重複する時間帯をハイライト表示します。',
     tags: ['開発者向け', '効率化', '時刻'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8580855',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
     features: [
@@ -1916,7 +1916,7 @@ export const tools: Tool[] = [
     description:
       'margin・padding・border の各辺を個別スライダーで調整し、同心四角形の色分けボックス図でリアルタイムに確認。一括編集モードで4辺を同時変更、box-sizing の content-box / border-box 切り替えにも対応。生成した CSS はワンクリックでコピーできます。',
     tags: ['CSS', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8580849',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
     features: [
@@ -1937,7 +1937,7 @@ export const tools: Tool[] = [
     description:
       'テキストを入力するだけでASCIIアートに即変換。Standard・Block・Banner・Slant・Shadow・3-Dの6フォントから選択でき、幅制限スライダーで40〜200文字幅に対応。// や /* */ など6種類のコメントラッパーで、そのままコードコメントとして貼り付け可能です。',
     tags: ['開発者向け', 'テキスト', 'デザイン'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8580863',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
     features: [
@@ -1958,7 +1958,7 @@ export const tools: Tool[] = [
     description:
       '25以上のUnicodeブロック（Basic Latin・Greek・CJK・Emoji等）を一覧表示。文字名やコードポイントで検索し、クリックでコードポイント・UTF-8/16バイト列・HTMLエンティティ・JSエスケープ・CSS content値を6形式でコピー可能。よく使う文字をお気に入りに保存できます。',
     tags: ['開発者向け', 'テキスト', 'エンコード'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8580844',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
     features: [
