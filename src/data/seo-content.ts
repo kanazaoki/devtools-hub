@@ -1103,6 +1103,36 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: '開発者が知っておくべき主要ブロック', body: 'Basic Latin（U+0020〜U+007E）はASCII文字すべてを含みます。Arrows（U+2190〜U+21FF）はUI用の矢印記号が豊富です。Mathematical Operators（U+2200〜U+22FF）には∞・∑・√など数式記号が揃います。Emoticons（U+1F600〜U+1F64F）は顔文字絵文字のブロックです。Hiragana/Katakana（U+3040〜U+30FF）は日本語仮名の全文字を含みます。Box Drawing（U+2500〜U+257F）はターミナルUI作成に使えます。' },
     ],
   },
+  'jwt-builder': {
+    heading: 'JWTの仕組みと安全な使い方',
+    intro: 'JWT（JSON Web Token）はWeb APIの認証で広く使われるトークン形式です。Header・Payload・Signatureの3パートで構成され、署名によって改ざん検知が可能です。仕組みを正しく理解することで、セキュリティ上の落とし穴を避けられます。',
+    sections: [
+      { title: 'JWTの構造', body: 'JWTはBase64URL形式の3パートをドット（.）で繋いだ文字列です。Headerにはアルゴリズムとトークンタイプ、PayloadにはClaimsと呼ばれる任意のデータ、SignatureにはHeader+PayloadをSecretで署名した値が入ります。重要なのはPayloadは単に Base64URL エンコードされているだけで暗号化はされていないこと。機密情報をPayloadに入れてはいけません。' },
+      { title: 'HS256 / RS256 / ES256 の違い', body: 'HS256（HMAC-SHA256）は共有秘密鍵で署名する対称アルゴリズムです。シンプルですが署名鍵と検証鍵が同じため、検証する全サービスが秘密鍵を持つ必要があります。RS256（RSA-SHA256）は秘密鍵で署名し公開鍵で検証する非対称方式で、マイクロサービス間の検証に適しています。ES256（ECDSA-SHA256）はRS256より鍵長が短くパフォーマンスに優れます。' },
+      { title: '標準クレーム（Registered Claims）', body: 'RFC 7519で定義された標準クレームがあります。iss（発行者）、sub（主体）、aud（対象者）、exp（有効期限・Unix timestamp）、nbf（有効開始時刻）、iat（発行時刻）、jti（JWT ID・ユニーク識別子）。特にexpの検証は必須です。検証なしでトークンを信頼すると期限切れトークンが悪用されます。' },
+      { title: 'JWTのセキュリティ注意点', body: 'よくある脆弱性として「algをnoneに変更した攻撃」があります。古い実装ではalg:noneのJWTを署名なしで受け入れてしまう場合があります。対策としてサーバー側でアルゴリズムを固定します。またJWTはステートレスのため失効（Revoke）が難しく、有効期限を短く（15分〜1時間）設定しリフレッシュトークンと組み合わせる設計が推奨されます。' },
+    ],
+  },
+  'cookie-inspector': {
+    heading: 'HTTPクッキーの属性と安全な設定方法',
+    intro: 'HTTPクッキーはWebアプリケーションのセッション管理・認証・ユーザー設定の保存に不可欠です。Set-Cookieヘッダーの各属性を正しく設定することがXSS・CSRF攻撃からの防御に直結します。クッキーの仕組みと属性の意味を理解しましょう。',
+    sections: [
+      { title: 'Set-Cookieヘッダーの構文', body: 'Set-Cookie: name=value; Expires=日時; Max-Age=秒数; Path=/; Domain=.example.com; Secure; HttpOnly; SameSite=Strict の形式です。ExpiresとMax-Ageの両方が指定された場合はMax-Ageが優先されます。どちらもなければセッションクッキー（ブラウザ閉じたら削除）になります。' },
+      { title: 'HttpOnly・Secureフラグの重要性', body: 'HttpOnlyを設定するとJavaScriptからdocument.cookieでアクセスできなくなり、XSS攻撃でのクッキー窃取を防ぎます。Secureを設定するとHTTPS接続でのみ送信され、中間者攻撃を防ぎます。認証クッキーには必ずこの両方を設定してください。開発環境ではHTTPを使うことが多いため、Secureはプロダクション環境でのみ有効にする設定があります。' },
+      { title: 'SameSite属性でCSRFを防ぐ', body: 'SameSite=Strict: 同一サイトからのリクエストのみクッキーを送信。外部サイトからのリンクでもクッキーが送られないため、ログイン状態が保持されない場合があります。SameSite=Lax: デフォルト値。GETの最上位ナビゲーション（リンクのクリック等）では送信、POST等では送信しません。SameSite=None: クロスサイトでも送信（必ずSecureが必要）。' },
+      { title: 'クッキーのスコープ設計', body: 'Domainにexample.comを指定するとsub.example.comのサブドメインにもクッキーが送られます（先頭の.は任意）。PathはURL階層でクッキーの送信範囲を制限します。クッキーサイズは合計4KB制限があります。クッキーを大量に設定するとリクエストヘッダーが肥大化するため、セッションIDのみ格納しデータはサーバー側に持つ設計が推奨されます。' },
+    ],
+  },
+  'semver-calculator': {
+    heading: 'セマンティックバージョニングの仕様と実践',
+    intro: 'Semantic Versioning（semver）はソフトウェアのバージョン番号に意味を持たせる標準仕様です。MAJOR.MINOR.PATCHの3番号で互換性の変化を伝え、依存関係の管理を安全にします。npm・pip・Cargo など主要パッケージマネージャーが採用されています。',
+    sections: [
+      { title: 'MAJOR・MINOR・PATCH の意味', body: 'MAJOR（メジャー）: 後方互換性のない変更（破壊的変更）。APIの削除・変更、動作の根本的な変化など。MINOR（マイナー）: 後方互換性のある機能追加。新APIの追加、既存機能の拡張など。PATCH（パッチ）: 後方互換性のあるバグ修正のみ。バージョン1.0.0から始め、MAJORが上がったらMINOR/PATCHは0にリセット、MINORが上がったらPATCHは0にリセットします。' },
+      { title: 'プレリリース版とビルドメタデータ', body: 'ハイフン付きはプレリリース版: 1.0.0-alpha, 1.0.0-alpha.1, 1.0.0-beta.2, 1.0.0-rc.1。プレリリース版は正式版より優先度が低く、1.0.0-alpha < 1.0.0-rc.1 < 1.0.0 となります。プラス記号後はビルドメタデータ: 1.0.0+20240101。ビルドメタデータはバージョン比較で無視されます。' },
+      { title: 'npm の範囲指定記法', body: '^1.2.3 はMAJORを固定してMINOR以上のアップデートを許可（>=1.2.3 <2.0.0）。~1.2.3 はMAJOR・MINORを固定してPATCHのみ許可（>=1.2.3 <1.3.0）。>=1.0.0 <2.0.0 のような明示的な範囲も使えます。* や latest は最新版。MAJORが0の場合（0.x.y）は開発中として扱われ、^0.2.3は>=0.2.3 <0.3.0と解釈されます。' },
+      { title: 'バージョン管理のベストプラクティス', body: 'バージョン1.0.0を公開したら仕様変更を最小限に。破壊的変更がある場合は必ずMAJORを上げます。CHANGELOGを整備してバージョン間の差分を記録します。リリース前に0.x.yで実験的リリースを行い安定したら1.0.0に移行。Git タグとバージョンを一致させる（v1.2.3）と管理が楽になります。' },
+    ],
+  },
   'http-request-builder': {
     heading: 'HTTPリクエストの基礎とcURL・fetch・axiosの使い分け',
     intro: 'HTTPリクエストはWebアプリケーション開発の根幹です。APIの動作確認・デバッグ・ドキュメント化には、適切なHTTPクライアントの選択とリクエスト構造の理解が欠かせません。curl・fetch・axiosそれぞれの特徴を把握して使い分けることで、開発効率が大幅に向上します。',
