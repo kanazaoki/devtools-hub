@@ -1888,6 +1888,91 @@ export const tools: Tool[] = [
     desktopFeatures: ['生成した CSS コードを .css ファイルとして保存'],
   },
   {
+    slug: 'timezone-converter',
+    name: 'Time Zone Converter',
+    tagline: '最大5都市のタイムゾーンを同時変換・ビジネスアワー重複をビジュアル表示',
+    description:
+      '30都市以上のタイムゾーンプリセットから最大5都市を選択し、基準日時を入力すると全タイムゾーンの時刻を即変換。各タイムゾーンの現在時刻を1秒単位でリアルタイム表示します。24時間タイムラインにビジネスアワー（9〜18時）を重ね、重複する時間帯をハイライト表示します。',
+    tags: ['開発者向け', '効率化', '時刻'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-04',
+    features: [
+      '30都市以上のプリセットから最大5タイムゾーンを選択',
+      '基準日時入力で全タイムゾーンへ即変換',
+      '現在時刻を1秒ごとにリアルタイム表示',
+      '24時間タイムラインにビジネスアワー（9〜18時）を色別表示',
+      '全スロットのビジネスアワー重複時間帯をハイライト',
+      '「今すぐ」ボタンで基準日時を現在時刻にリセット',
+    ],
+    desktopFeatures: [
+      '全スロットの変換結果（都市・時刻・UTCオフセット）を .csv ファイルとして保存',
+    ],
+  },
+  {
+    slug: 'css-box-model',
+    name: 'CSS Box Model Visualizer',
+    tagline: 'margin / padding / border を色分けビジュアルで確認しながら CSS 生成',
+    description:
+      'margin・padding・border の各辺を個別スライダーで調整し、同心四角形の色分けボックス図でリアルタイムに確認。一括編集モードで4辺を同時変更、box-sizing の content-box / border-box 切り替えにも対応。生成した CSS はワンクリックでコピーできます。',
+    tags: ['CSS', 'デザイン', '開発者向け'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-04',
+    features: [
+      'margin / padding / border の各辺を個別スライダーで調整',
+      '一括編集モードで4辺同時変更に切り替え可能',
+      'content / padding / border / margin を4色で色分けしたリアルタイムビジュアル',
+      'box-sizing: content-box / border-box の切り替え対応',
+      '生成CSS（margin/padding/border/box-sizing）をワンクリックコピー',
+    ],
+    desktopFeatures: [
+      '設定（margin/padding/border/contentサイズ）を .json ファイルとして保存・読み込み',
+    ],
+  },
+  {
+    slug: 'ascii-art-generator',
+    name: 'ASCII Art Generator',
+    tagline: 'テキストをASCIIアートに変換 — 6フォント・コメントラッパー対応',
+    description:
+      'テキストを入力するだけでASCIIアートに即変換。Standard・Block・Banner・Slant・Shadow・3-Dの6フォントから選択でき、幅制限スライダーで40〜200文字幅に対応。// や /* */ など6種類のコメントラッパーで、そのままコードコメントとして貼り付け可能です。',
+    tags: ['開発者向け', 'テキスト', 'デザイン'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-05',
+    features: [
+      'Standard / Block / Banner / Slant / Shadow / 3-D の6フォントを収録',
+      'フォントデータを完全バンドル（CDN不使用）',
+      '幅制限スライダーで40〜200文字に対応',
+      '// / /* */ / # / -- / % の6種コメントラッパーを選択可能',
+      'ワンクリックでクリップボードにコピー',
+    ],
+    desktopFeatures: [
+      'ASCII アート結果を .txt ファイルとして保存',
+    ],
+  },
+  {
+    slug: 'unicode-browser',
+    name: 'Unicode Browser',
+    tagline: 'Unicode文字を名前・コードポイントで検索・ブロック別ブラウジング',
+    description:
+      '25以上のUnicodeブロック（Basic Latin・Greek・CJK・Emoji等）を一覧表示。文字名やコードポイントで検索し、クリックでコードポイント・UTF-8/16バイト列・HTMLエンティティ・JSエスケープ・CSS content値を6形式でコピー可能。よく使う文字をお気に入りに保存できます。',
+    tags: ['開発者向け', 'テキスト', 'エンコード'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-04',
+    features: [
+      '25以上のUnicodeブロックからブロック別ブラウジング',
+      '文字名・コードポイント（U+XXXX形式）での検索',
+      'コードポイント・UTF-8バイト列・UTF-16バイト列・HTMLエンティティ・JSエスケープ・CSS content値の6形式表示',
+      '各形式をワンクリックでクリップボードにコピー',
+      'お気に入り文字をlocalStorageに保存',
+    ],
+    desktopFeatures: [
+      'お気に入り文字リストを .json ファイルとして保存・読み込み',
+    ],
+  },
+  {
     slug: 'robots-txt-generator',
     name: 'robots.txt Generator',
     tagline: 'User-agent ルール・Sitemap URL を GUI で設定して robots.txt を即生成',
