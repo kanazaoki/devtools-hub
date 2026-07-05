@@ -1103,6 +1103,36 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: '開発者が知っておくべき主要ブロック', body: 'Basic Latin（U+0020〜U+007E）はASCII文字すべてを含みます。Arrows（U+2190〜U+21FF）はUI用の矢印記号が豊富です。Mathematical Operators（U+2200〜U+22FF）には∞・∑・√など数式記号が揃います。Emoticons（U+1F600〜U+1F64F）は顔文字絵文字のブロックです。Hiragana/Katakana（U+3040〜U+30FF）は日本語仮名の全文字を含みます。Box Drawing（U+2500〜U+257F）はターミナルUI作成に使えます。' },
     ],
   },
+  'http-request-builder': {
+    heading: 'HTTPリクエストの基礎とcURL・fetch・axiosの使い分け',
+    intro: 'HTTPリクエストはWebアプリケーション開発の根幹です。APIの動作確認・デバッグ・ドキュメント化には、適切なHTTPクライアントの選択とリクエスト構造の理解が欠かせません。curl・fetch・axiosそれぞれの特徴を把握して使い分けることで、開発効率が大幅に向上します。',
+    sections: [
+      { title: 'cURLコマンドの基本構文', body: 'curl -X POST https://api.example.com/users -H "Content-Type: application/json" -d \'{"name":"Alice"}\' のように、-Xでメソッド、-Hでヘッダー、-dでボディを指定します。-vオプションでリクエスト/レスポンスの全詳細を表示できます。--compressedを付けるとgzip圧縮レスポンスを自動展開します。開発環境のSSL検証を無効にするには-kオプションを使いますが本番では使用しないこと。' },
+      { title: 'Fetch APIとaxiosの違い', body: 'Fetch APIはブラウザ・Node.js 18+に標準搭載されライブラリ不要ですが、エラーハンドリングに注意が必要です。HTTPエラー（4xx/5xx）ではPromiseがrejectされず、response.okで判定する必要があります。axiosはHTTPエラーを自動でrejectし、リクエスト/レスポンスインターセプター・タイムアウト設定・自動JSONシリアライズなど豊富な機能を持ちます。小規模プロジェクトにはfetch、複雑な要件にはaxiosが適しています。' },
+      { title: 'HTTPメソッドの正しい使い方', body: 'GETはリソースの取得（冪等・キャッシュ可）、POSTはリソースの作成（非冪等）、PUTはリソース全体の置換（冪等）、PATCHはリソースの部分更新（冪等）、DELETEはリソースの削除（冪等）です。HEADはGETと同じだがボディなし、OPTIONSはCORSプリフライトに使用します。RESTful APIでは用途に合ったメソッドを選ぶことが重要です。' },
+      { title: 'CORSとプリフライトリクエスト', body: 'ブラウザはクロスオリジンリクエスト時にCORS（Cross-Origin Resource Sharing）チェックを行います。単純リクエスト（GET・POST with application/x-www-form-urlencoded）以外はプリフライトとしてOPTIONSリクエストが送信されます。サーバーはAccess-Control-Allow-Originヘッダーで許可オリジンを返す必要があります。curlはCORSチェックを行わないため、ブラウザで失敗してもcurlでは成功するケースがあります。' },
+    ],
+  },
+  'json-diff': {
+    heading: 'JSONの差分比較 — 変更点を素早く特定するテクニック',
+    intro: 'APIのレスポンス変更確認、設定ファイルの更新内容チェック、データ移行の検証など、JSONの差分比較は開発・運用の様々な場面で必要になります。手動での比較は見落としが多く非効率です。構造化されたJSONの差分を自動的に検出する方法を理解することで、作業精度と速度が向上します。',
+    sections: [
+      { title: 'JSONのディープイコール比較', body: 'JSONの同一性チェックはJSON.stringify()での文字列比較が手軽ですが、キーの順序が異なる場合に誤った結果になります。確実に比較するにはキーをソートしてシリアライズする（JSON.stringify(obj, Object.keys(obj).sort())）か、再帰的に全プロパティを比較する関数を使います。配列は順序も含めて比較されるため、順序不問の場合は別途ソートが必要です。' },
+      { title: 'JSON Patch（RFC 6902）の仕様', body: 'JSON Patchは2つのJSONの差分を標準フォーマットで表現する仕様です。add・remove・replace・move・copy・testの6操作を配列で記述します。例：[{"op":"replace","path":"/name","value":"Bob"},{"op":"add","path":"/email","value":"bob@example.com"}]。APIで差分更新を送信する際や、変更履歴を保存する際に活用できます。fast-json-patchライブラリで生成・適用が可能です。' },
+      { title: '深いネストへのアクセスにJSONPointerを使う', body: 'JSON Pointer（RFC 6901）はJSONの特定の値を指すパス表記で、/users/0/nameのようにスラッシュ区切りで記述します。キーに/や~が含まれる場合はそれぞれ~1・~0にエスケープします。jqコマンドはJSON Pointerに似た構文で.users[0].nameのようにアクセスでき、複雑なJSONから特定フィールドを抽出・変換するのに便利です。' },
+      { title: 'スキーマバリデーションで差分を防ぐ', body: 'JSONの構造変化を検知するには差分比較だけでなく、JSON Schemaによるバリデーションが有効です。APIレスポンスの型をJSON Schemaで定義し、ajv等のバリデーターでチェックすることで、フィールドの追加・削除・型変更を自動検出できます。TypeScriptユーザーはzodでスキーマ定義とバリデーションを一元管理でき、JSON to ZodツールでJSON例からスキーマを自動生成できます。' },
+    ],
+  },
+  'canvas-noise-generator': {
+    heading: 'Perlin Noise・Simplex Noiseの仕組みと使い方',
+    intro: 'Perlin NoiseとSimplex Noiseは、自然な見た目のランダムパターンを生成するアルゴリズムです。地形生成・雲・煙・木目・大理石模様など、ゲーム・映像・グラフィックデザインの分野で広く使われています。純粋な乱数と異なり、隣接するピクセルが連続した値を持つ「コヒーレントノイズ」である点が特徴です。',
+    sections: [
+      { title: 'Perlin Noiseの仕組み', body: 'Perlin Noiseは格子点ごとにランダムな勾配ベクトルを割り当て、各点から格子点への距離ベクトルとの内積をフェード関数で滑らかに補間します。フェード関数f(t) = 6t⁵-15t⁴+10t³は二次微分まで連続なため、ピクセル間の変化が非常に滑らかです。実装は2D・3D・4Dに拡張でき、3D Perlin Noiseはアニメーションするノイズテクスチャの生成に使われます。' },
+      { title: 'Simplex Noiseの優位性', body: 'Simplex NoiseはKen Perlinが2001年に発表したPerlin Noiseの改良版です。2Dでは三角格子（単体＝Simplex）を使うためPerlinより計算量が少なく、高次元でも計算コストがO(n²)からO(n)に改善されます。また方向性のアーティファクト（縦横方向に見えるパターン）が少なく、より自然な見た目になります。ゲームエンジンやシェーダーでの採用が多い理由です。' },
+      { title: 'オクターブとフラクタルノイズ', body: '複数のノイズを重ねる「フラクタルブラウン運動（fBm）」により、より詳細で自然なパターンを作れます。オクターブ数は重ねる層の数、Persistenceは各オクターブの振幅の減衰率（0.5が一般的）、Lacunarityは周波数の増加倍率（2.0が一般的）です。オクターブを増やすと細部が増え、Persistenceを上げると各層の影響が大きく荒いノイズになります。地形生成では4〜8オクターブが使われます。' },
+      { title: 'Canvas APIでノイズを描画する', body: 'ブラウザのCanvas APIでノイズを描画するにはImageDataを使うのが最速です。ctx.createImageData(w, h)でピクセルバッファを確保し、各ピクセルのRGBA値を直接書き込んでctx.putImageData()で反映します。WebGLを使えばGPUで並列処理できさらに高速ですが、実装が複雑になります。Workerを使って計算をメインスレッドから分離することでUIブロッキングを防げます。' },
+    ],
+  },
   'robots-txt-generator': {
     heading: 'robots.txt 完全ガイド — クローラー制御の書き方と設定例',
     intro: 'robots.txtはWebサイトのルートに置くテキストファイルで、検索エンジンのクローラー（Googlebot など）にどのページをクロールしてよいかを指示します。適切に設定することでクロール予算を最適化し、意図しないページのインデックスを防げます。',
