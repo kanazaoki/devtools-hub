@@ -2036,7 +2036,7 @@ export const tools: Tool[] = [
     description:
       'メソッド・URL・ヘッダー・ボディを入力するだけで、curl コマンド・JavaScript fetch・axios の3形式のコードをリアルタイムに生成。API開発・デバッグ・ドキュメント作成に役立ちます。',
     tags: ['HTTP', 'API', '開発ツール', 'Web開発'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8587874',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
     features: [
@@ -2046,7 +2046,7 @@ export const tools: Tool[] = [
       'curl / fetch / axios の3形式でコード生成・コピー',
       'パラメータ変更でリアルタイムにコードを更新',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['生成したコードをファイルに保存（curl→.sh / fetch,axios→.js）', 'JSON設定ファイルを読み込んでURL・ヘッダー・ボディを一括復元'],
   },
   {
     slug: 'json-diff',
@@ -2055,7 +2055,7 @@ export const tools: Tool[] = [
     description:
       '左右のペインに Before / After の JSON を貼り付けるだけで、追加・削除・変更された項目をリアルタイムに検出してハイライト表示。APIレスポンスの差分確認や設定ファイルの変更点チェックに。',
     tags: ['JSON', '開発ツール', 'デバッグ'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8587957',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
     features: [
@@ -2065,7 +2065,7 @@ export const tools: Tool[] = [
       '不正なJSON入力時にパースエラーを表示',
       'サンプルデータで即動作確認',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['JSONファイルを直接読み込んでBefore/Afterに展開', '差分レポートをテキストファイルに保存'],
   },
   {
     slug: 'canvas-noise-generator',
@@ -2074,7 +2074,7 @@ export const tools: Tool[] = [
     description:
       'Perlin Noise と Simplex Noise をブラウザ上でリアルタイム生成。スケール・オクターブ・Persistence・Lacunarity・シード値をスライダーで調整し、グレースケールや Viridis / Plasma / Inferno カラーマップで可視化。PNG ダウンロードも可能。',
     tags: ['Canvas', 'グラフィック', '開発ツール', 'ゲーム開発'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8587971',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
     features: [
@@ -2084,7 +2084,7 @@ export const tools: Tool[] = [
       '512×512px キャンバスをリアルタイムプレビュー',
       'PNG ファイルとしてダウンロード',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['ノイズ設定をJSONファイルに保存・読み込み', '生成したノイズ画像をPNGとして保存'],
   },
   {
     slug: 'robots-txt-generator',
