@@ -1979,7 +1979,7 @@ export const tools: Tool[] = [
     description:
       'HS256 / HS384 / HS512 アルゴリズムに対応したJWT生成ツール。Header・Payload をJSON形式で入力し、Secret を指定するだけでトークンをリアルタイム生成。3パートの色分け表示付き。既存のJWT Decoderと対になるツール。',
     tags: ['JWT', '認証', 'セキュリティ', '開発ツール'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8587334',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
     features: [
@@ -1989,7 +1989,7 @@ export const tools: Tool[] = [
       'Header（赤）/ Payload（紫）/ Signature（緑）の3色表示',
       '無効なJSON入力時にリアルタイムエラー表示',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['JWTをテキストファイルに保存', '秘密鍵ファイルの読み込み'],
   },
   {
     slug: 'cookie-inspector',
@@ -1998,7 +1998,7 @@ export const tools: Tool[] = [
     description:
       'Set-Cookie ヘッダーや Cookie ヘッダー文字列をペーストするだけで、name/value/expires/path/domain/HttpOnly/Secure/SameSite を一覧表示。有効期限の残り時間・期限切れ判定付き。複数クッキーの一括解析に対応。',
     tags: ['HTTP', 'Cookie', 'セキュリティ', '開発ツール'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8587370',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
     features: [
@@ -2008,7 +2008,7 @@ export const tools: Tool[] = [
       'HttpOnly / Secure / SameSite フラグの表示',
       'サンプルデータ挿入でクイック確認',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['解析結果をJSONファイルに保存', 'Set-Cookieヘッダーファイルの読み込み'],
   },
   {
     slug: 'semver-calculator',
@@ -2017,7 +2017,7 @@ export const tools: Tool[] = [
     description:
       'バージョン文字列を入力するだけで major/minor/patch/prerelease を分解表示。patch/minor/major バンプ後のバージョンを即計算。2バージョンの大小比較と、^1.2.0 や ~1.2.0 などの範囲指定チェックにも対応。',
     tags: ['npm', 'バージョン管理', '開発ツール'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8587383',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
     features: [
@@ -2027,7 +2027,7 @@ export const tools: Tool[] = [
       '2バージョンの大小比較',
       '^ ~ >= <= > < * 範囲指定でバージョンが含まれるか判定',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['package.json読み込みで依存パッケージを一括チェック', '結果をテキストファイルに保存'],
   },
   {
     slug: 'http-request-builder',
