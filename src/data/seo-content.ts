@@ -1163,6 +1163,46 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'Canvas APIでノイズを描画する', body: 'ブラウザのCanvas APIでノイズを描画するにはImageDataを使うのが最速です。ctx.createImageData(w, h)でピクセルバッファを確保し、各ピクセルのRGBA値を直接書き込んでctx.putImageData()で反映します。WebGLを使えばGPUで並列処理できさらに高速ですが、実装が複雑になります。Workerを使って計算をメインスレッドから分離することでUIブロッキングを防げます。' },
     ],
   },
+  'fake-data-generator': {
+    heading: 'テストデータ生成の基礎 — ダミーデータをなぜ使うのか',
+    intro: 'ソフトウェア開発ではデータベースのテスト・UIのモックアップ・APIの動作確認など、様々な場面でダミーデータが必要になります。本番データをそのまま使うとプライバシーリスクがあるため、フェイクデータを使うのが標準的なアプローチです。',
+    sections: [
+      { title: 'フェイクデータとモックデータの違い', body: 'フェイクデータは実際のデータと同じ形式・パターンを持つが架空のデータです。モックデータは特定のテストシナリオ用に固定値を設定したデータを指します。自動テストには再現性のあるモックデータが、手動テストや開発環境の初期データ投入にはランダムなフェイクデータが適しています。Fake Data Generatorは後者のユースケースに対応します。' },
+      { title: 'ダミーデータをDBに投入するシードの書き方', body: 'Node.js + Prismaの場合、prisma/seed.tsにFake Data Generatorで生成したJSONを読み込むか、生成ロジックを組み込んでprisma.user.createMany()で一括登録する方法が一般的です。Pythonのdjango-fixture-magicやFactoryBoyも同様のアプローチです。SQLiteはCSVからの一括インポートが.mode csvコマンドで可能です。' },
+      { title: 'JSONからCSV・TSVへの変換が必要なケース', body: 'Google SheetsへのインポートはCSV形式が最も簡単です。ExcelはTSV（タブ区切り）でテキスト貼り付けが確実です。MySQLのLOAD DATA INFILEはCSVに対応。Elasticsearchへの一括インデックスはJSON Lines（.jsonl）形式を使います。各ツール・DBに合わせて出力形式を選ぶことで手作業による変換が不要になります。' },
+      { title: 'プライバシーに配慮したテスト環境の作り方', body: '本番環境のデータをそのまま開発環境にコピーするとGDPR・個人情報保護法に抵触する可能性があります。フェイクデータを使うことで個人情報の漏洩リスクをゼロにできます。必要なデータ形式・桁数・文字種だけを実際に合わせ、値は架空のものにする「データマスキング」の手法と組み合わせることも有効です。' },
+    ],
+  },
+  'exif-viewer': {
+    heading: 'EXIFデータとは — 写真に埋め込まれた撮影情報の読み方',
+    intro: 'EXIF（Exchangeable Image File Format）はJPEGやTIFF画像に埋め込まれるメタデータ規格です。撮影した日時・カメラの機種・ISO感度・シャッタースピード・GPS座標など、写真の「撮影ログ」が記録されています。プライバシーの観点から、SNSにアップする前に確認・削除すべき情報でもあります。',
+    sections: [
+      { title: 'EXIFに含まれる主要なタグ', body: 'EXIFには200以上のタグが定義されています。よく使われる主要タグ：DateTime（撮影日時）・Make/Model（カメラメーカー/機種）・ISOSpeedRatings（ISO感度）・ExposureTime（シャッタースピード）・FNumber（絞り値/F値）・FocalLength（焦点距離）・GPSLatitude/GPSLongitude（位置情報）・ImageWidth/ImageLength（解像度）。スマートフォン写真にはGPSとMakeが特に含まれやすいです。' },
+      { title: 'GPS情報のプライバシーリスク', body: 'スマートフォンはデフォルトでGPS情報をEXIFに埋め込みます。自宅・職場・学校で撮影した写真をSNSにアップすると、その座標が公開されます。iPhoneはiOS 13以降に写真設定でGPS削除オプションが追加されました。Androidは機種により異なります。SNS（Instagram・Twitter・Facebook）は多くの場合アップロード時にEXIFを自動削除しますが、確認するのが安全です。' },
+      { title: 'F値・ISO・SSの関係（露出三角形）', body: 'EXIFのF値（絞り）・シャッタースピード（SS）・ISO感度は露出を決める3要素です。F値が大きいほど絞りが小さく光量が減少・被写界深度が深くなります。SSが速いほど動きのブレが少なくなりますが光量が減ります。ISOが高いほど暗所に強くなりますがノイズが増えます。EXIFを見ることで「どんな設定で撮ったか」を後から分析できます。' },
+      { title: 'EXIFのバイナリ構造とパース方法', body: 'JPEGファイルはSOI（0xFFD8）から始まるマーカーセグメントで構成されます。EXIFはAPP1マーカー（0xFFE1）直後にExif\\0\\0というASCII文字列を持ち、その後TIFFヘッダーとIFD（Image File Directory）が続きます。各IFDエントリは12バイトで、タグID・データ型・件数・値/オフセットを格納します。DataViewを使うとブラウザ側でバイナリを直接読み込んでパースできます。' },
+    ],
+  },
+  'json-flattener': {
+    heading: 'JSONフラット化の使いどころ — Redis・.env・設定ファイルへの応用',
+    intro: 'ネストしたJSONオブジェクトをキーのパスをドット区切りで連結したフラットな構造に変換することを「フラット化」と呼びます。フラットなJSONはRedisのハッシュフィールド・環境変数・CSVへの変換など、様々なデータパイプラインで扱いやすくなります。',
+    sections: [
+      { title: 'Redisのハッシュフィールドへのマッピング', body: 'Redisのハッシュ（HSET）はフラットなキー/バリュー構造しか持てません。ネストしたJSONをフラット化することでHSET user:123 name.first Alice name.last Bob age 30のように構造を保ちながら格納できます。HGETALLで取得後アンフラットすれば元のネストJSONに戻せます。node-redisやioredisで実装する際にJSON Flattenerのロジックをそのまま利用できます。' },
+      { title: '環境変数としてのネストJSONの扱い', body: '設定オブジェクトを環境変数に変換する場合、フラット化してキーを大文字にする変換が一般的です。例：{ "db": { "host": "localhost" } } → DB__HOST=localhostのようにダブルアンダースコアを区切り文字として使います。.NETのIConfigurationやSpring Bootはこの規則に対応しています。JSON Flattenerでフラットなキーリストを生成してから.env形式に手動変換すると効率的です。' },
+      { title: 'JSONPathでネスト要素に直接アクセスする方法', body: 'フラット化せずにネストJSONを操作するには、JSONPath（$.a.b.c）やJSON Pointer（/a/b/c）を使う方法があります。lodash.getでは_.get(obj, "a.b.c")でネスト値を安全に取得できます。optional chaining（obj?.a?.b?.c）はTypeScript/JavaScript 2020以降で使えます。フラット化が必要ないケースではこれらの手法の方が適しています。' },
+      { title: '配列のフラット化と注意点', body: '配列を含むJSONをフラット化すると { "items.0": "a", "items.1": "b" } のようになります。アンフラット時に数値キーのみのオブジェクトを配列として復元するかどうかは実装によります。JSON Flattenerは数値キーを配列として復元します。ただし疎な配列（items.0とitems.5だけ存在など）はitems.3などの中間要素がundefinedになることに注意が必要です。' },
+    ],
+  },
+  'http-response-mock': {
+    heading: 'HTTPレスポンスの構造 — ステータスコード・ヘッダー・ボディの役割',
+    intro: 'HTTPレスポンスはステータスライン・ヘッダー・ボディの3要素で構成されます。APIのモック設計やテストケースの作成では、正常系だけでなく各種エラーレスポンスのフォーマットを正確に定義することが重要です。',
+    sections: [
+      { title: 'ステータスコードのカテゴリと使い分け', body: '1xx（情報）・2xx（成功）・3xx（リダイレクト）・4xx（クライアントエラー）・5xx（サーバーエラー）の5カテゴリに分類されます。REST APIで頻繁に使うコード：200 OK（成功）・201 Created（作成成功）・204 No Content（削除成功等）・400 Bad Request（バリデーションエラー）・401 Unauthorized（認証エラー）・403 Forbidden（認可エラー）・404 Not Found・422 Unprocessable Entity（入力値エラー）・429 Too Many Requests（レート制限）・500 Internal Server Error。' },
+      { title: 'Content-Typeヘッダーの重要性', body: 'Content-Typeはレスポンスボディの形式をクライアントに伝えるヘッダーです。application/jsonはJSONボディを示し、クライアントはJSON.parse()で解析します。text/htmlはブラウザがHTMLとしてレンダリングします。application/octet-streamはバイナリデータのダウンロードに使われます。charsetを明示しないとブラウザが文字コードを誤検出する場合があります（Content-Type: text/html; charset=utf-8が推奨）。' },
+      { title: 'CORSヘッダーの設定方法', body: 'クロスオリジンリクエストを許可するには、レスポンスにAccess-Control-Allow-Origin: *（または特定ドメイン）を含める必要があります。プリフライト（OPTIONSリクエスト）にはAccess-Control-Allow-Methods: GET, POST, PUT, DELETEとAccess-Control-Allow-Headers: Content-Type, Authorizationも必要です。認証情報（Cookie/Bearer）を含む場合はAccess-Control-Allow-Credentials: trueとし、Allow-Originにワイルドカードは使えません。' },
+      { title: 'モックAPIサーバーの作り方', body: 'HTTP Response Mock Builderで設計したレスポンスはNode.jsのhttp.createServer()でそのまま実装できます。res.writeHead(statusCode, headers)でステータスとヘッダーを設定し、res.end(body)でボディを送信します。json-serverやMSW（Mock Service Worker）を使うとよりリッチなモック環境を構築できます。MSWはブラウザのService Workerとして動作するため、実際のHTTPリクエストをインターセプトしてモックレスポンスを返せます。' },
+    ],
+  },
   'robots-txt-generator': {
     heading: 'robots.txt 完全ガイド — クローラー制御の書き方と設定例',
     intro: 'robots.txtはWebサイトのルートに置くテキストファイルで、検索エンジンのクローラー（Googlebot など）にどのページをクロールしてよいかを指示します。適切に設定することでクロール予算を最適化し、意図しないページのインデックスを防げます。',
