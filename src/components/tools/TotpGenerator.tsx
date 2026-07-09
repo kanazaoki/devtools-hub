@@ -180,7 +180,7 @@ export function TotpGenerator() {
             <span>次の更新まで</span>
             <span className={remaining <= 5 ? 'text-red-400' : 'text-teal'}>{remaining}秒</span>
           </div>
-          <div className="h-1.5 w-full rounded-full bg-border">
+          <div className="h-2 w-full rounded-full bg-border">
             <div
               className={`h-full rounded-full transition-all duration-1000 ${remaining <= 5 ? 'bg-red-400' : 'bg-teal'}`}
               style={{ width: `${100 - progress}%` }}
@@ -198,7 +198,7 @@ export function TotpGenerator() {
               onClick={() => handleCopy(code)}
               className={`group flex flex-col items-center gap-2 rounded-lg border p-4 transition-colors ${
                 offset === 0
-                  ? 'border-teal/50 bg-teal/5 hover:bg-teal/10'
+                  ? 'border-teal/50 bg-teal/5 shadow-[0_0_20px_rgba(0,200,150,0.07)] hover:border-teal/70 hover:bg-teal/10'
                   : 'border-border bg-surface hover:border-border-hi'
               }`}
               aria-label={`${label} ${code} をコピー`}
@@ -227,8 +227,8 @@ export function TotpGenerator() {
       )}
 
       {/* 注意書き */}
-      <p className="font-mono text-[10px] text-muted/60 leading-relaxed">
-        ※ すべての処理はブラウザ内で完結します。シークレットキーはサーバーに送信されません。
+      <p className="border-l-2 border-border pl-3 font-mono text-[10px] leading-relaxed text-muted">
+        すべての処理はブラウザ内で完結します。シークレットキーはサーバーに送信されません。
         本番環境の 2FA シークレットの取り扱いには十分ご注意ください。
       </p>
     </div>

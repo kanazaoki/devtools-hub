@@ -175,6 +175,7 @@ export function JsonToSql() {
   return (
     <div className="flex flex-col gap-4">
       {/* 設定バー */}
+      <div className="rounded-lg border border-border bg-surface p-3">
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex flex-col gap-1">
           <label className="font-mono text-[10px] uppercase tracking-widest text-muted">テーブル名</label>
@@ -217,39 +218,44 @@ export function JsonToSql() {
         <div className="ml-auto flex gap-2">
           <button
             onClick={() => setJson(SAMPLE)}
-            className="rounded border border-border px-3 py-1.5 font-mono text-xs text-muted hover:border-border-hi hover:text-dim transition-colors"
+            className="rounded border border-border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-border-hi hover:text-dim"
           >
             サンプル
           </button>
           <button
             onClick={handleCopy}
             disabled={!sql}
-            className="rounded border border-border px-3 py-1.5 font-mono text-xs text-muted hover:border-teal hover:text-teal disabled:opacity-40 transition-colors"
+            className="rounded border border-border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-teal hover:text-teal disabled:opacity-40"
           >
             {copied ? '✓ コピー済み' : 'SQLをコピー'}
           </button>
         </div>
       </div>
+      </div>
 
       {/* 2ペイン */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="overflow-hidden rounded-lg border border-border lg:grid lg:grid-cols-2">
         {/* JSON 入力 */}
-        <div className="flex flex-col gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">JSON Input（配列）</span>
+        <div className="flex flex-col border-b border-border lg:border-b-0 lg:border-r">
+          <div className="border-b border-border bg-surface px-4 py-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted">JSON Input（配列）</span>
+          </div>
           <textarea
             value={json}
             onChange={(e) => setJson(e.target.value)}
             placeholder={'[\n  { "id": 1, "name": "Alice" },\n  { "id": 2, "name": "Bob" }\n]'}
             spellCheck={false}
-            className="h-72 w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm text-primary placeholder:text-muted/50 focus:border-teal focus:outline-none"
+            className="h-72 w-full resize-y bg-bg p-4 font-mono text-sm text-primary placeholder:text-muted/50 focus:outline-none"
           />
-          {error && <p className="font-mono text-xs text-red-400">{error}</p>}
+          {error && <p className="border-t border-border px-4 py-2 font-mono text-xs text-red-400">{error}</p>}
         </div>
 
         {/* SQL 出力 */}
-        <div className="flex flex-col gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">SQL Output</span>
-          <div className="relative h-72 rounded-lg border border-border bg-surface">
+        <div className="flex flex-col">
+          <div className="border-b border-border bg-surface px-4 py-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted">SQL Output</span>
+          </div>
+          <div className="relative h-72 bg-bg">
             {sql ? (
               <pre className="h-full overflow-auto p-4 font-mono text-sm text-primary whitespace-pre-wrap break-words">
                 {sql}

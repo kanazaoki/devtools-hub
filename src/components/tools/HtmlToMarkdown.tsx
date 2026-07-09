@@ -156,38 +156,38 @@ export function HtmlToMarkdown() {
   }, [markdown])
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* ツールバー */}
-      <div className="flex items-center justify-between gap-3">
-        <p className="font-mono text-xs text-muted">HTML を貼り付けると Markdown に変換されます</p>
-        <div className="flex gap-2">
-          <button
-            onClick={handleCopy}
-            disabled={!markdown}
-            className="inline-flex items-center gap-1.5 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-teal hover:text-teal disabled:opacity-40"
-          >
-            {copied ? '✓ コピー済み' : 'コピー'}
-          </button>
-          <button
-            onClick={handleDownload}
-            disabled={!markdown}
-            className="inline-flex items-center gap-1.5 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-teal hover:text-teal disabled:opacity-40"
-          >
-            .md ダウンロード
-          </button>
-        </div>
+    <div className="flex flex-col gap-3">
+      {/* アクションバー */}
+      <div className="flex items-center justify-end gap-2">
+        <button
+          onClick={handleCopy}
+          disabled={!markdown}
+          className="inline-flex items-center gap-1.5 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-teal hover:text-teal disabled:opacity-40"
+        >
+          {copied ? '✓ コピー済み' : 'コピー'}
+        </button>
+        <button
+          onClick={handleDownload}
+          disabled={!markdown}
+          className="inline-flex items-center gap-1.5 rounded border border-border px-3 py-1.5 font-mono text-xs text-muted transition-colors hover:border-teal hover:text-teal disabled:opacity-40"
+        >
+          .md ダウンロード
+        </button>
       </div>
 
-      {/* 2ペイン */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      {/* エディターペイン */}
+      <div className="overflow-hidden rounded-lg border border-border lg:grid lg:grid-cols-2">
         {/* 左: HTML 入力 */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-muted">HTML Input</span>
+        <div className="flex flex-col border-b border-border lg:border-b-0 lg:border-r">
+          <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-2">
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-2 w-2 rounded-full bg-orange-400/60" />
+              <span className="font-mono text-[10px] uppercase tracking-widest text-muted">HTML</span>
+            </div>
             {html && (
               <button
                 onClick={() => setHtml('')}
-                className="font-mono text-[10px] text-muted hover:text-dim transition-colors"
+                className="font-mono text-[10px] text-muted transition-colors hover:text-dim"
               >
                 クリア
               </button>
@@ -198,14 +198,24 @@ export function HtmlToMarkdown() {
             onChange={(e) => setHtml(e.target.value)}
             placeholder={'<h1>タイトル</h1>\n<p>本文テキスト。<strong>太字</strong>や<em>斜体</em>も変換されます。</p>\n<ul>\n  <li>リスト項目1</li>\n  <li>リスト項目2</li>\n</ul>'}
             spellCheck={false}
-            className="h-80 w-full resize-y rounded-lg border border-border bg-surface p-4 font-mono text-sm text-primary placeholder:text-muted/50 focus:border-teal focus:outline-none"
+            className="h-80 w-full resize-y bg-bg p-4 font-mono text-sm text-primary placeholder:text-muted/50 focus:outline-none"
           />
         </div>
 
         {/* 右: Markdown 出力 */}
-        <div className="flex flex-col gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Markdown Output</span>
-          <div className="relative h-80 rounded-lg border border-border bg-surface">
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-2">
+            <div className="flex items-center gap-2">
+              <span className="inline-block h-2 w-2 rounded-full bg-teal/60" />
+              <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Markdown</span>
+            </div>
+            {markdown && (
+              <span className="font-mono text-[10px] tabular-nums text-muted">
+                {markdown.split('\n').length}L · {markdown.length}C
+              </span>
+            )}
+          </div>
+          <div className="relative h-80 bg-bg">
             {markdown ? (
               <pre className="h-full overflow-auto p-4 font-mono text-sm text-primary whitespace-pre-wrap break-words">
                 {markdown}

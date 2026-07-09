@@ -170,12 +170,17 @@ export function ContainerQueryBuilder() {
           {conditions.map((cond, ci) => (
             <div key={cond.id} className="rounded-lg border border-border bg-surface p-4">
               <div className="mb-3 flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
-                  @container 条件 {ci + 1}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="flex h-4 w-4 items-center justify-center rounded bg-border font-mono text-[9px] font-bold text-muted">
+                    {ci + 1}
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
+                    @container 条件
+                  </span>
+                </div>
                 <button
                   onClick={() => removeCondition(cond.id)}
-                  className="font-mono text-[10px] text-muted hover:text-red-400 transition-colors"
+                  className="font-mono text-[10px] text-muted transition-colors hover:text-red-400"
                 >
                   削除
                 </button>
@@ -260,16 +265,19 @@ export function ContainerQueryBuilder() {
 
       {/* 右: CSS 出力 */}
       <div className="flex flex-col gap-3 lg:w-1/2">
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">CSS Output</span>
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted">CSS Output</span>
+            <span className="rounded bg-border px-1.5 py-0.5 font-mono text-[9px] text-muted/70">.css</span>
+          </div>
           <button
             onClick={handleCopy}
-            className="rounded border border-border px-3 py-1 font-mono text-xs text-muted hover:border-teal hover:text-teal transition-colors"
+            className="rounded border border-border px-3 py-1 font-mono text-xs text-muted transition-colors hover:border-teal hover:text-teal"
           >
             {copied ? '✓ コピー済み' : 'コピー'}
           </button>
         </div>
-        <pre className="min-h-64 rounded-lg border border-border bg-surface p-4 font-mono text-sm text-primary whitespace-pre overflow-auto">
+        <pre className="min-h-64 rounded-lg border border-border bg-bg p-4 font-mono text-sm text-primary whitespace-pre overflow-auto">
           {css}
         </pre>
       </div>
