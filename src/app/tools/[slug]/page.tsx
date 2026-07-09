@@ -13,12 +13,8 @@ type Props = {
   params: { slug: string }
 }
 
-const DEDICATED_PAGES = new Set(['base64-studio', 'json-studio', 'color-deck', 'gradient-deck', 'text-layout', 'text-deck', 'ai-prompt-manager', 'webp-studio', 'mockup-builder', 'sheet-studio', 'resize-image'])
-
 export function generateStaticParams() {
-  return tools
-    .filter((tool) => !DEDICATED_PAGES.has(tool.slug))
-    .map((tool) => ({ slug: tool.slug }))
+  return tools.map((tool) => ({ slug: tool.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
