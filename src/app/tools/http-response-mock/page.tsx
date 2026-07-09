@@ -1,10 +1,11 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
 import { ToolCard } from '@/components/ToolCard'
 import { HttpResponseMock } from '@/components/tools/HttpResponseMock'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { SeoArticle } from '@/components/SeoArticle'
 import { getMetaDescription } from '@/data/seo-content'
 
@@ -30,13 +31,7 @@ export default function HttpResponseMockPage() {
     <main className="py-10">
       <ToolJsonLd tool={tool} />
 
-      <nav className="mb-6 text-sm text-muted">
-        <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-        <span className="mx-2">/</span>
-        <Link href="/#tools" className="hover:text-primary transition-colors">Tools</Link>
-        <span className="mx-2">/</span>
-        <span className="text-primary">{tool.name}</span>
-      </nav>
+      <ToolBreadcrumb tool={tool} />
 
       <header className="mb-4">
         <h1 className="text-2xl font-bold text-bright">{tool.name}</h1>

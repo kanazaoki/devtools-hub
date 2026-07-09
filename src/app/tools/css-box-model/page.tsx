@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
 import { AdSense } from '@/components/AdSense'
@@ -6,6 +6,7 @@ import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
 import { CssBoxModel } from '@/components/tools/CssBoxModel'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
+import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'css-box-model')!
@@ -29,11 +30,7 @@ export default function CssBoxModelPage() {
   return (
     <main className="py-10">
       <ToolJsonLd tool={tool} />
-      <nav className="mb-8 flex items-center gap-2 text-xs text-muted">
-        <Link href="/" className="transition-colors hover:text-primary">ツール一覧</Link>
-        <span className="text-border">/</span>
-        <span className="font-mono text-dim">{tool.name}</span>
-      </nav>
+      <ToolBreadcrumb tool={tool} />
       <header className="mb-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>

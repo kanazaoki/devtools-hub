@@ -43,3 +43,8 @@ docs/
 # playwright screenshots (root level)
 /*.png
 /*.jpg
+
+# BOOTH registration assets (large binaries, not needed in repo)
+/booth-screenshots/
+/booth-zips/
+/zenn/
