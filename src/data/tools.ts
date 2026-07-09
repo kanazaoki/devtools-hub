@@ -2245,7 +2245,7 @@ export const tools: Tool[] = [
     description:
       'コンテナ名・コンテナタイプ（size / inline-size）を設定し、@container の条件（min-width / max-width 等）とその中に適用するCSSプロパティをGUIで追加するだけでコードを生成。Flexbox / Grid と組み合わせてコンポーネントベースのレスポンシブデザインを実現する最新CSS機能のビルダーです。',
     tags: ['CSS', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8597422',
     hasWebVersion: true,
     releasedAt: '2026-07-09',
     features: [
@@ -2256,7 +2256,9 @@ export const tools: Tool[] = [
       'コンテナ定義CSS（.wrapper）と @container CSS を同時出力',
       'リアルタイム CSS プレビューとワンクリックコピー',
     ],
-    desktopFeatures: [],
+    desktopFeatures: [
+      '生成した CSS を .css ファイルとして保存',
+    ],
   },
   {
     slug: 'json-to-sql',
@@ -2265,7 +2267,7 @@ export const tools: Tool[] = [
     description:
       'JSONオブジェクトの配列を入力するだけで、型推論付きのCREATE TABLE文とINSERT INTO文を自動生成。TEXT/INTEGER/REAL/BOOLEAN/NULLを自動判定し、MySQL・PostgreSQL・SQLiteの3方言に対応。テーブル名・スキーマ名も指定できます。',
     tags: ['開発者向け', 'JSON', 'データベース'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8597415',
     hasWebVersion: true,
     releasedAt: '2026-07-09',
     features: [
@@ -2277,7 +2279,10 @@ export const tools: Tool[] = [
       'テーブル名・スキーマ名をカスタマイズ可能',
       'SQLをワンクリックでコピー',
     ],
-    desktopFeatures: [],
+    desktopFeatures: [
+      'JSON ファイルを直接開いて変換（.json 対応）',
+      '生成した SQL を .sql ファイルとして保存',
+    ],
   },
   {
     slug: 'totp-generator',
@@ -2286,7 +2291,7 @@ export const tools: Tool[] = [
     description:
       'Google AuthenticatorなどのアプリにあるBase32シークレットキーを入力するだけで、30秒ごとに更新される6桁のTOTPコードを生成。現在・前・次の3コードを表示し、カウントダウンバー付き。WebCrypto APIを使ったブラウザ内完結処理でOTP実装のデバッグに。',
     tags: ['開発者向け', 'セキュリティ'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8597409',
     hasWebVersion: true,
     releasedAt: '2026-07-09',
     features: [
@@ -2297,7 +2302,10 @@ export const tools: Tool[] = [
       'WebCrypto API（HMAC-SHA1）をブラウザ内で処理 — 通信なし',
       'コードをクリックでクリップボードにコピー',
     ],
-    desktopFeatures: [],
+    desktopFeatures: [
+      'シークレットキーをテキストファイルから一括読み込み（1行1キー）',
+      '複数シークレットのコードを同時表示・比較',
+    ],
   },
   {
     slug: 'html-to-markdown',
@@ -2306,7 +2314,7 @@ export const tools: Tool[] = [
     description:
       'HTMLテキストをペーストするだけでMarkdownに変換。h1〜h6の見出し、ul/olリスト、リンク、太字・斜体、インライン/ブロックコード、blockquote、GFMテーブルに対応。コピーボタンと.mdダウンロードで即使えます。',
     tags: ['テキスト', '開発者向け', 'Markdown'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8597396',
     hasWebVersion: true,
     releasedAt: '2026-07-09',
     features: [
@@ -2318,7 +2326,10 @@ export const tools: Tool[] = [
       '<table> を GFM Markdownテーブルに変換',
       'ワンクリックコピーと .md ファイルダウンロード',
     ],
-    desktopFeatures: [],
+    desktopFeatures: [
+      'HTML ファイルを直接開いて変換（.html / .htm 対応）',
+      '変換した Markdown を .md ファイルとして保存',
+    ],
   },
   {
     slug: 'robots-txt-generator',
