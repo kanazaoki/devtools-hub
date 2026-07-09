@@ -2093,7 +2093,7 @@ export const tools: Tool[] = [
     description:
       '名前・メール・電話番号・日付・UUID・ランダム数値・Lorem文の7種フィールドを選択し、最大100件のダミーデータを生成。JSON・CSV・TSV形式で出力してコピーまたはファイルダウンロードできます。DBテストやモックデータの準備に。',
     tags: ['開発ツール', 'テスト', 'データ'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8594691',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
@@ -2103,7 +2103,7 @@ export const tools: Tool[] = [
       'コピーとファイルダウンロード（.json / .csv / .tsv）',
       '再生成のたびにランダムなデータを生成',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['OSダイアログから任意のパスにファイル保存', 'インターネット接続不要・データ外部送信なし'],
   },
   {
     slug: 'exif-viewer',
@@ -2112,7 +2112,7 @@ export const tools: Tool[] = [
     description:
       'JPEG画像をドロップするとEXIFメタデータを即表示。撮影日時・カメラメーカー/機種・ISO/絞り/シャッタースピード・焦点距離・解像度を確認できます。GPS情報があればGoogle Mapsリンクを生成。DataViewで自前パースするため通信不要・完全ローカル処理。',
     tags: ['画像', '開発ツール', 'メタデータ'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8594736',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
@@ -2122,7 +2122,7 @@ export const tools: Tool[] = [
       'EXIFなし画像（PNG等）は「EXIFデータなし」と表示',
       '完全ローカル処理 — 画像はサーバーに送信されない',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['複数ファイルを一括読み込みしてサイドリストで切り替え', '全ファイルのEXIFをCSVファイルにエクスポート'],
   },
   {
     slug: 'json-flattener',
@@ -2131,7 +2131,7 @@ export const tools: Tool[] = [
     description:
       'ネストしたJSONを { "a.b.c": 1 } のようにフラット化し、逆変換（アンフラット）も可能。区切り文字は . / _ / / から選択できます。配列も key.0 / key.1 形式でフラット化。Redisキー設計・.env変換・設定ファイル整形に役立ちます。',
     tags: ['JSON', '開発ツール', 'データ変換'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8594758',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
@@ -2141,7 +2141,7 @@ export const tools: Tool[] = [
       '配列を key.0 / key.1 形式でフラット化・逆変換',
       'コピーと .json ファイルダウンロード',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['JSONファイルをOSダイアログから直接開く', '変換結果をファイルに名前を付けて保存'],
   },
   {
     slug: 'http-response-mock',
@@ -2150,7 +2150,7 @@ export const tools: Tool[] = [
     description:
       'ステータスコード・ヘッダー（KV追加式）・ボディを組み立てて、curl / JavaScript fetch / 生HTTPレスポンスの3形式でコードを出力。APIドキュメント作成・テスト設計・モックサーバーの仕様書作りに役立ちます。',
     tags: ['HTTP', 'API', '開発ツール'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8594770',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
@@ -2160,7 +2160,83 @@ export const tools: Tool[] = [
       'curl形式 / fetch形式 / 生HTTPレスポンス の3タブで出力',
       'JSON ボディの構文エラーを警告表示',
     ],
-    desktopFeatures: [],
+    desktopFeatures: ['モック設定をJSONファイルで保存・読み込み', 'チームでのモックパターン共有に対応'],
+  },
+  {
+    slug: 'bitwise-calculator',
+    name: 'Bitwise Calculator',
+    tagline: 'AND/OR/XOR/NOT/SHIFT 演算を32ビット視覚化で確認',
+    description:
+      '2つの整数に対してAND・OR・XOR・NOT・LEFT SHIFT・RIGHT SHIFTを計算。入力値と結果を32ビット列で1桁ずつ色分け表示。10進/16進/2進で入力でき、結果は4形式でコピー可能。ビット演算の学習や低レイヤー開発のデバッグに。',
+    tags: ['開発ツール', 'ビット演算', '計算'],
+    boothUrl: 'https://koma-game.booth.pm/items/8596303',
+    hasWebVersion: true,
+    releasedAt: '2026-07-08',
+    features: [
+      'AND / OR / XOR / NOT / LEFT SHIFT / RIGHT SHIFT の6演算に対応',
+      '入力値を10進 / 16進 / 2進から選択して入力',
+      '結果を2進 / 8進 / 10進 / 16進の4形式でリアルタイム表示',
+      '32ビット列を1桁ずつ色分け・4ビットごとグループで視覚化',
+      '各形式の結果にコピーボタン',
+    ],
+    desktopFeatures: ['演算結果をテキストファイルに保存', 'インターネット接続不要・データ外部送信なし'],
+  },
+  {
+    slug: 'mime-type-lookup',
+    name: 'MIME Type Lookup',
+    tagline: '拡張子↔MIMEタイプを即検索 — 288種以上内蔵',
+    description:
+      'ファイル拡張子からContent-Typeを正引き、MIMEタイプから拡張子を逆引き。288種以上のMIMEタイプを内蔵しリアルタイムフィルタリング。テキスト/画像/動画/音声/アプリケーション別にカテゴリフィルタも可能。',
+    tags: ['開発ツール', 'HTTP', 'Web開発'],
+    boothUrl: 'https://koma-game.booth.pm/items/8596619',
+    hasWebVersion: true,
+    releasedAt: '2026-07-08',
+    features: [
+      '拡張子 → MIMEタイプの正引き検索',
+      'MIMEタイプ → 拡張子の逆引き検索',
+      '288種以上のMIMEタイプを内蔵',
+      'カテゴリ別フィルタ（テキスト/画像/動画/音声/アプリ）',
+      '拡張子・MIMEタイプ個別のコピーボタン',
+    ],
+    desktopFeatures: ['検索結果をCSVファイルにエクスポート', 'インターネット接続不要・データ外部送信なし'],
+  },
+  {
+    slug: 'openapi-viewer',
+    name: 'OpenAPI Viewer',
+    tagline: 'OpenAPI 3.x / Swagger 2.0 仕様をビジュアル表示',
+    description:
+      'OpenAPI 3.x / Swagger 2.0 のYAML/JSONをペーストするとエンドポイント一覧・パラメーター・レスポンス定義を見やすく表示。HTTPメソッドを色分けし$refを自動解決。パス検索とメソッドフィルタで素早くナビゲート。',
+    tags: ['開発ツール', 'API', 'OpenAPI'],
+    boothUrl: 'https://koma-game.booth.pm/items/8596630',
+    hasWebVersion: true,
+    releasedAt: '2026-07-08',
+    features: [
+      'OpenAPI 3.x / Swagger 2.0 の YAML・JSON どちらも対応',
+      'GET/POST/PUT/DELETE/PATCH をメソッド別カラーで色分け',
+      'パラメーター・requestBody・レスポンスをアコーディオン展開',
+      '$ref の自動解決とスキーマ展開表示',
+      'パス検索 + メソッドフィルタで絞り込み',
+    ],
+    desktopFeatures: ['OpenAPI YAMLファイルをOSダイアログから直接開く', 'エンドポイント一覧をMarkdownファイルで保存'],
+  },
+  {
+    slug: 'json-merger',
+    name: 'JSON Merge Tool',
+    tagline: '複数JSONをDeep Merge — 配列戦略・最大5スロット対応',
+    description:
+      '最大5スロットのJSONオブジェクトを再帰的にDeep Mergeして結果を出力。配列マージ戦略（上書き/連結）を選択可能。後スロット優先で上書き。コピーと.jsonダウンロード対応。設定ファイルの合成・APIレスポンスのマージに。',
+    tags: ['JSON', '開発ツール', 'データ変換'],
+    boothUrl: 'https://koma-game.booth.pm/items/8596636',
+    hasWebVersion: true,
+    releasedAt: '2026-07-08',
+    features: [
+      '最大5スロットのJSONを再帰的にDeep Merge',
+      '配列マージ戦略を「上書き」「連結」から選択',
+      'スロットを動的に追加・削除（最小2・最大5）',
+      'エラーのあるスロットを自動除外して残りをマージ',
+      'マージ結果のコピーと .json ダウンロード',
+    ],
+    desktopFeatures: ['JSONファイルをOSダイアログから直接開く', 'マージ結果をファイルに名前を付けて保存'],
   },
   {
     slug: 'robots-txt-generator',

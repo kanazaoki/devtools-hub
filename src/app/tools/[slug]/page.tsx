@@ -48,7 +48,7 @@ export default function ToolPage({ params }: Props) {
         t.slug !== tool.slug &&
         t.tags.some((tag) => tool.tags.includes(tag))
     )
-    .slice(0, 3)
+    .slice(0, 4)
 
   return (
     <main className="py-10">
@@ -197,11 +197,14 @@ export default function ToolPage({ params }: Props) {
 
       {/* 関連ツール */}
       {relatedTools.length > 0 && (
-        <section>
-          <h2 className="mb-4 font-mono text-xs font-semibold uppercase tracking-widest text-muted">
-            Related Tools
-          </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="mt-4">
+          <div className="mb-5 flex items-center gap-3">
+            <h2 className="font-mono text-[11px] font-semibold uppercase tracking-widest text-muted">
+              Related Tools
+            </h2>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {relatedTools.map((t) => (
               <ToolCard key={t.slug} tool={t} />
             ))}

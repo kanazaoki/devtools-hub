@@ -5,6 +5,9 @@ import { ToolGrid } from '@/components/ToolGrid'
 import { RecentlyViewed } from '@/components/RecentlyViewed'
 import { AdSense } from '@/components/AdSense'
 
+const CATEGORY_COUNT = 8
+const desktopCount = tools.filter((t) => t.boothUrl).length
+
 const FEATURED_SLUGS = ['webp-studio', 'resize-image', 'mockup-builder'] as const
 
 export const metadata: Metadata = {
@@ -42,15 +45,22 @@ export default function Home() {
           </p>
 
           {/* スタッツバー */}
-          <div className="mt-6 flex items-center justify-center gap-4 text-xs text-muted">
-            <span>
-              <span className="font-semibold text-primary">{tools.length}</span> ツール
-            </span>
-            <span className="text-border select-none">·</span>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-xs text-muted">
+            {[
+              { value: tools.length, label: 'ツール' },
+              { value: CATEGORY_COUNT, label: 'カテゴリ' },
+              { value: `${desktopCount}本`, label: 'デスクトップ版' },
+            ].map(({ value, label }, i) => (
+              <span key={label} className="flex items-center gap-3">
+                {i > 0 && <span className="text-border select-none" aria-hidden="true">·</span>}
+                <span>
+                  <span className="font-semibold text-primary">{value}</span>{' '}{label}
+                </span>
+              </span>
+            ))}
+            <span className="text-border select-none" aria-hidden="true">·</span>
             <span>完全無料</span>
-            <span className="text-border select-none">·</span>
-            <span>インストール不要</span>
-            <span className="text-border select-none">·</span>
+            <span className="text-border select-none" aria-hidden="true">·</span>
             <span>ブラウザで即利用</span>
           </div>
         </div>

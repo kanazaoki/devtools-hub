@@ -1213,6 +1213,50 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'robots.txtとnoindexの違い', body: 'robots.txtのDisallowはクロールを禁止しますが、インデックスを保証しません。他のサイトからリンクされていれば、クロールせずにURLをインデックスする場合があります。インデックスを完全に防ぐにはmetaタグのnoindexかX-Robots-TagヘッダーにnoindexをHTTPレスポンスで含める必要があります。Disallowしたページにnoindexは届かないため、両方を組み合わせることが重要です。' },
     ],
   },
+  'bitwise-calculator': {
+    heading: 'ビット演算とは — AND/OR/XOR/NOT/SHIFTの基礎と活用',
+    intro: 'ビット演算はコンピューターが2進数レベルで行う演算で、フラグ管理・マスク処理・ハッシュ計算など低レイヤーな処理で多用されます。AND/OR/XOR/NOT/SHIFTの意味と使い所を理解することで、より効率的なコードが書けます。',
+    sections: [
+      { title: 'AND（&）とOR（|）の違い', body: 'AND演算は両方のビットが1のときだけ1になります。特定のビットを取り出す「マスク処理」に使います（例: n & 0xFF で下位8ビットを取得）。OR演算はどちらかが1なら1になり、フラグを立てる操作に使います（例: flags | OPTION_FLAG）。' },
+      { title: 'XOR（^）の特徴と活用', body: 'XORは2つのビットが異なるとき1になります。同じ値でXORすると0に戻る性質（a ^ b ^ b = a）があり、スワップ・暗号化・チェックサム・差分検出に活用されます。また2つの値が等しいかを判定するのにも使えます。' },
+      { title: 'NOT（~）とビットシフト', body: 'NOT演算は全ビットを反転します。32ビット整数で ~0 = -1（すべてのビットが1）になります。LEFT SHIFT（<<）は指定ビット数だけ左にずらし、2のべき乗の掛け算と等価です。RIGHT SHIFT（>>）は右にずらし、2のべき乗の割り算になります。' },
+      { title: 'ビット演算の実用例', body: 'パーミッションフラグ管理（UNIX chmod）、ネットワークのサブネットマスク計算、ゲームの衝突検出最適化、ハッシュ関数の実装、カラー値のRGB分離（color >> 16 & 0xFF でRed成分取得）など、実用的な場面が多くあります。' },
+    ],
+  },
+
+  'mime-type-lookup': {
+    heading: 'MIMEタイプとは — Content-Typeの正しい設定方法',
+    intro: 'MIMEタイプ（Multipurpose Internet Mail Extensions）はファイルの種類を示す識別子で、HTTPのContent-Typeヘッダーで使われます。正しいMIMEタイプを設定しないとブラウザが適切に処理できなくなります。',
+    sections: [
+      { title: 'MIMEタイプの構造', body: 'MIMEタイプは「タイプ/サブタイプ」の形式で記述します（例: image/png、application/json、text/html）。タイプにはtext/image/audio/video/application/multipartなどがあり、サブタイプで具体的な形式を示します。+json, +xmlなど構造化サフィックスを使うこともあります（application/vnd.api+json）。' },
+      { title: 'Content-Typeを正しく設定しないとどうなるか', body: 'HTMLファイルをtext/plainで返すとブラウザがそのまま文字列として表示してしまいます。JavaScriptをtext/htmlで返すと実行されません。APIのJSONレスポンスにapplication/jsonを設定しないとクライアントライブラリが自動パースしない場合があります。セキュリティ面でも不正なMIMEタイプは攻撃ベクターになることがあります。' },
+      { title: 'よく間違えやすいMIMEタイプ', body: 'SVGはimage/svg+xml（image/svgではない）。JavaScriptはapplication/javascript（text/javascriptは旧仕様）。JSONはapplication/json。フォントはfont/woff2など。CSVはtext/csvだがExcelはapplication/vnd.ms-excel。Webpはimage/webp。これらの違いを正確に知るためにMIMEタイプ検索ツールが役立ちます。' },
+      { title: 'charset パラメーターの設定', body: 'テキスト系のMIMEタイプでは文字エンコーディングをcharsetパラメーターで指定できます（text/html; charset=UTF-8）。HTML5ではデフォルトがUTF-8なので省略可能ですが、APIレスポンスではapplication/json; charset=UTF-8と明示する場合もあります。' },
+    ],
+  },
+
+  'openapi-viewer': {
+    heading: 'OpenAPI仕様書の書き方 — ビジュアル確認とデバッグのコツ',
+    intro: 'OpenAPI（旧Swagger）はRESTful APIの仕様を記述する標準フォーマットです。YAML/JSONで書かれた仕様書を人が読みやすい形式で表示することで、APIの設計・レビュー・クライアント実装の効率が上がります。',
+    sections: [
+      { title: 'OpenAPI 3.x と Swagger 2.0 の違い', body: 'Swagger 2.0は「swagger: "2.0"」で始まる旧仕様で、basePath/host/schemesでURLを定義します。OpenAPI 3.0以降は「openapi: "3.x.x"」で始まり、serversオブジェクトで複数の環境URL、requestBodyの分離、componentsによる再利用コンポーネント管理が改善されました。現在は3.xへの移行が推奨されています。' },
+      { title: '$refと再利用コンポーネントの活用', body: '$refは別定義を参照する仕組みで「$ref: "#/components/schemas/User"」のように使います。スキーマ・パラメーター・レスポンスを一度定義して複数箇所から参照でき、仕様書のDRY原則を守れます。OpenAPI Viewerは$refを解決して実際のスキーマ内容を展開表示するため、定義元を行き来する手間が不要です。' },
+      { title: 'パラメーターの種類（in: の値）', body: 'path（URLパス中の変数：/users/{id}）、query（?key=value）、header（リクエストヘッダー）、cookie（Cookieヘッダー）の4種類があります。それぞれ異なるバリデーションルールがあり、requiredフィールドで必須かどうかを示します。body（Swagger 2.0）はOpenAPI 3.xではrequestBodyに移動しました。' },
+      { title: 'APIデザインのベストプラクティス', body: 'パスはリソース名（複数形の名詞）をスラッシュで階層化し、動詞はHTTPメソッドで表します（GET /users, POST /users, DELETE /users/{id}）。レスポンスには200/201/400/401/404/500を適切に定義します。descriptionにはサンプル値と共にエラーレスポンスの例を含めると実装者にとって親切です。' },
+    ],
+  },
+
+  'json-merger': {
+    heading: 'JSONのDeep Mergeとは — 設定ファイルの合成パターン',
+    intro: 'Deep Mergeはオブジェクトをネストの深いところまで再帰的にマージする操作です。設定ファイルのデフォルト値への上書き、複数ソースからのデータ統合、APIレスポンスの合成など、多くの場面で必要になります。',
+    sections: [
+      { title: 'Shallow MergeとDeep Mergeの違い', body: 'Object.assign()やスプレッド構文({...a, ...b})はShallow Mergeで、ネストしたオブジェクトは参照ごと上書きされます。つまりaが{x:{a:1,b:2}}、bが{x:{c:3}}のとき、{...a,...b}は{x:{c:3}}となりa.x.a, a.x.bが消えます。Deep Mergeはネストオブジェクトを再帰的にマージするため{x:{a:1,b:2,c:3}}になります。' },
+      { title: '配列のマージ戦略', body: '配列の扱いはユースケースによって変わります。「上書き」戦略は後のスロットの配列で前のスロットの配列を完全に置き換えます（設定の上書きに適切）。「連結」戦略は配列を末尾に結合します（タグ・ロールの追加に適切）。どちらが正しいかはアプリケーションのドメイン要件によるため、選択できるようにしておくことが重要です。' },
+      { title: '設定ファイルの階層マージパターン', body: 'Node.jsアプリでよく使われるパターンとして、default.json → {NODE_ENV}.json → local.json の順にDeep Mergeすることで環境別設定を実現します。左側（優先度低）から右側（優先度高）の順でマージし、後のファイルの値が優先されます。このツールも同じ「後スロット優先」のマージ順を採用しています。' },
+      { title: '循環参照と特殊ケースへの対処', body: '一般的なDeep Merge実装で気をつけるべき点として、null値の扱い（nullで上書きするか無視するか）、配列内のオブジェクトのマージ方法、Dateやエラーなど特殊なオブジェクトの扱い、循環参照の検出があります。このツールでは純粋なJSONのみを対象とするため循環参照は発生せず、nullは上書きとして扱います。' },
+    ],
+  },
+
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {
