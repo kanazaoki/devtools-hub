@@ -2,36 +2,46 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { tools } from '@/data/tools'
+import { CATEGORIES } from '@/data/categories'
 import { ToolCard } from './ToolCard'
 
 const FILTER_CATEGORIES = ['開発者向け', 'CSS', 'デザイン', '画像', 'テキスト', 'カラー', 'ゲーム開発', 'AI'] as const
 const NEW_WINDOW_DAYS = 30
 type SortOrder = 'default' | 'newest' | 'name'
 
-interface ToolGridProps {
-  initialCategory?: string | null
+function tagToSlug(tag: string): string | undefined {
+  return CATEGORIES.find((c) => c.tag === tag)?.slug
 }
 
-export function ToolGrid({ initialCategory = null }: ToolGridProps) {
+interface ToolGridProps {
+  initialCategory?: string | null
+  initialQuery?: string
+}
+
+export function ToolGrid({ initialCategory = null, initialQuery = '' }: ToolGridProps) {
   const [activeFilter, setActiveFilter] = useState<string | null>(initialCategory)
   const [visitedSlugs, setVisitedSlugs] = useState<Set<string>>(new Set())
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(initialQuery)
   const [sortOrder, setSortOrder] = useState<SortOrder>('default')
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)
 
+  // localStorage から復元
   useEffect(() => {
     try {
       const visited = localStorage.getItem('dth_visited')
       if (visited) setVisitedSlugs(new Set(JSON.parse(visited) as string[]))
       const favs = localStorage.getItem('dth_favorites')
       if (favs) setFavorites(new Set(JSON.parse(favs) as string[]))
+      const sort = localStorage.getItem('dth_sort') as SortOrder | null
+      if (sort && ['default', 'newest', 'name'].includes(sort)) setSortOrder(sort)
     } catch {
       // ignore
     }
   }, [])
 
+  // カテゴリ経由で来た場合にツールグリッドまでスクロール
   useEffect(() => {
     if (!initialCategory) return
     const el = document.getElementById('tools')
@@ -42,6 +52,7 @@ export function ToolGrid({ initialCategory = null }: ToolGridProps) {
     return () => clearTimeout(timer)
   }, [])
 
+  // Cmd+K で検索フォーカス
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -54,6 +65,18 @@ export function ToolGrid({ initialCategory = null }: ToolGridProps) {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
+  // フィルター・検索クエリが変わったら URL に反映
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (activeFilter) {
+      const slug = tagToSlug(activeFilter)
+      if (slug) params.set('cat', slug)
+    }
+    if (searchQuery.trim()) params.set('q', searchQuery.trim())
+    const search = params.toString()
+    window.history.replaceState({}, '', search ? `/?${search}` : '/')
+  }, [activeFilter, searchQuery])
+
   function toggleFavorite(slug: string) {
     setFavorites((prev) => {
       const next = new Set(prev)
@@ -62,6 +85,11 @@ export function ToolGrid({ initialCategory = null }: ToolGridProps) {
       try { localStorage.setItem('dth_favorites', JSON.stringify([...next])) } catch {}
       return next
     })
+  }
+
+  function handleSortChange(order: SortOrder) {
+    setSortOrder(order)
+    try { localStorage.setItem('dth_sort', order) } catch {}
   }
 
   function isNew(slug: string, releasedAt: string): boolean {
@@ -90,6 +118,14 @@ export function ToolGrid({ initialCategory = null }: ToolGridProps) {
   } else if (sortOrder === 'name') {
     filteredTools = [...filteredTools].sort((a, b) => a.name.localeCompare(b.name, 'ja'))
   }
+
+  // 絞り込み状態のサマリーテキスト
+  const filterParts: string[] = []
+  if (activeFilter) filterParts.push(activeFilter)
+  if (showFavoritesOnly) filterParts.push('お気に入り')
+  if (q) filterParts.push(`"${searchQuery.trim()}"`)
+  const isFiltering = filterParts.length > 0
+  const filterSummary = filterParts.join(' + ')
 
   return (
     <>
@@ -182,7 +218,7 @@ export function ToolGrid({ initialCategory = null }: ToolGridProps) {
               return (
                 <button
                   key={order}
-                  onClick={() => setSortOrder(order)}
+                  onClick={() => handleSortChange(order)}
                   className={`rounded border px-2.5 py-1 font-mono text-[10px] transition-colors duration-150 ${
                     sortOrder === order
                       ? 'border-teal bg-teal/10 text-teal'
@@ -197,22 +233,34 @@ export function ToolGrid({ initialCategory = null }: ToolGridProps) {
         </div>
       </div>
 
-      {/* 件数表示（絞り込み中のみ） */}
-      {(q || activeFilter || showFavoritesOnly) && (
+      {/* 絞り込みサマリー */}
+      {isFiltering && (
         <p className="mb-3 font-mono text-xs text-muted">
-          {filteredTools.length === 0 ? '0件' : `${filteredTools.length} 件`}
-          {activeFilter && <span className="ml-1">/ {activeFilter}</span>}
-          {showFavoritesOnly && <span className="ml-1">/ お気に入り</span>}
+          <span className="text-primary font-semibold">{filteredTools.length}</span>
+          <span className="mx-1">件</span>
+          <span className="opacity-50">/ {filterSummary}</span>
         </p>
       )}
 
       {/* ツールグリッド */}
       {filteredTools.length === 0 ? (
-        <p className="py-16 text-center font-mono text-sm text-muted">
-          {showFavoritesOnly
-            ? 'お気に入りはまだありません。ツールカードの★をクリックして追加できます'
-            : `「${searchQuery}」に一致するツールはありません`}
-        </p>
+        <div className="py-16 text-center">
+          <p className="font-mono text-sm text-muted mb-4">
+            {showFavoritesOnly
+              ? 'お気に入りはまだありません。ツールカードの★をクリックして追加できます'
+              : `「${searchQuery}」に一致するツールはありません`}
+          </p>
+          {!showFavoritesOnly && (
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSc9Mo1Ci3bSE6mv59aFHCF3C4hgve0XwYs-kpE24XlxYzvhXw/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-mono text-xs text-teal hover:underline"
+            >
+              このツールをリクエストする →
+            </a>
+          )}
+        </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredTools.map((tool) => (

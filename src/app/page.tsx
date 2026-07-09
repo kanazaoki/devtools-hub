@@ -20,8 +20,9 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Home({ searchParams }: { searchParams: { cat?: string } }) {
+export default function Home({ searchParams }: { searchParams: { cat?: string; q?: string } }) {
   const initialCategory = searchParams.cat ? (getCategoryBySlug(searchParams.cat)?.tag ?? null) : null
+  const initialQuery = searchParams.q ?? ''
   const featuredTools = FEATURED_SLUGS.map((slug) => tools.find((t) => t.slug === slug)!).filter(Boolean)
 
   return (
@@ -111,7 +112,7 @@ export default function Home({ searchParams }: { searchParams: { cat?: string } 
         <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-muted">
           All Tools
         </p>
-        <ToolGrid initialCategory={initialCategory} />
+        <ToolGrid initialCategory={initialCategory} initialQuery={initialQuery} />
       </section>
 
       {/* サービス紹介 */}

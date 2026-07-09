@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { tools, getToolBySlug } from '@/data/tools'
+import { getCategoryBySlug, CATEGORIES } from '@/data/categories'
 import { AdSense } from '@/components/AdSense'
 import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
@@ -50,6 +51,8 @@ export default function ToolPage({ params }: Props) {
     )
     .slice(0, 4)
 
+  const primaryCat = CATEGORIES.find((c) => tool.tags.includes(c.tag)) ?? null
+
   return (
     <main className="py-10">
       <ToolJsonLd tool={tool} />
@@ -58,6 +61,14 @@ export default function ToolPage({ params }: Props) {
         <Link href="/" className="transition-colors hover:text-primary">
           ツール一覧
         </Link>
+        {primaryCat && (
+          <>
+            <span className="text-border">/</span>
+            <Link href={`/?cat=${primaryCat.slug}`} className="transition-colors hover:text-primary">
+              {primaryCat.label}
+            </Link>
+          </>
+        )}
         <span className="text-border">/</span>
         <span className="font-mono text-dim">{tool.name}</span>
       </nav>
