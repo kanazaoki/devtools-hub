@@ -33,6 +33,16 @@ export function ToolGrid({ initialCategory = null }: ToolGridProps) {
   }, [])
 
   useEffect(() => {
+    if (!initialCategory) return
+    const el = document.getElementById('tools')
+    if (!el) return
+    const timer = setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 80)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()

@@ -107,7 +107,7 @@ export default function Home({ searchParams }: { searchParams: { cat?: string } 
       <RecentlyViewed />
 
       {/* ツールグリッド */}
-      <section>
+      <section id="tools">
         <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-muted">
           All Tools
         </p>
