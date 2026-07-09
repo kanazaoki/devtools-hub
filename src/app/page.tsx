@@ -4,6 +4,7 @@ import { tools } from '@/data/tools'
 import { ToolGrid } from '@/components/ToolGrid'
 import { RecentlyViewed } from '@/components/RecentlyViewed'
 import { AdSense } from '@/components/AdSense'
+import { getCategoryBySlug } from '@/data/categories'
 
 const CATEGORY_COUNT = 8
 const desktopCount = tools.filter((t) => t.boothUrl).length
@@ -19,7 +20,8 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Home() {
+export default function Home({ searchParams }: { searchParams: { cat?: string } }) {
+  const initialCategory = searchParams.cat ? (getCategoryBySlug(searchParams.cat)?.tag ?? null) : null
   const featuredTools = FEATURED_SLUGS.map((slug) => tools.find((t) => t.slug === slug)!).filter(Boolean)
 
   return (
@@ -109,7 +111,7 @@ export default function Home() {
         <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-muted">
           All Tools
         </p>
-        <ToolGrid />
+        <ToolGrid initialCategory={initialCategory} />
       </section>
 
       {/* サービス紹介 */}

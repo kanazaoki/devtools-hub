@@ -8,8 +8,12 @@ const FILTER_CATEGORIES = ['開発者向け', 'CSS', 'デザイン', '画像', '
 const NEW_WINDOW_DAYS = 30
 type SortOrder = 'default' | 'newest' | 'name'
 
-export function ToolGrid() {
-  const [activeFilter, setActiveFilter] = useState<string | null>(null)
+interface ToolGridProps {
+  initialCategory?: string | null
+}
+
+export function ToolGrid({ initialCategory = null }: ToolGridProps) {
+  const [activeFilter, setActiveFilter] = useState<string | null>(initialCategory)
   const [visitedSlugs, setVisitedSlugs] = useState<Set<string>>(new Set())
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [searchQuery, setSearchQuery] = useState('')

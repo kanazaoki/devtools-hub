@@ -28,7 +28,7 @@ export default function CategoryListPage() {
           return (
             <Link
               key={cat.slug}
-              href={`/category/${cat.slug}`}
+              href={`/?cat=${cat.slug}`}
               className="group relative overflow-hidden flex flex-col gap-3 rounded-lg border border-border bg-surface p-5 pl-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-border-hi hover:bg-surface-hi hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
             >
               {/* 左アクセントバー */}
