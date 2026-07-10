@@ -6,9 +6,10 @@ export function Header() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Link
           href="/"
-          className="font-mono text-sm font-semibold tracking-widest text-primary uppercase hover:text-teal transition-colors shrink-0"
+          className="flex items-center gap-1.5 font-mono text-sm font-semibold shrink-0 group"
         >
-          devtools-hub
+          <span className="text-teal">&gt;_</span>
+          <span className="tracking-widest text-primary uppercase group-hover:text-teal transition-colors">devtools-hub</span>
         </Link>
         <nav className="flex items-center gap-3 sm:gap-5 min-w-0">
           <Link
