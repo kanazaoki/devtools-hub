@@ -14,9 +14,8 @@ export function VisitTracker() {
     try {
       const raw = localStorage.getItem('dth_visited')
       const visited: string[] = raw ? JSON.parse(raw) : []
-      if (!visited.includes(slug)) {
-        localStorage.setItem('dth_visited', JSON.stringify([...visited, slug]))
-      }
+      const filtered = visited.filter((s) => s !== slug)
+      localStorage.setItem('dth_visited', JSON.stringify([...filtered, slug]))
     } catch {
       // localStorage が使えない環境（プライベートモードなど）は無視
     }
