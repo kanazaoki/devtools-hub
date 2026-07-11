@@ -10,6 +10,50 @@ export interface SeoArticleData {
 }
 
 export const seoContent: Record<string, SeoArticleData> = {
+  'svg-path-visualizer': {
+    heading: 'SVGパスの d 属性とは？コマンドの読み方と使い方',
+    intro: 'SVGの <path> 要素の d 属性は、複雑な図形をコマンド列で定義します。M・L・C・Q・Aなどのコマンドを組み合わせることで、直線・曲線・円弧を自在に描けます。SVG Path Visualizerを使えば、各コマンドの動作をステップ実行で視覚的に確認できます。',
+    sections: [
+      { title: '基本コマンド：M・L・Z', body: 'Mはペンを持ち上げて移動（Move To）、Lは直線を引く（Line To）、Zはパスを閉じる（Close Path）です。大文字が絶対座標、小文字が相対座標を意味します。例えばM 10 10 L 90 90 Zは(10,10)から(90,90)へ線を引き、元の位置に戻して閉じます。' },
+      { title: '曲線コマンド：C・Q・A', body: 'Cはキュービックベジェ曲線（制御点2つ）、Qは二次ベジェ曲線（制御点1つ）、Aは楕円弧です。CSSのcubic-bezierと同じ原理で、制御点の位置によって曲線の形状が変わります。Aコマンドは半径・回転角・フラグ・終点座標の7パラメータを持ちます。' },
+      { title: 'H・V・S・T の省略コマンド', body: 'Hは水平線（Horizontal Line To）、Vは垂直線（Vertical Line To）の省略形で座標を1つだけ指定します。SはCの滑らかな続き（Smooth Cubic）、TはQの滑らかな続き（Smooth Quadratic）で、直前コマンドの終点を基準に制御点を自動計算します。' },
+      { title: 'デバッグ・学習での活用', body: 'FigmaやIllustratorが出力したSVGのパスは複雑なコマンド列になりがちです。SVG Path Visualizerで各コマンドをクリックしてステップ実行すると、どのコマンドがどの部分を描いているか一目でわかります。パスを最適化・手修正する際のデバッグにも活用できます。' },
+    ],
+  },
+
+  'json-size-analyzer': {
+    heading: 'JSONのサイズを最適化する — 肥大化の原因を見つける方法',
+    intro: 'APIレスポンスやアプリの設定ファイルは、気づかないうちにJSONが肥大化することがあります。JSON Size Analyzerを使うと、どのキー・ネストが最もサイズを占めているかをツリー表示で可視化し、最適化の優先順位をつけられます。',
+    sections: [
+      { title: 'JSONサイズがパフォーマンスに与える影響', body: 'REST APIでは毎回のレスポンスにJSONが乗るため、キーの長さや不要なフィールドが積み重なるとネットワーク転送量が増加します。モバイル環境では特に顕著で、100KBのJSONを毎分フェッチするだけで6MB/時間の通信量になります。gzip圧縮で大幅に削減できますが、元のサイズを把握しておくことが最適化の第一歩です。' },
+      { title: 'キーの短縮とフィールドの削減', body: '一般的なJSON最適化として「キー名の短縮」があります。authorizationをauth、descriptionをdescにするだけで、大量のレコードでは数KBの削減になります。また、null値・空配列・デフォルト値のフィールドを省略することも効果的です。JSON Size Analyzerのツリービューでサイズ上位のキーを確認して削減対象を見極めましょう。' },
+      { title: 'ネスト構造とフラット化のトレードオフ', body: 'ネストが深いほどJSON構造は読みやすくなりますが、キー名の繰り返しによりサイズが増えます。user.address.cityのように深くネストする代わりに、user_address_cityのようにフラット化することでキー数は増えますがバイト数が減るケースがあります。JSON FlattennerとSize Analyzerを組み合わせて比較するのが効果的です。' },
+      { title: 'デスクトップ版でのファイル解析', body: 'デスクトップ版のJSON Size Analyzerでは、OSダイアログから.jsonファイルを直接開けます。大きなファイルも貼り付け不要でそのまま解析でき、サイズレポートをCSVとしてエクスポートして記録に残すことも可能です。' },
+    ],
+  },
+
+  'http-cache-builder': {
+    heading: 'Cache-Control ヘッダーの設定ガイド — max-age・no-cache・immutableの使い分け',
+    intro: 'HTTPキャッシュはWebパフォーマンスの根幹です。Cache-Controlヘッダーを適切に設定することで、ブラウザ・CDN・プロキシがレスポンスをキャッシュし、サーバー負荷の削減とユーザー体験の向上を実現できます。HTTP Cache Header Builderで各ディレクティブを組み合わせて最適な設定を見つけましょう。',
+    sections: [
+      { title: 'max-age と s-maxage の違い', body: 'max-ageはブラウザとCDN両方に適用されるキャッシュ有効期間（秒）です。s-maxageはCDN（共有キャッシュ）にのみ適用され、max-ageを上書きします。「ブラウザは1時間、CDNは1日キャッシュしてほしい」場合はmax-age=3600, s-maxage=86400と設定します。' },
+      { title: 'no-cache と no-store の違い', body: 'no-cacheはキャッシュを保存するが毎回オリジンに再検証する設定です（ETagやLast-Modifiedで304が返ればキャッシュを利用）。no-storeはキャッシュ自体を一切保存しません。セキュリティ要件が高い認証ページにはno-storeを使い、動的だが帯域節約したいページにはno-cacheを使います。' },
+      { title: 'stale-while-revalidate でUXを向上', body: 'stale-while-revalidateを設定すると、max-age経過後でも指定秒数内はバックグラウンドで再検証しながら古いキャッシュをすぐに返します。ユーザーには常にキャッシュから即座にレスポンスが届き、バックグラウンドで更新が走るため体感速度が大幅に改善します。例：Cache-Control: max-age=60, stale-while-revalidate=300' },
+      { title: 'immutable で静的アセットを最適化', body: 'CSSやJSファイルにコンテンツハッシュを付けたファイル名（app.a1b2c3.js）を使う場合、immutableを設定するとキャッシュ期限内に再検証リクエストすら送りません。Cache-Control: max-age=31536000, immutableが静的アセットの定番設定です。ファイル名が変われば新しいURLになるため古いキャッシュは使われません。' },
+    ],
+  },
+
+  'css-selector-tester': {
+    heading: 'CSSセレクターの種類と使い方 — クラス・擬似クラス・結合子の完全ガイド',
+    intro: 'CSSセレクターはスタイルを適用する要素を指定する記法です。基本的なクラス・IDセレクターから、:not()・:nth-child()などの擬似クラス、属性セレクター、結合子まで多様な種類があります。CSS Selector Testerで実際のHTMLに対してセレクターをテストし、意図通りに効いているか確認しましょう。',
+    sections: [
+      { title: '基本セレクター：クラス・ID・要素', body: '.classはクラス属性でマッチ、#idはID属性でマッチ、要素名（p/div/a）はそのタグ全てにマッチします。複数のクラスを組み合わせる.class1.class2（スペースなし）はどちらのクラスも持つ要素のみにマッチします。コンマ区切り（.a, .b）でいずれかにマッチするセレクターリストを書けます。' },
+      { title: '擬似クラス：:nth-child・:not・:hover', body: ':nth-child(n)は親要素内でn番目の子要素を選択します。:nth-child(2n)で偶数番目、:nth-child(odd)で奇数番目を選択できます。:not(.class)は指定クラスを持たない要素を選択し、除外フィルタに使えます。これらをCSS Selector Testerで試すと直感的に動作が理解できます。' },
+      { title: '結合子：子孫・子・隣接・兄弟', body: 'スペースは子孫結合子（.parent .child）で親の中の全子孫にマッチ、>は子結合子で直接の子のみマッチ、+は隣接兄弟結合子で直後の要素のみ、~は兄弟結合子で後続の全兄弟にマッチします。複雑な結合子は意図しないマッチが起きやすく、CSS Selector Testerで確認するのが確実です。' },
+      { title: '属性セレクターの活用', body: '[attr]はattr属性を持つ要素、[attr="val"]はattrが"val"の要素、[attr^="val"]は"val"で始まる要素、[attr$="val"]は"val"で終わる要素を選択します。input[type="text"]でテキスト入力のみ、a[href^="https"]でHTTPSリンクのみにスタイルを当てるのが代表的な使い方です。' },
+    ],
+  },
+
   'lorem-ipsum-generator': {
     heading: 'Lorem Ipsumとは？ダミーテキストの使い方',
     intro: 'Lorem Ipsumはデザインやプロトタイプ作成時に使う仮のテキストです。実際のコンテンツが決まっていない段階でもレイアウトの確認ができるため、UIデザイン・Web開発・印刷物の制作で広く使われています。',
