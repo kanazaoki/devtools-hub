@@ -2427,7 +2427,7 @@ export const tools: Tool[] = [
     description:
       'SVGの d 属性を貼り付けるだけで、M/L/C/Q/A/Z 各コマンドをリスト表示。コマンドをクリックするとその時点までのパスをプレビューに描画し、パラメータ（座標・半径など）を詳細パネルで確認できます。SVGパスを学習・デバッグするのに最適なツールです。',
     tags: ['SVG', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8604682',
     hasWebVersion: true,
     releasedAt: '2026-07-11',
     features: [
@@ -2446,7 +2446,7 @@ export const tools: Tool[] = [
     description:
       'JSONを貼り付けて「解析」を押すと、各キー・ノードの UTF-8 バイトサイズをツリー形式で表示。サイズ割合をプログレスバーで可視化し、「どのキーが一番重いか」を一目で確認できます。API レスポンス最適化・設定ファイルの肥大化調査に役立ちます。',
     tags: ['JSON', '開発者向け', 'パフォーマンス'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8604693',
     hasWebVersion: true,
     releasedAt: '2026-07-11',
     features: [
@@ -2465,7 +2465,7 @@ export const tools: Tool[] = [
     description:
       'Cache-Control のディレクティブ（public/private/no-cache/no-store/immutable 等）をボタンで選択し、max-age・s-maxage・stale-while-revalidate・stale-if-error を数値入力するだけでヘッダー文字列を生成。Vary・ETag も追加でき、各設定の意味を日本語で解説します。',
     tags: ['HTTP', '開発者向け', 'Web開発'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8604800',
     hasWebVersion: true,
     releasedAt: '2026-07-11',
     features: [
@@ -2484,7 +2484,7 @@ export const tools: Tool[] = [
     description:
       'HTMLエディターにコードを入力し、CSSセレクターを入力するとマッチした要素をプレビュー内でシアン枠ハイライト表示。クラス・ID・擬似クラス・属性セレクター・結合子など全種に対応。セレクターが意図通りに効いているか瞬時に確認できます。',
     tags: ['CSS', '開発者向け', 'Web開発'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8605505',
     hasWebVersion: true,
     releasedAt: '2026-07-11',
     features: [
