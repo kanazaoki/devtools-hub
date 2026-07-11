@@ -1301,6 +1301,50 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'websocket-tester': {
+    heading: 'WebSocketとは — リアルタイム通信の仕組みとHTTPとの違い',
+    intro: 'WebSocketはHTTPとは異なる全二重通信プロトコルで、サーバーとクライアントが接続を維持したまま双方向にメッセージを送受信できます。チャット・株価のリアルタイム更新・ゲームサーバーなど低レイテンシが求められる場面で使われます。',
+    sections: [
+      { title: 'WebSocketとHTTPの違い', body: 'HTTPはクライアントがリクエストを送りサーバーがレスポンスを返す一方向のやり取りです。サーバーから能動的にデータを送るにはポーリングやServer-Sent Eventsが必要です。WebSocketはHTTPのUpgradeヘッダーで接続を確立した後、ws://またはwss://スキームで持続的な双方向チャンネルを維持します。一度接続すると両方が任意のタイミングでメッセージを送れます。' },
+      { title: 'ws:// と wss:// の違い', body: 'ws://はプレーンなWebSocket通信でHTTPに相当します。wss://はTLSで暗号化されたWebSocket通信でHTTPSに相当します。本番環境では必ずwss://を使い、通信内容の盗聴・改ざんを防ぐ必要があります。ブラウザはHTTPSページからws://接続をブロックする場合があります（混在コンテンツ制限）。' },
+      { title: 'WebSocketのデバッグ方法', body: 'ブラウザのDevToolsではNetworkタブでWebSocket接続を確認できます。接続後にMessagesタブを開くと送受信したフレームをリアルタイムで追跡できます。WebSocket Testerではエコーサーバー（wss://echo.websocket.org）を使って送信した内容がそのまま返ってくることを確認でき、ライブラリなしでWebSocket APIの基本動作をテストできます。' },
+      { title: 'JavaScript WebSocket APIの基本', body: 'ブラウザのWebSocket APIは`const ws = new WebSocket("wss://...")`で接続を開始します。`ws.onopen`で接続完了、`ws.onmessage`で受信、`ws.onerror`でエラーを処理します。`ws.send(data)`でメッセージを送り、`ws.close()`で切断します。readyStateプロパティでCONNECTING(0)・OPEN(1)・CLOSING(2)・CLOSED(3)の状態を確認できます。' },
+    ],
+  },
+
+  'url-builder': {
+    heading: 'URLの構造を理解する — スキーム・ホスト・パス・クエリ・フラグメント',
+    intro: 'URLはUniform Resource Locatorの略で、インターネット上のリソースの場所を示す文字列です。それぞれの部分には役割があり、APIのエンドポイント設計・SEO・セキュリティに深く関わります。URLの構造を正しく理解することは開発者の基礎スキルです。',
+    sections: [
+      { title: 'URLの各パーツと役割', body: 'https://api.example.com:8080/v1/users?limit=20&offset=0#results というURLを例に取ると、https:（スキーム/プロトコル）、api.example.com（ホスト）、:8080（ポート）、/v1/users（パス）、?limit=20&offset=0（クエリ文字列）、#results（フラグメント）に分解されます。フラグメントはサーバーには送信されず、ブラウザ内でのアンカーナビゲーションに使われます。' },
+      { title: 'クエリパラメータのエンコード', body: 'クエリパラメータの値にスペース・日本語・記号が含まれる場合はパーセントエンコード（URLエンコード）が必要です。スペースは%20または+に、「日本語」は%E6%97%A5%E6%9C%AC%E8%AA%9Eになります。JavaScriptのURL APIを使うと自動的にエンコード・デコードが行われます。encodeURIComponent()やURLSearchParams APIを活用するとバグを防げます。' },
+      { title: 'URL APIの活用', body: 'ブラウザ・Node.js共通のURL APIを使うと文字列操作なしでURLを安全に操作できます。`new URL("https://...")`でパースし、`.hostname`・`.pathname`・`.searchParams`で各パーツにアクセスできます。`url.searchParams.set("key", "value")`でクエリパラメータを追加・更新し、`url.toString()`で文字列に戻すのが安全です。' },
+      { title: 'WebSocketのURL設計', body: 'WebSocketのURLはws://（非暗号化）またはwss://（TLS暗号化）スキームを使います。ws://api.example.com/socketのようにHTTPのURLと同じホスト・パス構造を持てます。クエリパラメータで認証トークンを渡すパターン（wss://...?token=xxx）も一般的ですが、セキュリティ上はヘッダーやハンドシェイク時のSubprotocolで認証する方が安全です。' },
+    ],
+  },
+
+  'css-layer-visualizer': {
+    heading: 'CSS @layer（カスケードレイヤー）とは — 詳細度の戦争を終わらせる新機能',
+    intro: 'CSS @layerはChromeとFirefox・Safariで2022年にサポートされたカスケードの新機能です。CSSのスタイル競合問題を「詳細度のハック」ではなくレイヤーの優先順位で明示的にコントロールできます。',
+    sections: [
+      { title: '@layerの基本的な使い方', body: '`@layer reset, base, components, utilities;`と宣言することでレイヤーの優先順位を定義します。後に宣言されたレイヤーが勝ちます（utilitiesが最高優先度）。次に各レイヤーのスタイルを`@layer base { h1 { font-size: 2rem } }`のように書きます。これにより詳細度に関係なく、utilitiesのスタイルがbaseより常に優先されます。' },
+      { title: '詳細度とレイヤーの関係', body: '通常のCSSでは`#id .class`（詳細度高）が`div.class`（詳細度低）に必ず勝ちます。@layerを使うと「utilitiesレイヤーのdivクラス」が「baseレイヤーのIDセレクター」に勝てます。レイヤー間の優先度がまず決まり、同じレイヤー内では詳細度で決まります。Tailwind CSSのような設計で詳細度地獄を脱却できます。' },
+      { title: 'Tailwind CSS v4での活用', body: 'Tailwind CSS v4はネイティブで@layerを活用し、base・components・utilitiesの3層を@layerで管理しています。これにより`!important`ハックなしにユーティリティクラスがコンポーネントスタイルに常に勝てます。サードパーティCSSを`@layer vendor { @import "..." }`でラップすることで自分のスタイルが確実に優先されます。' },
+      { title: 'ブラウザサポートと移行', body: '@layerはChrome 99+・Firefox 97+・Safari 15.4+でサポートされています（グローバル普及率95%以上）。既存プロジェクトへの段階的導入は、まずCSSファイル全体を`@layer legacy { ... }`でラップするだけで始められます。legacyレイヤーを最初に宣言しておけば新しいスタイルが常に勝てる基盤が整います。' },
+    ],
+  },
+
+  'font-inspector': {
+    heading: 'Webフォントとシステムフォント — 使い分けとCSS font-familyスタックの設計',
+    intro: 'フォント設計はWebサイトの読みやすさとパフォーマンスを左右する重要な要素です。Webフォント（Google Fontsなど）とシステムフォントにはそれぞれ長所と短所があります。font-familyスタックを正しく設計することで両方の利点を活かせます。',
+    sections: [
+      { title: 'システムフォントスタックとは', body: 'システムフォントスタックはユーザーのOSにインストール済みのフォントを優先順位付きで指定する書き方です。`font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`はMacはSan Francisco、WindowsはSegoe UI、AndroidはRobotoをそれぞれ使い、未インストールの場合は次のフォントにフォールバックします。Webフォントを読み込む必要がなく高速です。' },
+      { title: 'Canvas APIでのフォント検出', body: 'JavaScriptからシステムフォントのインストール状態を確認するにはCanvas APIを使います。デフォルトのmonospaceフォントで文字を描画した幅と、テスト対象フォントを指定した幅を比較し、幅が変わればそのフォントがインストールされていると判定できます。完全に確実ではありませんが、多くのフォントで有効な手法です。' },
+      { title: '等幅フォントの選択', body: 'コードエディタ・ターミナル・プリフォーマットテキストには等幅フォントが必要です。MacではMenlo（標準）やMonaco、WindowsではCascadia Code（VS Code標準）やConsolas、LinuxではUbuntu Monoがよく使われます。プログラミング向け等幅フォントにはリガチャ対応のFira Code・JetBrains Monoもあり、`font-feature-settings: "liga" 1`で記号の合字が有効になります。' },
+      { title: '日本語フォントスタックの設計', body: '日本語環境では英字フォントの後に日本語フォントを指定します。`font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif`のように英字フォントを先に書くと、英数字に英字フォントが使われ日本語にのみ日本語フォントが使われます。Windowsで正確なフォントを指定するには`"BIZ UDPGothic"`や`"Meiryo"`を加えると安心です。' },
+    ],
+  },
+
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {
