@@ -2338,7 +2338,7 @@ export const tools: Tool[] = [
     description:
       'WebSocketのエンドポイントURLを入力するだけで接続・メッセージ送受信・フレームログをブラウザ上で即テスト。接続状態のリアルタイム表示、受信メッセージの自動ログ、Enterキー送信に対応。wss://echo.websocket.orgなどのエコーサーバーで動作確認するのに最適です。',
     tags: ['開発者向け', 'ネットワーク', 'デバッグ'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8604233',
     hasWebVersion: true,
     releasedAt: '2026-07-11',
     features: [
@@ -2361,7 +2361,7 @@ export const tools: Tool[] = [
     description:
       'URLを貼り付けて「分解」するとプロトコル・ホスト・ポート・パス・クエリパラメータ・ハッシュフラグメントを個別フィールドに展開。各フィールドを編集するとURLがリアルタイムに再構築されます。APIのエンドポイント調査やクエリパラメータの追加・削除に。',
     tags: ['開発者向け', 'URL', 'ネットワーク'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8604242',
     hasWebVersion: true,
     releasedAt: '2026-07-11',
     features: [
@@ -2383,7 +2383,7 @@ export const tools: Tool[] = [
     description:
       'CSS @layer のレイヤー名を追加し、ドラッグ&ドロップで優先度を並び替えるだけで @layer 宣言文とブロックのCSSコードを自動生成。各レイヤーの優先度をプログレスバーで可視化し、カスケードの動作を直感的に把握できます。reset・base・components・utilitiesのデフォルト構成からすぐに始められます。',
     tags: ['CSS', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8604248',
     hasWebVersion: true,
     releasedAt: '2026-07-11',
     features: [
@@ -2405,7 +2405,7 @@ export const tools: Tool[] = [
     description:
       '32種のシステムフォント（サンセリフ・セリフ・等幅・日本語）をインストール済みかどうかをCanvas APIで検出し、カスタムテキストでリアルタイムプレビュー。気に入ったフォントをスタックに積み上げて font-family: ... のCSSを自動生成します。',
     tags: ['CSS', 'デザイン', '開発者向け'],
-    boothUrl: '',
+    boothUrl: 'https://knkk.booth.pm/items/8604256',
     hasWebVersion: true,
     releasedAt: '2026-07-11',
     features: [
