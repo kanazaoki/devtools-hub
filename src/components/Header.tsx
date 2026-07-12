@@ -25,8 +25,14 @@ export function Header() {
             カテゴリ
           </Link>
           <Link
-            href="/guide"
+            href="/articles"
             className="text-xs sm:text-sm text-dim hover:text-primary transition-colors whitespace-nowrap"
+          >
+            記事
+          </Link>
+          <Link
+            href="/guide"
+            className="hidden sm:inline text-xs sm:text-sm text-dim hover:text-primary transition-colors whitespace-nowrap"
           >
             使い方
           </Link>
