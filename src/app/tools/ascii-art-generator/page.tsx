@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
+import { getMetaDescription } from '@/data/seo-content'
 import { AdSense } from '@/components/AdSense'
 import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
@@ -13,11 +14,11 @@ const tool = tools.find((t) => t.slug === 'ascii-art-generator')!
 
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
-  description: tool.description,
+  description: getMetaDescription(tool.slug, tool.description),
   alternates: { canonical: 'https://devtools-hub.vercel.app/tools/ascii-art-generator' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
-    description: tool.description,
+    description: getMetaDescription(tool.slug, tool.description),
     images: [{ url: '/tools/ascii-art-generator/opengraph-image', width: 1200, height: 630 }],
   },
 }

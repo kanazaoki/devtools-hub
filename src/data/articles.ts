@@ -12,6 +12,7 @@ export interface Article {
   intro: string
   sections: ArticleSection[]
   conclusion: string
+  relatedTools?: string[]
 }
 
 export const articles: Article[] = [
@@ -45,6 +46,7 @@ export const articles: Article[] = [
       },
     ],
     conclusion: 'JSONのデバッグは、適切なツールを使えば大幅に短縮できます。コンソール検証・フォーマット整形・スキーマバリデーション・Diff比較・JSON Pathという5つのアプローチを状況に応じて使い分けることで、「なぜこのエラーが出ているのか」にかける時間を最小化できます。特にスキーマバリデーションは事前にエラーを防ぐ投資として有効で、長期的なコードの安定性に大きく貢献します。',
+    relatedTools: ['json-studio', 'json-diff', 'json-path-tester', 'json-schema-validator'],
   },
   {
     slug: 'css-custom-properties-design-system',
@@ -76,6 +78,7 @@ export const articles: Article[] = [
       },
     ],
     conclusion: 'CSSカスタムプロパティによるデザインシステムの核心は「値を一箇所で定義し、セマンティックな名前で参照する」という原則にあります。3層トークン構造を採用し、コンポーネントが生の値ではなく意味のある変数を参照するよう設計することで、テーマ変更・ダークモード対応・ブランドアップデートを最小限のコスト変更で実現できます。小規模なプロジェクトでも、今日から始められるシンプルな習慣です。',
+    relatedTools: ['color-token-generator', 'color-shade-generator', 'css-variable-inspector'],
   },
   {
     slug: 'http-status-codes-practical-guide',
@@ -107,6 +110,7 @@ export const articles: Article[] = [
       },
     ],
     conclusion: 'ステータスコードの適切な使い分けは、APIを消費するクライアント開発者の体験を大きく左右します。仕様書を暗記する必要はありませんが、2xx・4xx・5xxそれぞれの意味を正確に理解し、「このエラーはクライアントの問題か、サーバーの問題か」「認証の問題か、認可の問題か」という判断軸を持つことが重要です。HTTP Status Referenceツールを手元に置いて、設計時の迷いを素早く解消しましょう。',
+    relatedTools: ['http-status-reference', 'http-request-builder', 'curl-to-code'],
   },
   {
     slug: 'regex-patterns-practical',
@@ -134,6 +138,7 @@ export const articles: Article[] = [
       },
     ],
     conclusion: '正規表現はすべてを覚えようとするのではなく、「パターンの構造を理解して必要なときに素早く書ける」状態を目指すことが重要です。Regex Studioのようなビジュアルテスターを手元に置き、パターンを書きながらリアルタイムでマッチ結果を確認する習慣をつけると、試行錯誤のコストが大幅に下がります。',
+    relatedTools: ['regex-studio', 'string-inspector', 'text-case-converter'],
   },
   {
     slug: 'jwt-guide',
@@ -161,6 +166,7 @@ export const articles: Article[] = [
       },
     ],
     conclusion: 'JWTは正しく実装すれば強力な認証メカニズムですが、アルゴリズムの許可リスト管理・有効期限の設定・保存場所の選択・機密情報のペイロード除外という4つの原則を守ることが安全性の前提です。既存の実装を見直す際は、JWT Decoderでトークンをデコードして現在のクレーム構成を確認することから始めましょう。',
+    relatedTools: ['jwt-decoder', 'jwt-builder', 'hash-studio'],
   },
   {
     slug: 'base64-encoding-guide',
@@ -188,6 +194,7 @@ export const articles: Article[] = [
       },
     ],
     conclusion: 'Base64は「テキストプロトコルでバイナリを安全に扱うための変換」という明確な役割を持ちます。Data URI・HTTP認証ヘッダー・JWTペイロードなど、現代のWeb開発の随所に登場しますが、暗号化との混同だけは避けることが重要です。仕組みを理解した上で適切な場面で使うことで、デバッグや実装の品質が向上します。',
+    relatedTools: ['base64-studio', 'jwt-decoder', 'url-encoder'],
   },
   {
     slug: 'css-grid-vs-flexbox',
@@ -215,6 +222,7 @@ export const articles: Article[] = [
       },
     ],
     conclusion: 'FlexboxとCSSグリッドは競合ではなく補完関係にあります。「1方向の並びならFlex、2次元の格子ならGrid」というシンプルな判断軸を持ちつつ、ページレイアウトにGrid・コンポーネント内部にFlexというネスト構成を基本パターンとして覚えることで、複雑なレイアウトも自信を持って実装できるようになります。',
+    relatedTools: ['css-grid-generator', 'css-flexbox-generator', 'css-box-model'],
   },
   {
     slug: 'web-performance-image-optimization',
@@ -242,5 +250,122 @@ export const articles: Article[] = [
       },
     ],
     conclusion: '画像最適化はWebパフォーマンス改善の中でも最も費用対効果が高い施策の一つです。まず既存サイトのPageSpeed Insightsを確認し、「適切なサイズの画像」「次世代フォーマット」の指摘が出ている場合はWebP変換とサイズ最適化から着手することで、LCPスコアを大幅に改善できます。新規開発では最初からWebP・遅延読み込み・srcsetを標準として組み込むことで、後から修正するコストを避けられます。',
+    relatedTools: ['webp-studio', 'resize-image', 'image-color-extractor'],
+  },
+  {
+    slug: 'typescript-utility-types',
+    title: 'TypeScript Utility Types 完全ガイド — Partial・Pick・Omit・Recordの使い方',
+    description: 'TypeScriptに組み込まれているUtility Types（Partial・Required・Pick・Omit・Record・Readonly・ReturnType）の実践的な使い方と、型設計を改善するパターンを解説します。',
+    publishedAt: '2026-07-12',
+    tags: ['TypeScript', '型システム', 'フロントエンド'],
+    intro: 'TypeScriptのUtility Typesは、既存の型を変換・加工するための組み込みジェネリクスです。これらを活用することで、同じような型定義を繰り返し書く必要がなくなり、型の変更が一箇所に集約されます。「TypeScriptを書いているが型を手書きで全部定義している」という場合、Utility Typesの導入でコードが大幅にシンプルになる可能性があります。この記事では実務でよく使う7種類を、具体的なユースケースとともに解説します。',
+    sections: [
+      {
+        heading: 'Partial<T> と Required<T> — すべてのプロパティを任意・必須に',
+        body: '`Partial<T>` は型 `T` のすべてのプロパティを省略可能（`?`）にします。フォームの「更新」処理でよく使われます。たとえば `User` 型の一部フィールドだけを更新したい場合、更新用の引数型を `Partial<User>` にすることで「存在するフィールドだけを渡す」というパターンを型安全に表現できます。`Required<T>` はその逆で、すべてのオプショナルプロパティを必須にします。設定オブジェクトにデフォルト値を適用した後、最終的に全フィールドが埋まっていることを保証する場合などに有効です。両者を組み合わせると `Required<Partial<T>>` は元の型と等価ですが、途中のパイプラインで型を柔軟に扱う際に応用できます。',
+      },
+      {
+        heading: 'Pick<T, K> と Omit<T, K> — 必要なフィールドだけ抜き出す・除外する',
+        body: '`Pick<T, K>` は型 `T` から特定のプロパティ `K` だけを持つ新しい型を作ります。`Pick<User, "id" | "name">` とすれば、`id` と `name` だけを持つ型になります。APIレスポンスからUI表示に必要なフィールドだけを抽出したコンポーネント用の型を作る場合や、機密フィールド（パスワードハッシュなど）を除いたパブリックな型を定義するのに便利です。`Omit<T, K>` はその逆で、特定のプロパティを除外した型を作ります。`Omit<User, "password" | "salt">` でパスワード関連フィールドを取り除いた安全なユーザー型を定義できます。フォームの `id` や `createdAt` など、作成時には存在しないフィールドを除く `Omit<Article, "id" | "createdAt">` という使い方もよく見られます。',
+      },
+      {
+        heading: 'Record<K, V> — キーと値の型を指定したオブジェクト型',
+        body: '`Record<K, V>` はキーの型 `K` と値の型 `V` を指定したオブジェクト型を作ります。`Record<string, number>` は「文字列キーで数値を持つオブジェクト」を表し、辞書・マップ型として使われます。より具体的には `Record<"success" | "error" | "loading", string>` のようにキーをユニオン型にすることで、特定のキーしか持てないオブジェクトを型安全に表現できます。ステータスコードと表示メッセージのマッピング、言語コードと翻訳文字列の対応表など、「固定されたキーセットに値を対応させる」パターンで頻繁に使われます。インデックスシグネチャ `{ [key: string]: V }` との違いは、Recordはキーを列挙型に絞れる点です。',
+      },
+      {
+        heading: 'ReturnType<T> と Parameters<T> — 関数の型から型を抽出する',
+        body: '`ReturnType<typeof fn>` は関数 `fn` の戻り値の型を取得します。外部ライブラリの関数が返す型を手書きで定義し直さず、`ReturnType<typeof libraryFn>` で自動的に取得できるため、ライブラリのアップデートに追従しやすくなります。`Parameters<typeof fn>` は関数の引数の型をタプルとして取得します。`Parameters<typeof createUser>[0]` で第一引数の型だけを取り出すことができます。これらを組み合わせると、「ある関数をラップした別の関数を型安全に書く」場面で役立ちます。たとえばAPIコールをラップするキャッシュ関数を作る場合、元の関数の引数と戻り値の型を `Parameters` と `ReturnType` で取得して使えます。',
+      },
+      {
+        heading: 'Readonly<T> と型の不変性',
+        body: '`Readonly<T>` はすべてのプロパティを読み取り専用にし、変更を試みるとコンパイルエラーになります。設定オブジェクト・定数・Reduxのstateなど「変更されてはいけないデータ」を型レベルで保護できます。`Object.freeze()` はランタイムで変更を防ぎますが型推論が弱く、`Readonly<T>` はコンパイル時のチェックに特化しています。配列の場合は `ReadonlyArray<T>`（または `readonly T[]`）を使います。ネストされたオブジェクトのプロパティはシャローなReadonlyのため、深い部分まで保護したい場合は `DeepReadonly` を自前で定義するか、utility-typesライブラリを使います。型定義ファイルやAPIのレスポンス型など、外部から渡されて変更すべきでないデータに積極的に適用すると、意図しないミューテーションによるバグを事前に防げます。',
+      },
+    ],
+    conclusion: 'Utility Typesは「型の変換・加工」のための強力な道具です。Partial・Required・Pick・Omitは型の絞り込みに、RecordはマップオブジェクトのKV型定義に、ReturnType・Parametersは関数型の抽出に、Readonlyは不変性の保証に使います。これらを組み合わせると「新しい型を一から書く」必要が大幅に減り、型の変更が一箇所に集約されます。JSON to TypeScriptツールで既存のJSONデータから型定義の土台を生成した後、Utility Typesで加工するという組み合わせも効率的です。',
+    relatedTools: ['json-to-typescript', 'json-to-zod', 'json-schema-validator'],
+  },
+  {
+    slug: 'cron-expression-guide',
+    title: 'cron式の書き方と定番パターン — スケジュール設定の完全ガイド',
+    description: 'cron式の5フィールド構文（分・時・日・月・曜日）から、「毎日0時」「毎週月曜日」「毎月1日」などの定番パターン、特殊文字（*/,\-）の使い方まで実践的に解説します。',
+    publishedAt: '2026-07-12',
+    tags: ['cron', 'バックエンド', 'インフラ'],
+    intro: 'バッチ処理・定期レポート送信・キャッシュクリア・バックアップなど、定期実行タスクの設定にはcron式を使います。「毎日午前2時に実行したい」という要件をcron式に変換する際、フィールドの順序や特殊文字の意味を誤解してしまうことはよくあります。この記事では、cron式の基本構文から実務でよく使うパターン、ハマりやすい落とし穴まで体系的に解説します。',
+    sections: [
+      {
+        heading: 'cron式の5つのフィールド',
+        body: 'cron式は左から「分（0-59）・時（0-23）・日（1-31）・月（1-12）・曜日（0-7、0と7が日曜日）」の5フィールドで構成されます。例えば `30 2 * * *` は「毎日2時30分」、`0 9 * * 1` は「毎週月曜日9時0分」を意味します。各フィールドに `*` を使うと「すべての値」を意味します。Linuxのcrontabとは異なり、AWS EventBridgeやGitHub Actionsなどのサービスによっては「秒」フィールドが追加され6フィールドになる場合があります。使用するシステムのドキュメントで確認することが重要です。フィールドの順序を「分・時・日・月・曜日」の順に覚えるために「毎分・毎時・毎日・毎月・毎曜日」と唱える方法がよく使われています。',
+      },
+      {
+        heading: '特殊文字：*/,-の使い方',
+        body: '`*`（アスタリスク）はすべての値を意味します。`*/n` はn間隔（`*/15` なら15分ごと）、`,`（カンマ）は複数値の列挙（`1,15` なら1日と15日）、`-`（ハイフン）は範囲指定（`1-5` は月〜金）に使います。例えば `0 */6 * * *` は6時間ごと（0・6・12・18時）、`0 9 * * 1-5` は平日（月〜金）の9時0分、`0 0 1,15 * *` は毎月1日と15日の0時0分を意味します。`L`（Last）や `W`（Weekday）などの特殊文字はQuartzスケジューラやAWS固有の拡張で、標準cronでは使えないため注意が必要です。Cron Builderでフィールドをビジュアルに設定し、次の5回の実行日時を確認することで意図通りの設定になっているか検証できます。',
+      },
+      {
+        heading: '定番パターン集',
+        body: '`0 0 * * *`（毎日0時）はバックアップ・日次レポートの定番設定です。`0 */1 * * *`（毎時0分）はAPIのキャッシュクリアや定期同期に使われます。`0 9 * * 1`（毎週月曜9時）は週次レポートメール送信の典型パターンで、ビジネス向けシステムでよく使われます。`0 0 1 * *`（毎月1日0時）は月次集計バッチ。`*/5 * * * *`（5分ごと）は健全性チェック（ヘルスチェック）やポーリング処理に使います。`0 2 * * 0`（毎週日曜2時）は週次のデータ整備やフルバックアップに向いています。トラフィックが少ない深夜〜早朝の時間帯に重い処理を設定することで、本番環境への影響を最小化できます。',
+      },
+      {
+        heading: 'タイムゾーンとcronの落とし穴',
+        body: 'cronのデフォルトのタイムゾーンはサーバーのシステムタイムゾーンです。UTCで動いているサーバーに「毎朝9時（JST）」の処理を設定したい場合は `0 0 * * *`（UTC 0:00 = JST 9:00）と書く必要があります。Linuxのcrontabではタイムゾーン変数を `CRON_TZ=Asia/Tokyo` として設定できます。AWS EventBridgeではスケジュール作成時にタイムゾーンを明示的に選択できます。夏時間（サマータイム）が存在する地域では、時刻が1時間前後するため `2:30` に設定したジョブが年に2回ずれる問題が起きます。UTCで設定しておくと夏時間の問題を避けられますが、ビジネス上「毎朝9時JST」が必要な場合はタイムゾーン対応のスケジューラを使うことを推奨します。',
+      },
+    ],
+    conclusion: 'cron式は一見暗号のように見えますが、「分・時・日・月・曜日」の順と `*/,-` の4つの特殊文字を覚えるだけで大半のパターンを書けます。設定後は必ず「次の実行日時」を確認するのがベストプラクティスで、Cron Builderのプレビュー機能を使えば意図通りの設定か即座に確認できます。',
+    relatedTools: ['cron-builder', 'timestamp-converter', 'timezone-converter'],
+  },
+  {
+    slug: 'url-structure-guide',
+    title: 'URLの構造と設計 — スキーム・ホスト・パス・クエリ・フラグメントの役割',
+    description: 'URLを構成する各パーツ（スキーム・ホスト・ポート・パス・クエリパラメータ・フラグメント）の役割と、REST API設計・SEO・セキュリティに影響するURLの設計原則を解説します。',
+    publishedAt: '2026-07-12',
+    tags: ['URL', 'Web設計', 'REST API'],
+    intro: 'URLはWebの基盤ですが、「なんとなく使っている」という開発者も多いリソース識別子です。URLのどのパーツがどんな役割を持つのか、REST APIのエンドポイント設計でパスとクエリパラメータをどう使い分けるか、またURLに関連するセキュリティの注意点を体系的に整理します。',
+    sections: [
+      {
+        heading: 'URLの7つのパーツ',
+        body: 'URLは `scheme://userinfo@host:port/path?query#fragment` の形式で構成されます。`scheme`（スキーム）はプロトコルを指定し `https`・`http`・`ftp`・`mailto`・`file` などがあります。`host`（ホスト）はドメイン名またはIPアドレスで、`port` は省略時はスキームのデフォルト（HTTPSなら443）が使われます。`path`（パス）はリソースの場所を示すスラッシュ区切りの階層構造です。`query`（クエリ）は `?` 以降の `key=value` 形式のパラメータで、`&` で複数連結できます。`fragment`（フラグメント）は `#` 以降でページ内の特定位置を指し、サーバーには送信されずブラウザのみが処理します。URL Parser Builderに任意のURLを入力すると各パーツに分解して表示でき、複雑なURLの解析に役立ちます。',
+      },
+      {
+        heading: 'パスパラメータ vs クエリパラメータ：REST API設計の判断基準',
+        body: 'REST APIを設計する際、「パスに入れるべきか、クエリに入れるべきか」という判断は設計の一貫性に大きく影響します。パスパラメータ（`/users/123`）はリソースを一意に識別する値に使います。ユーザーID・記事ID・カテゴリスラグのように「このリソース」を特定するための識別子が該当します。クエリパラメータ（`/users?role=admin&sort=createdAt`）はリソースに対するフィルタリング・ソート・ページネーション・検索条件に使います。「どのリソース群か」ではなく「どう絞り込むか」の情報です。この原則に従うと、`GET /articles/slug-name`（特定記事の取得）と `GET /articles?tag=css&page=2`（CSSTタグの2ページ目）のように一貫したAPI設計になります。',
+      },
+      {
+        heading: 'URLエンコードとパーセントエンコーディング',
+        body: 'URLに使えない文字（日本語・スペース・`&`・`=` など）はパーセントエンコーディングで `%XX`（16進数2桁）形式に変換する必要があります。「東京」は `%E6%9D%B1%E4%BA%AC` になります。JavaScriptでは `encodeURIComponent()` でクエリパラメータの値をエンコードし、`encodeURI()` でURL全体をエンコードします。両者の違いは `?`・`=`・`&`・`/` をエンコードするかどうかで、クエリパラメータの値には必ず `encodeURIComponent()` を使います。エンコードを忘れると、日本語を含むクエリパラメータが一部の環境で正しく解釈されなかったり、`&` を含む値がパラメータの区切りとして誤解釈される問題が起きます。URL Encoderで変換結果をリアルタイムに確認できます。',
+      },
+      {
+        heading: 'セキュリティ：URLに含めてはいけない情報',
+        body: 'URLはブラウザの履歴・サーバーのアクセスログ・Refererヘッダーに記録されるため、機密情報を含めると意図せず漏洩します。認証トークン・APIキー・パスワード・個人を特定できる情報（メールアドレス・電話番号）はURLのパスやクエリに含めてはいけません。特に `?token=xxx` のようにアクセストークンをクエリパラメータで渡すと、ブラウザの履歴やサードパーティ解析ツールに記録されるリスクがあります。セッション識別子はCookieやAuthorizationヘッダーで渡すことが推奨されます。OAuthの認証コードはURLに含まれますが、短命（数分）で一度きりの使い切りにすることで漏洩リスクを限定しています。',
+      },
+    ],
+    conclusion: 'URLはWebアプリケーションのインターフェースの一部です。パスパラメータでリソースを識別し、クエリパラメータで絞り込みを表現するという原則を守ることで、一貫性があり理解しやすいAPI設計になります。また、URLに機密情報を含めないというセキュリティ原則は見落としやすいため、設計レビュー時に意識的にチェックする習慣をつけましょう。',
+    relatedTools: ['url-parser-builder', 'url-encoder', 'url-builder'],
+  },
+  {
+    slug: 'cors-guide',
+    title: 'CORSの仕組みと設定 — プリフライトリクエストとAccess-Controlヘッダーを理解する',
+    description: 'CORSエラーの原因・プリフライトリクエストの仕組み・サーバー側の正しい設定方法・よくある誤設定を解説します。「CORSエラーが出て困った」という経験を持つ開発者向けの実践ガイドです。',
+    publishedAt: '2026-07-12',
+    tags: ['CORS', 'HTTP', 'セキュリティ'],
+    intro: '「ローカル環境でAPIを叩いたらCORSエラーになった」「フロントエンドとバックエンドのドメインが違うとエラーが出る」という経験は多くのフロントエンド開発者が持っています。CORSはセキュリティ上重要な仕組みですが、設定が複雑でエラーの原因がわかりにくいことも事実です。この記事では、CORSエラーの発生原因から、サーバー側の正しい設定方法、そして「とりあえず `*` にした」では解決しない問題まで、実務的な観点で解説します。',
+    sections: [
+      {
+        heading: '同一オリジンポリシーとCORSの関係',
+        body: 'ブラウザには「同一オリジンポリシー（Same-Origin Policy）」というセキュリティ機能があり、スクリプトは自分と同じオリジン（スキーム＋ホスト＋ポートの組み合わせ）のリソースにしかアクセスできません。`https://app.example.com` のJavaScriptから `https://api.example.com` にfetchすると、ホストが異なるためブロックされます。CORS（Cross-Origin Resource Sharing）は、サーバーが「このオリジンからのアクセスは許可する」とブラウザに通知するための仕組みです。CORSはあくまでブラウザの制限であり、curlやPostmanなどのクライアントツールはCORSの影響を受けません。「curlでは動くのにブラウザで動かない」という状況はCORSが原因であることが多いです。',
+      },
+      {
+        heading: 'プリフライトリクエストとは何か',
+        body: 'CORSの「プリフライトリクエスト」は、実際のリクエストを送る前にブラウザが自動的に送信するOPTIONSリクエストです。非シンプルリクエスト（`PUT`・`DELETE`・`PATCH` メソッド、カスタムヘッダー付き、Content-Typeが `application/json` のPOSTなど）はプリフライトが発生します。ブラウザは `OPTIONS /api/users` と `Access-Control-Request-Method: POST` などを含むリクエストを先に送り、サーバーが `Access-Control-Allow-Origin` と `Access-Control-Allow-Methods` を含むレスポンスを返せば本リクエストを送信します。REST APIを実装する際、OPTIONSメソッドへのハンドリングを忘れるとプリフライトが失敗してCORSエラーになります。これが「GETは動くのにPOSTで失敗する」という現象の典型的な原因です。',
+      },
+      {
+        heading: '正しいAccess-Controlヘッダーの設定',
+        body: '`Access-Control-Allow-Origin` は許可するオリジンを指定します。`*`（ワイルドカード）は全オリジンを許可しますが、Cookieや認証ヘッダーを含むリクエスト（`credentials: "include"`）では `*` が使えず、具体的なオリジンを指定する必要があります。`Access-Control-Allow-Methods` は許可するHTTPメソッドをカンマ区切りで指定します。`Access-Control-Allow-Headers` はリクエストで使えるカスタムヘッダー（`Authorization`・`Content-Type` など）を指定します。`Access-Control-Max-Age` はプリフライトのキャッシュ時間（秒）で、設定することでプリフライトの発生頻度を減らせます。`Access-Control-Allow-Credentials: true` はCookieや認証情報の送信を許可します。この場合 `Allow-Origin` に `*` は指定できず、具体的なオリジンが必要です。',
+      },
+      {
+        heading: 'よくある誤設定と「CORSエラーを安易に回避する」危険性',
+        body: '`Access-Control-Allow-Origin: *` と `Access-Control-Allow-Credentials: true` を同時に設定しても無効で、ブラウザはエラーにします。これはCSRF（クロスサイトリクエストフォージェリ）への対策として意図的な設計です。開発環境で「とりあえずCORSを全許可」にしてそのまま本番に出てしまうことは、CSRF脆弱性につながります。正しい対応は「フロントエンドのオリジンのみを明示的に許可する」ことです。Next.jsなどのBFF（Backend for Frontend）を挟む構成では、フロントエンドとAPIが同一オリジンになるためCORS設定が不要になり、より安全です。HTTP Headers Referenceで各Access-Controlヘッダーの詳細仕様を確認できます。',
+      },
+    ],
+    conclusion: 'CORSは「セキュリティ上の制限」であり、バグではありません。正しい理解は「ブラウザが同一オリジンポリシーでアクセスをブロックしているのを、サーバー側のヘッダーで許可する」というものです。プリフライトリクエストへの対応・CredentialsとAllow-Originの組み合わせルール・本番での最小権限設定という3点を押さえることで、安全かつ正しいCORS設定が実装できます。',
+    relatedTools: ['http-headers-reference', 'http-request-builder', 'curl-to-code'],
   },
 ]

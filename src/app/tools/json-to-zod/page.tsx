@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
+import { getMetaDescription } from '@/data/seo-content'
 import { AdSense } from '@/components/AdSense'
 import { BoothCTA } from '@/components/BoothCTA'
 import { ToolCard } from '@/components/ToolCard'
@@ -14,13 +15,13 @@ const tool = tools.find((t) => t.slug === 'json-to-zod')!
 
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
-  description: tool.description,
+  description: getMetaDescription(tool.slug, tool.description),
   alternates: {
     canonical: 'https://devtools-hub.vercel.app/tools/json-to-zod',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
-    description: tool.description,
+    description: getMetaDescription(tool.slug, tool.description),
     images: [{ url: '/tools/json-to-zod/opengraph-image', width: 1200, height: 630 }],
   },
 }

@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { articles } from '@/data/articles'
+import { tools } from '@/data/tools'
+import { ToolCard } from '@/components/ToolCard'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -35,6 +37,10 @@ export default async function ArticlePage({ params }: Props) {
   const { slug } = await params
   const article = articles.find((a) => a.slug === slug)
   if (!article) notFound()
+
+  const relatedToolData = article.relatedTools
+    ? tools.filter((t) => article.relatedTools!.includes(t.slug))
+    : []
 
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -119,6 +125,16 @@ export default async function ArticlePage({ params }: Props) {
           </div>
         )}
       </article>
+
+      {/* Related tools */}
+      {relatedToolData.length > 0 && (
+        <section className="mt-10 pt-8 border-t border-border">
+          <h2 className="mb-4 font-mono text-xs font-semibold uppercase tracking-widest text-muted">このツールで試す</h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {relatedToolData.map((t) => <ToolCard key={t.slug} tool={t} />)}
+          </div>
+        </section>
+      )}
 
       {/* Footer nav */}
       <div className="mt-12 pt-6 border-t border-border flex gap-5 flex-wrap">
