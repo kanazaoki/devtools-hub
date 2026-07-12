@@ -14,10 +14,10 @@ export const seoContent: Record<string, SeoArticleData> = {
     heading: 'SVGパスの d 属性とは？コマンドの読み方と使い方',
     intro: 'SVGの <path> 要素の d 属性は、複雑な図形をコマンド列で定義します。M・L・C・Q・Aなどのコマンドを組み合わせることで、直線・曲線・円弧を自在に描けます。SVG Path Visualizerを使えば、各コマンドの動作をステップ実行で視覚的に確認できます。',
     sections: [
-      { title: '基本コマンド：M・L・Z', body: 'Mはペンを持ち上げて移動（Move To）、Lは直線を引く（Line To）、Zはパスを閉じる（Close Path）です。大文字が絶対座標、小文字が相対座標を意味します。例えばM 10 10 L 90 90 Zは(10,10)から(90,90)へ線を引き、元の位置に戻して閉じます。' },
-      { title: '曲線コマンド：C・Q・A', body: 'Cはキュービックベジェ曲線（制御点2つ）、Qは二次ベジェ曲線（制御点1つ）、Aは楕円弧です。CSSのcubic-bezierと同じ原理で、制御点の位置によって曲線の形状が変わります。Aコマンドは半径・回転角・フラグ・終点座標の7パラメータを持ちます。' },
-      { title: 'H・V・S・T の省略コマンド', body: 'Hは水平線（Horizontal Line To）、Vは垂直線（Vertical Line To）の省略形で座標を1つだけ指定します。SはCの滑らかな続き（Smooth Cubic）、TはQの滑らかな続き（Smooth Quadratic）で、直前コマンドの終点を基準に制御点を自動計算します。' },
-      { title: 'デバッグ・学習での活用', body: 'FigmaやIllustratorが出力したSVGのパスは複雑なコマンド列になりがちです。SVG Path Visualizerで各コマンドをクリックしてステップ実行すると、どのコマンドがどの部分を描いているか一目でわかります。パスを最適化・手修正する際のデバッグにも活用できます。' },
+      { title: '基本コマンド：M・L・Z', body: 'Mはペンを持ち上げて移動（Move To）、Lは直線を引く（Line To）、Zはパスを閉じる（Close Path）です。大文字が絶対座標、小文字が相対座標を意味します。例えばM 10 10 L 90 90 Zは(10,10)から(90,90)へ線を引き、最初の点（10,10）に戻して閉じます。相対座標の小文字コマンド（m・l・z）は直前の終点からの距離で指定するため、パスを移動しても形状が崩れません。アイコンやUIコンポーネントのSVGでは相対座標の方が汎用性が高く、多くのエクスポートツールが相対座標形式を出力します。' },
+      { title: '曲線コマンド：C・Q・A', body: 'Cはキュービックベジェ曲線（制御点2つ）、Qは二次ベジェ曲線（制御点1つ）、Aは楕円弧です。Cコマンドは「C x1 y1, x2 y2, x y」で制御点2点と終点を指定します。CSSのcubic-bezierと同じ原理で、制御点の位置によって曲線の形状が変わります。Aコマンドは「A rx ry x-rotation large-arc-flag sweep-flag x y」という7パラメータを持ちます。rx・ryは楕円の半径、フラグ値の組み合わせで同じ2点を結ぶ4通りの弧から目的の弧を選択できます。ロゴやアイコンの複雑な輪郭を描く際に頻繁に登場します。' },
+      { title: 'H・V・S・T の省略コマンド', body: 'Hは水平線（Horizontal Line To）、Vは垂直線（Vertical Line To）の省略形で、座標を1つだけ指定します。矩形や格子状のパスを書くときに記述が短くなります。SはCの滑らかな続き（Smooth Cubic）で、直前のCコマンドの第2制御点の対称点を第1制御点として自動計算するため、パスのつなぎ目が滑らかになります。TはQの滑らかな続き（Smooth Quadratic）で同様の仕組みです。これらの省略コマンドはFigmaやIllustratorが出力するSVGに多用されており、SVG Path Visualizerでステップ実行すると直感的に理解できます。' },
+      { title: 'デバッグ・学習での活用', body: 'FigmaやIllustratorが出力したSVGのパスは複雑なコマンド列になりがちで、手修正が難しいです。SVG Path Visualizerで各コマンドをクリックしてステップ実行すると、どのコマンドがどの部分を描いているか一目でわかります。パスを最適化・手修正する際のデバッグにも活用できます。また学習用途としても有効で、「このコマンドを追加するとパスがどう変わるか」をリアルタイムで確認しながら、d属性の記法を体感的に習得できます。SVGOなどの最適化ツールが変換したパスを検証する用途にも使えます。' },
     ],
   },
 
@@ -28,7 +28,7 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'JSONサイズがパフォーマンスに与える影響', body: 'REST APIでは毎回のレスポンスにJSONが乗るため、キーの長さや不要なフィールドが積み重なるとネットワーク転送量が増加します。モバイル環境では特に顕著で、100KBのJSONを毎分フェッチするだけで6MB/時間の通信量になります。gzip圧縮で大幅に削減できますが、元のサイズを把握しておくことが最適化の第一歩です。' },
       { title: 'キーの短縮とフィールドの削減', body: '一般的なJSON最適化として「キー名の短縮」があります。authorizationをauth、descriptionをdescにするだけで、大量のレコードでは数KBの削減になります。また、null値・空配列・デフォルト値のフィールドを省略することも効果的です。JSON Size Analyzerのツリービューでサイズ上位のキーを確認して削減対象を見極めましょう。' },
       { title: 'ネスト構造とフラット化のトレードオフ', body: 'ネストが深いほどJSON構造は読みやすくなりますが、キー名の繰り返しによりサイズが増えます。user.address.cityのように深くネストする代わりに、user_address_cityのようにフラット化することでキー数は増えますがバイト数が減るケースがあります。JSON FlattennerとSize Analyzerを組み合わせて比較するのが効果的です。' },
-      { title: 'デスクトップ版でのファイル解析', body: 'デスクトップ版のJSON Size Analyzerでは、OSダイアログから.jsonファイルを直接開けます。大きなファイルも貼り付け不要でそのまま解析でき、サイズレポートをCSVとしてエクスポートして記録に残すことも可能です。' },
+      { title: 'デスクトップ版でのファイル解析', body: 'デスクトップ版のJSON Size Analyzerでは、OSダイアログから.jsonファイルを直接開けます。大きなファイルも貼り付け不要でそのまま解析でき、数MBを超えるJSONでもスムーズに処理できます。サイズレポートはCSVとしてエクスポートして記録に残すことができ、デプロイ前後のAPIレスポンスサイズの変化を追跡するのに役立ちます。フォルダを指定して複数ファイルを一括解析するバッチモードも搭載しており、マイクロサービスの各エンドポイントを横断的に比較してサイズの大きいものを特定できます。' },
     ],
   },
 
@@ -59,9 +59,9 @@ export const seoContent: Record<string, SeoArticleData> = {
     intro: 'Lorem Ipsumはデザインやプロトタイプ作成時に使う仮のテキストです。実際のコンテンツが決まっていない段階でもレイアウトの確認ができるため、UIデザイン・Web開発・印刷物の制作で広く使われています。',
     sections: [
       { title: 'Lorem Ipsumの由来', body: '"Lorem ipsum dolor sit amet"はキケロの著作『善と悪の究極について』のラテン語文章を変形したものです。15世紀の活版印刷業者が植字の見本として使い始め、20世紀にLetrasetのフォントカタログで広まりました。意味のないランダム文字列でなく実在のラテン語に基づくため、単語の長さや分布が自然な文章に近いのが特徴です。' },
-      { title: 'ダミーテキストが必要な理由', body: '実際の文章でデザインをテストすると「コンテンツの意味」に気を取られてレイアウト・フォント・空白のバランスを客観的に評価しにくくなります。意味のないLorem Ipsumを使うことでビジュアルだけに集中できます。また本番コンテンツが未定でもプロトタイプを進められます。' },
+      { title: 'ダミーテキストが必要な理由', body: '実際の文章でデザインをテストすると「コンテンツの意味」に気を取られてレイアウト・フォント・空白のバランスを客観的に評価しにくくなります。意味のないLorem Ipsumを使うことでビジュアルだけに集中できます。また本番コンテンツが未定でもプロトタイプを進められます。ステークホルダーへのデザインレビューでは、実際のコンテンツを使うと「文言の修正」に議論が集中してしまうことがあります。意味を持たないダミーテキストを使うことで、フォント・行間・余白のような本質的なデザイン評価に集中させる効果があります。' },
       { title: '生成モードの使い分け', body: 'Lorem Ipsum Generatorでは段落数・単語数・文字数の3モードで生成できます。WebデザインのWireframeには段落数モード、Twitterのような文字数制限があるUIには文字数モード、見出しや短いコピーには単語数モードが向いています。「Lorem ipsum dolor sit amet」固定開始オプションを使うと従来通りの書き出しになります。' },
-      { title: 'カスタム単語リスト（デスクトップ版）', body: 'デスクトップ版ではカスタム単語リストを登録して独自のダミーテキストを生成できます。日本語のダミーテキストを生成したい場合や、業界特有の用語でテキストを埋めたい場合に活用できます。' },
+      { title: 'カスタム単語リスト（デスクトップ版）', body: 'デスクトップ版ではカスタム単語リストを登録して独自のダミーテキストを生成できます。日本語のダミーテキストを生成したい場合（「吾輩は猫である」などの日本語文学テキストを単語リストに登録）や、医療・法律・ITなど業界特有の専門用語でテキストを埋めたい場合に活用できます。単語リストはJSONまたはTXTファイルでインポート可能で、単語の出現頻度を重み付けで制御することも可能です。生成したテキストはクリップボードへのコピーのほか、.txtファイルとして保存できます。' },
     ],
   },
 
@@ -72,7 +72,7 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: '補色（Complementary）とは', body: '補色は色相環の正反対（180°）に位置する色の組み合わせです。赤と緑、青とオレンジのような強いコントラストが生まれ、目立つCTAボタンやアクセントカラーに有効です。補色を使いすぎると視覚的に疲れやすいため、一方を主色・もう一方をアクセントとして小面積に使うのがコツです。' },
       { title: '類似色（Analogous）とは', body: '類似色は色相環で隣接する2〜3色の組み合わせです。同系色なので統一感があり穏やかで自然な印象を与えます。自然をテーマにしたデザインや、落ち着いた印象のブランドカラーに向いています。類似色の中でも明度・彩度で変化をつけることでメリハリを出せます。' },
       { title: 'トライアド・テトラドとモノクロマティック', body: 'トライアドは色相環を3等分した3色（例: 赤・青・黄）の組み合わせでバランスと彩りを両立します。テトラドは4等分した4色でより豊かな配色ですが調和が難しくなります。モノクロマティックは同一色相の明度・彩度違いで、シンプルで洗練された印象になります。' },
-      { title: 'HEX・RGB・HSL形式での利用', body: 'Color Palette Generatorは生成した各カラーをHEX・RGB・HSL形式で表示し、ワンクリックでコピーできます。CSS変数への貼り付け、Figmaへの転用、Tailwind CSSのカスタムカラー設定など、各ツールが求める形式にすぐ対応できます。' },
+      { title: 'HEX・RGB・HSL形式での利用', body: 'Color Palette Generatorは生成した各カラーをHEX・RGB・HSL形式で表示し、ワンクリックでコピーできます。CSSカスタムプロパティへの貼り付け（--color-primary: #3b82f6）、Figmaのカラースタイルへの転用、Tailwind CSSのextend.colorsへのカスタムカラー追加など、各ツールが求める形式にすぐ対応できます。デザインシステムでは同一ブランドカラーから5〜10段階の明暗バリエーションを作ることが多く、HSL形式で明度だけを変えることで一貫したカラーパレットを効率的に設計できます。全パレットをCSS変数としてまとめてコピーする機能も搭載しています。' },
     ],
   },
 
@@ -81,7 +81,7 @@ export const seoContent: Record<string, SeoArticleData> = {
     intro: 'CSS filterプロパティは画像・要素にPhotoshopのような視覚効果をCSSだけで適用できます。ホバーエフェクト・暗いテーマのオーバーレイ・画像の加工など、JavaScriptなしで実現できる表現の幅が広がります。',
     sections: [
       { title: '9種類のフィルターとその効果', body: 'blur（ぼかし）・brightness（明るさ）・contrast（コントラスト）・grayscale（グレースケール）・hue-rotate（色相回転）・invert（色反転）・opacity（透明度）・saturate（彩度）・sepia（セピア）の9種類があります。複数を組み合わせて filter: brightness(1.2) contrast(1.1) saturate(1.3) のように書くことでInstagramフィルターのような効果も作れます。' },
-      { title: 'ホバーエフェクトへの応用', body: 'カードや画像のホバー時にfilter: brightness(1.1) をtransitionと組み合わせて使うと、軽くハイライトするエフェクトが作れます。グレースケールの画像をホバーでカラーに変える演出はfilter: grayscale(1) → grayscale(0) のトランジションで実現できます。' },
+      { title: 'ホバーエフェクトへの応用', body: 'カードや画像のホバー時にfilter: brightness(1.1) をtransitionと組み合わせて使うと、軽くハイライトするエフェクトが作れます。グレースケールの画像をホバーでカラーに変える演出はfilter: grayscale(1) → grayscale(0) のトランジションで実現できます。具体的にはデフォルト状態でfilter: grayscale(1) saturate(0)を設定し、:hoverでfilter: grayscale(0) saturate(1.2)に変化させると色鮮やかに変わります。transition: filter 0.3s easeを加えることで滑らかなアニメーションになります。ポートフォリオサイトのギャラリーや商品一覧のサムネイルエフェクトとして人気のある表現です。' },
       { title: 'backdrop-filterとの違い', body: 'CSSにはbackdrop-filterもあり、こちらは要素の背景（背後にある要素）にフィルターを適用します。すりガラス（Glassmorphism）効果はbackdrop-filter: blur(12px) saturate(180%) で実現できます。filterは要素自体に、backdrop-filterは背後に対して作用する点が異なります。' },
       { title: 'filter: drop-shadowとbox-shadowの違い', body: 'drop-shadowフィルターは要素の輪郭（透過部分を除く形状）に沿って影を付けます。PNGの透過アイコンに使うとアイコンの形に沿った自然な影が出ます。box-shadowはボックス全体の矩形に影が付くため透過アイコンには向きません。CSS Filter Generatorでdrop-shadowも含めた各フィルターをリアルタイム確認できます。' },
     ],
@@ -125,9 +125,9 @@ export const seoContent: Record<string, SeoArticleData> = {
     intro: '変数名・ファイル名・APIフィールド名は言語やフレームワークによってケース記法の慣習が異なります。8種類の記法を理解することで、他の言語・システムとのデータ連携時の変換ミスを防げます。',
     sections: [
       { title: '主な4種類のケース記法', body: 'camelCase（例: myVariableName）はJavaScript・Java・Swiftの変数名で標準。PascalCase（例: MyClassName）はクラス名・コンポーネント名に使用。snake_case（例: my_variable_name）はPython・Ruby・DBカラム名で主流。kebab-case（例: my-component-name）はCSSクラス名・HTMLデータ属性・URLで使われます。' },
-      { title: 'SCREAMING_SNAKE_CASEとTitle Case', body: 'SCREAMING_SNAKE_CASE（例: MAX_RETRY_COUNT）は定数名に使われます。PythonやJavaで定数は大文字スネークケースが慣習です。Title Case（例: My Variable Name）は見出しやメニュー項目のような表示テキストに使います。' },
+      { title: 'SCREAMING_SNAKE_CASEとTitle Case', body: 'SCREAMING_SNAKE_CASE（例: MAX_RETRY_COUNT）は定数名に使われます。PythonやJavaで定数は大文字スネークケースが慣習で、変数と一目で区別できます。JavaScriptではconst MAX_BUFFER_SIZE = 1024のように書きます。Title Case（例: My Variable Name）は見出しやメニュー項目などの表示テキストに使われます。Sentence case（最初の1文字だけ大文字）はbody textや説明文に使われます。アプリのUIコピーを書くときはこれらを一貫して使い分けることが重要で、Text Case Converterでそれぞれの形式を素早く生成できます。' },
       { title: 'APIフィールド名変換の実践', body: 'REST APIのJSONレスポンスはcamelCaseが多いですが、データベースのカラム名はsnake_caseが一般的です。バックエンドとフロントエンドのデータ連携やORMのマッピングでケース変換が発生します。Text Case Converterで変数名を一度入力すれば8形式すべてに変換してコピーできるため、命名規則の変換作業を効率化できます。' },
-      { title: '全形式の一括コピー', body: '「この変数名、全部の形式でコピーして仕様書に貼りたい」というケースでは全形式を改行区切りで一括コピーする機能が便利です。APIドキュメントやコードの命名規則ガイドラインを書く際に、1つの単語から全ケースを一度に取得できます。' },
+      { title: '全形式の一括コピー', body: '「この変数名、全部の形式でコピーして仕様書に貼りたい」というケースでは全形式を改行区切りで一括コピーする機能が便利です。APIドキュメントやコードの命名規則ガイドラインを書く際に、1つの単語から8種類の全ケースを一度に取得できます。例えば「user profile」と入力するとuserProfile（camel）・UserProfile（Pascal）・user_profile（snake）・USER_PROFILE（screaming）・user-profile（kebab）など全形式が並んで表示されます。新しいテーブル名・APIエンドポイント・コンポーネント名を決める際にそれぞれの形式を確認しながら命名の一貫性を保てます。' },
     ],
   },
 
@@ -1261,10 +1261,10 @@ export const seoContent: Record<string, SeoArticleData> = {
     heading: 'ビット演算とは — AND/OR/XOR/NOT/SHIFTの基礎と活用',
     intro: 'ビット演算はコンピューターが2進数レベルで行う演算で、フラグ管理・マスク処理・ハッシュ計算など低レイヤーな処理で多用されます。AND/OR/XOR/NOT/SHIFTの意味と使い所を理解することで、より効率的なコードが書けます。',
     sections: [
-      { title: 'AND（&）とOR（|）の違い', body: 'AND演算は両方のビットが1のときだけ1になります。特定のビットを取り出す「マスク処理」に使います（例: n & 0xFF で下位8ビットを取得）。OR演算はどちらかが1なら1になり、フラグを立てる操作に使います（例: flags | OPTION_FLAG）。' },
-      { title: 'XOR（^）の特徴と活用', body: 'XORは2つのビットが異なるとき1になります。同じ値でXORすると0に戻る性質（a ^ b ^ b = a）があり、スワップ・暗号化・チェックサム・差分検出に活用されます。また2つの値が等しいかを判定するのにも使えます。' },
-      { title: 'NOT（~）とビットシフト', body: 'NOT演算は全ビットを反転します。32ビット整数で ~0 = -1（すべてのビットが1）になります。LEFT SHIFT（<<）は指定ビット数だけ左にずらし、2のべき乗の掛け算と等価です。RIGHT SHIFT（>>）は右にずらし、2のべき乗の割り算になります。' },
-      { title: 'ビット演算の実用例', body: 'パーミッションフラグ管理（UNIX chmod）、ネットワークのサブネットマスク計算、ゲームの衝突検出最適化、ハッシュ関数の実装、カラー値のRGB分離（color >> 16 & 0xFF でRed成分取得）など、実用的な場面が多くあります。' },
+      { title: 'AND（&）とOR（|）の違い', body: 'AND演算は両方のビットが1のときだけ1になります。特定のビットを取り出す「マスク処理」に使います（例: n & 0xFF で下位8ビットを取得、n & 1 で奇数判定）。OR演算はどちらかが1なら1になり、フラグを立てる操作に使います（例: flags | OPTION_FLAG）。実際のユースケースとして、ユーザーの権限フラグを整数1つで管理する設計があります。READ=1, WRITE=2, EXECUTE=4のように2のべき乗でフラグを定義し、ORで組み合わせ・ANDで検査できます。LinuxのchmodやUnixパーミッション（rwxrwxrwx）はこの仕組みの代表例です。' },
+      { title: 'XOR（^）の特徴と活用', body: 'XORは2つのビットが異なるとき1になります。同じ値でXORすると0に戻る性質（a ^ b ^ b = a）があり、スワップ・暗号化・チェックサム・差分検出に活用されます。また2つの値が等しいかを判定するのにも使えます。XORの対称性を使った古典的なスワップアルゴリズムは追加変数なしで実現できます（a ^= b; b ^= a; a ^= b;）。暗号学では共通鍵暗号の基本演算として使われ、チェックサムやCRC計算にも登場します。ゲームプログラミングでは2つのインデックスが一致するか判定する最速手段としても使われます。' },
+      { title: 'NOT（~）とビットシフト', body: 'NOT演算は全ビットを反転します。32ビット整数で ~0 = -1（すべてのビットが1）になります。LEFT SHIFT（<<）は指定ビット数だけ左にずらし、2のべき乗の掛け算と等価です（n << 3 は n × 8）。RIGHT SHIFT（>>）は右にずらし、2のべき乗の割り算になります（n >> 2 は n ÷ 4）。シフト演算は整数の乗除算を乗算命令より高速に実行できる最適化手法です。ただし現代のコンパイラは自動でシフト最適化を行うため、可読性を優先してn * 8と書いても問題ない場合がほとんどです。' },
+      { title: 'ビット演算の実用例', body: 'パーミッションフラグ管理（UNIX chmod）、ネットワークのサブネットマスク計算（IPアドレス & サブネットマスク）、ゲームの衝突検出最適化（ビットマスクで対象レイヤーを絞る）、ハッシュ関数の実装、カラー値のRGB分離（color >> 16 & 0xFF でRed成分取得、color >> 8 & 0xFF でGreen）など、実用的な場面が多くあります。JavaScriptのNumber.parseInt()で16進カラーコードをパースした後にビット演算でR・G・Bを分離するパターンは、カラーツール実装の定番コードです。Bitwise Calculatorでは各演算の結果を2進数・16進数で同時確認できます。' },
     ],
   },
 
@@ -1275,7 +1275,7 @@ export const seoContent: Record<string, SeoArticleData> = {
       { title: 'MIMEタイプの構造', body: 'MIMEタイプは「タイプ/サブタイプ」の形式で記述します（例: image/png、application/json、text/html）。タイプにはtext/image/audio/video/application/multipartなどがあり、サブタイプで具体的な形式を示します。+json, +xmlなど構造化サフィックスを使うこともあります（application/vnd.api+json）。' },
       { title: 'Content-Typeを正しく設定しないとどうなるか', body: 'HTMLファイルをtext/plainで返すとブラウザがそのまま文字列として表示してしまいます。JavaScriptをtext/htmlで返すと実行されません。APIのJSONレスポンスにapplication/jsonを設定しないとクライアントライブラリが自動パースしない場合があります。セキュリティ面でも不正なMIMEタイプは攻撃ベクターになることがあります。' },
       { title: 'よく間違えやすいMIMEタイプ', body: 'SVGはimage/svg+xml（image/svgではない）。JavaScriptはapplication/javascript（text/javascriptは旧仕様）。JSONはapplication/json。フォントはfont/woff2など。CSVはtext/csvだがExcelはapplication/vnd.ms-excel。Webpはimage/webp。これらの違いを正確に知るためにMIMEタイプ検索ツールが役立ちます。' },
-      { title: 'charset パラメーターの設定', body: 'テキスト系のMIMEタイプでは文字エンコーディングをcharsetパラメーターで指定できます（text/html; charset=UTF-8）。HTML5ではデフォルトがUTF-8なので省略可能ですが、APIレスポンスではapplication/json; charset=UTF-8と明示する場合もあります。' },
+      { title: 'charset パラメーターの設定', body: 'テキスト系のMIMEタイプでは文字エンコーディングをcharsetパラメーターで指定できます（text/html; charset=UTF-8）。HTML5ではデフォルトがUTF-8なので省略可能ですが、古いブラウザやメールクライアントとの互換性のためにContent-Typeに明示することが推奨されます。APIレスポンスではapplication/json; charset=UTF-8と明示する場合もあります。日本語コンテンツを含むAPIでcharsetを省略した場合、一部のHTTPクライアントライブラリが文字コードをISO-8859-1と誤認識して文字化けが発生することがあります。Node.jsのexpressではres.json()が自動的にapplication/jsonとcharset=utf-8を設定します。' },
     ],
   },
 

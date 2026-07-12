@@ -14,6 +14,7 @@ const tool = tools.find((t) => t.slug === 'http-status-reference')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: tool.description,
+  robots: { index: false },
   alternates: {
     canonical: 'https://devtools-hub.vercel.app/tools/http-status-reference',
   },

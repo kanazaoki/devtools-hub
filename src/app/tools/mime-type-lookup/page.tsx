@@ -14,6 +14,7 @@ const tool = tools.find((t) => t.slug === 'mime-type-lookup')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('mime-type-lookup', tool.description),
+  robots: { index: false },
   alternates: {
     canonical: 'https://devtools-hub.vercel.app/tools/mime-type-lookup',
   },
