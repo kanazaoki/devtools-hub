@@ -29,10 +29,11 @@ function formatDate(ts: number): string {
 }
 
 function syntaxHighlight(json: string): string {
-  return json.replace(
-    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+  const htmlEscaped = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return htmlEscaped.replace(
+    /("(?:\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(?:\s*:)?|\b(?:true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
     (match) => {
-      if (/^"/.test(match)) {
+      if (match.startsWith('"')) {
         if (/:$/.test(match)) return `<span class="text-blue-400">${match}</span>`
         return `<span class="text-teal">${match}</span>`
       }

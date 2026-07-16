@@ -83,6 +83,10 @@ function slugify(text: string): string {
   return 'h-' + text.toLowerCase().replace(/[^\w぀-鿿]+/g, '-').replace(/^-|-$/g, '')
 }
 
+function safeUrl(url: string): string {
+  return /^javascript:/i.test(url.trim()) ? '#' : url
+}
+
 function processInline(text: string): string {
   return text
     .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
@@ -91,8 +95,8 @@ function processInline(text: string): string {
     .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
     .replace(/_([^_\n]+)_/g, '<em>$1</em>')
     .replace(/~~(.+?)~~/g, '<del>$1</del>')
-    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2" style="max-width:100%">')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, src) => `<img alt="${alt}" src="${safeUrl(src)}" style="max-width:100%">`)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => `<a href="${safeUrl(href)}" target="_blank" rel="noopener noreferrer">${label}</a>`)
 }
 
 function md2html(src: string): string {
