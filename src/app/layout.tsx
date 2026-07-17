@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer'
 import { BackToTop } from '@/components/BackToTop'
 import { PageProgress } from '@/components/PageProgress'
 import { ADSENSE_CLIENT } from '@/components/AdSense'
+import { FeedbackKitWidget } from '@/components/FeedbackKitWidget'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -45,6 +46,9 @@ export default function RootLayout({
             crossOrigin="anonymous"
             strategy="lazyOnload"
           />
+        )}
+        {process.env.NEXT_PUBLIC_FEEDBACK_KIT_PROJECT_ID && (
+          <FeedbackKitWidget projectId={process.env.NEXT_PUBLIC_FEEDBACK_KIT_PROJECT_ID} />
         )}
         <Analytics />
       </body>

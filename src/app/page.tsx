@@ -144,30 +144,7 @@ export default function Home({ searchParams }: { searchParams: { cat?: string; q
         </div>
       </section>
 
-      {/* ツールリクエスト */}
-      <section className="mt-12 rounded-xl border border-border bg-surface px-8 py-10 text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal mb-3">Request</p>
-        <h2 className="text-xl font-bold text-bright">欲しいツールを教えてください</h2>
-        <p className="mt-3 mx-auto max-w-md text-sm leading-relaxed text-dim">
-          「こんなツールがあったら便利」というアイデアがあれば気軽にリクエストしてください。<br />
-          今後の開発の参考にします。
-        </p>
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLSc9Mo1Ci3bSE6mv59aFHCF3C4hgve0XwYs-kpE24XlxYzvhXw/viewform"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-teal px-6 py-2.5 font-mono text-sm font-semibold text-bg transition-opacity hover:opacity-80"
-        >
-          リクエストを送る
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-            <polyline points="15 3 21 3 21 9" />
-            <line x1="10" y1="14" x2="21" y2="3" />
-          </svg>
-        </a>
-      </section>
-
-      {/* AdSense — グリッド下 */}
+{/* AdSense — グリッド下 */}
       <AdSense slot="1651467900" format="horizontal" className="mt-12" />
     </main>
   )
