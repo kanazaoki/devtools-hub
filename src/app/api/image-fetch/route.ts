@@ -58,6 +58,7 @@ export async function POST(req: NextRequest) {
 
     const res = await fetch(url, {
       signal: controller.signal,
+      redirect: 'error',
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; ImageColorExtractor/1.0)',
         Accept: 'image/*',
