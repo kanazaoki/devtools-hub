@@ -140,7 +140,7 @@ export const tools: Tool[] = [
     description:
       '定型文・コードスニペット・よく使うテキストをカード型で管理。タグ・カテゴリでフィルタリングし、ワンクリックでクリップボードにコピー。ブラウザに自動保存されるので、次回もそのまま使える。',
     tags: ['テキスト', '効率化', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm/items/8457296',
+    boothUrl: 'https://knkk.booth.pm/items/8448296',
     hasWebVersion: true,
     releasedAt: '2026-06-13',
     features: [
@@ -164,7 +164,7 @@ export const tools: Tool[] = [
     description:
       'AI 画像生成向けプロンプトをカテゴリ & タグで管理。日本語タイトル ↔ 英語タグ対応。前提・顔・服・背景などのカテゴリからタグをチェックするだけで英語プロンプトを自動組み立て。',
     tags: ['AI', '画像生成', 'クリエイター向け'],
-    boothUrl: 'https://knkk.booth.pm/items/8448296',
+    boothUrl: 'https://knkk.booth.pm/items/8488574',
     hasWebVersion: true,
     releasedAt: '2026-06-13',
     features: [
