@@ -68,7 +68,7 @@ export const tools: Tool[] = [
     description:
       'HEX・RGB・CSS rgba()・RGBA float・HSV・HSL をリアルタイムに相互変換。スポイト機能・アルファスライダー・お気に入りパレット（最大8色）付き。開発・デザイン作業中いつでも手元に置けるカラーツール。',
     tags: ['カラー', 'デザイン', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm/items/8488574',
+    boothUrl: 'https://knkk.booth.pm/items/8629564',
     hasWebVersion: true,
     releasedAt: '2026-06-13',
     features: [
