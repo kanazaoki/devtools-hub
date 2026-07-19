@@ -2169,7 +2169,7 @@ export const tools: Tool[] = [
     description:
       '2つの整数に対してAND・OR・XOR・NOT・LEFT SHIFT・RIGHT SHIFTを計算。入力値と結果を32ビット列で1桁ずつ色分け表示。10進/16進/2進で入力でき、結果は4形式でコピー可能。ビット演算の学習や低レイヤー開発のデバッグに。',
     tags: ['開発ツール', 'ビット演算', '計算'],
-    boothUrl: 'https://koma-game.booth.pm/items/8596303',
+    boothUrl: 'https://knkk.booth.pm/items/8629538',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
@@ -2188,7 +2188,7 @@ export const tools: Tool[] = [
     description:
       'ファイル拡張子からContent-Typeを正引き、MIMEタイプから拡張子を逆引き。288種以上のMIMEタイプを内蔵しリアルタイムフィルタリング。テキスト/画像/動画/音声/アプリケーション別にカテゴリフィルタも可能。',
     tags: ['開発ツール', 'HTTP', 'Web開発'],
-    boothUrl: 'https://koma-game.booth.pm/items/8596619',
+    boothUrl: 'https://knkk.booth.pm/items/8629541',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
@@ -2207,7 +2207,7 @@ export const tools: Tool[] = [
     description:
       'OpenAPI 3.x / Swagger 2.0 のYAML/JSONをペーストするとエンドポイント一覧・パラメーター・レスポンス定義を見やすく表示。HTTPメソッドを色分けし$refを自動解決。パス検索とメソッドフィルタで素早くナビゲート。',
     tags: ['開発ツール', 'API', 'OpenAPI'],
-    boothUrl: 'https://koma-game.booth.pm/items/8596630',
+    boothUrl: 'https://knkk.booth.pm/items/8629545',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
@@ -2226,7 +2226,7 @@ export const tools: Tool[] = [
     description:
       '最大5スロットのJSONオブジェクトを再帰的にDeep Mergeして結果を出力。配列マージ戦略（上書き/連結）を選択可能。後スロット優先で上書き。コピーと.jsonダウンロード対応。設定ファイルの合成・APIレスポンスのマージに。',
     tags: ['JSON', '開発ツール', 'データ変換'],
-    boothUrl: 'https://koma-game.booth.pm/items/8596636',
+    boothUrl: 'https://knkk.booth.pm/items/8629549',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
