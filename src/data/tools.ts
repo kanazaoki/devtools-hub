@@ -1098,7 +1098,7 @@ export const tools: Tool[] = [
     boothUrl: 'https://knkk.booth.pm/items/8563390',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
-    desktopFeatures: [],
+    desktopFeatures: ['生成したCSSをファイルに保存（ダイアログで保存先選択）'],
     features: [
       '上 / 下 / 左 / 右 / 放射状（中→外）/ 放射状（外→中）の6方向を選択',
       'フェード開始・終了位置をスライダー（0〜100%）で設定',
@@ -1117,7 +1117,7 @@ export const tools: Tool[] = [
     boothUrl: 'https://knkk.booth.pm/items/8563382',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
-    desktopFeatures: [],
+    desktopFeatures: ['生成したmeta HTMLをファイルに保存（ダイアログで保存先選択）'],
     features: [
       '基本 / OGP / Twitter Card の3タブでフォームを整理',
       'title（60字）/ description（160字）の文字数カウンター、超過で警告色',
@@ -1136,7 +1136,7 @@ export const tools: Tool[] = [
     boothUrl: 'https://knkk.booth.pm/items/8563373',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
-    desktopFeatures: [],
+    desktopFeatures: ['生成したCSSカスタムプロパティをファイルに保存（ダイアログで保存先選択）'],
     features: [
       'HEXピッカー + テキスト入力でベースカラーを設定',
       'Tints（白混じり）/ Shades（黒混じり）/ Tones（グレー混じり）の3タブを切り替え',
@@ -1155,7 +1155,7 @@ export const tools: Tool[] = [
     boothUrl: 'https://knkk.booth.pm/items/8563360',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
-    desktopFeatures: [],
+    desktopFeatures: ['生成したCSSをファイルに保存（ダイアログで保存先選択）'],
     features: [
       '一括モードで4コーナーを同一値に設定、個別モードで TL/TR/BR/BL を独立制御',
       '各コーナーに水平(X)・垂直(Y)の2値を設定し楕円半径を生成',
@@ -1310,7 +1310,7 @@ export const tools: Tool[] = [
     boothUrl: 'https://knkk.booth.pm/items/8564512',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
-    desktopFeatures: [],
+    desktopFeatures: ['変換結果をJSXファイルとして保存（component.jsx・ダイアログで保存先選択）'],
     features: [
       'class → className、for → htmlFor など主要属性名を自動変換',
       'style="..." → style={{ camelCase: \'value\' }} オブジェクト記法に変換',
@@ -1330,7 +1330,7 @@ export const tools: Tool[] = [
     boothUrl: 'https://knkk.booth.pm/items/8564613',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
-    desktopFeatures: [],
+    desktopFeatures: ['生成したCSSをファイルに保存（ダイアログで保存先選択）'],
     features: [
       '6種パターン（横・縦・斜めストライプ / グリッド / ドット / チェッカー）',
       'パターン色・背景色をカラーピッカー＋HEX入力で指定',
@@ -1350,7 +1350,7 @@ export const tools: Tool[] = [
     boothUrl: 'https://knkk.booth.pm/items/8564632',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
-    desktopFeatures: [],
+    desktopFeatures: ['分析レポートをテキストファイルとして保存（ダイアログで保存先選択）'],
     features: [
       '各文字のUnicodeコードポイント（U+XXXX形式）・UTF-8バイト数を表示',
       '文字種カテゴリ（ASCII英字/数字/記号・CJK・絵文字・空白・その他）を色分け',
@@ -1370,7 +1370,7 @@ export const tools: Tool[] = [
     boothUrl: 'https://knkk.booth.pm/items/8564643',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
-    desktopFeatures: [],
+    desktopFeatures: ['ステータスコード一覧をテキストファイルとして保存（ダイアログで保存先選択）'],
     features: [
       '1xx〜5xx 全コードを番号・キーワード（日本語可）でリアルタイム検索',
       'カテゴリ別（1xx〜5xx）フィルタボタン',
