@@ -869,7 +869,7 @@ export const tools: Tool[] = [
     description:
       'キーを押すと key / code / keyCode / charCode / altKey / ctrlKey / shiftKey / metaKey など KeyboardEvent の全プロパティを即座に表示。修飾キーの組み合わせを「Ctrl + C」形式で可視化し、操作履歴（最新20件）も記録。ショートカット実装やフォームのキーハンドリング開発に役立ちます。',
     tags: ['開発者向け', 'ブラウザ', 'JavaScript'],
-    boothUrl: 'https://knkk.booth.pm/items/8547673',
+    boothUrl: 'https://knkk.booth.pm/items/8559047',
     hasWebVersion: true,
     releasedAt: '2026-06-26',
     features: [
@@ -937,7 +937,7 @@ export const tools: Tool[] = [
     description:
       '画像をアップロードまたはURLを指定すると、k-meansクラスタリングで使用されている主要な色を自動抽出します。抽出色数（3〜12色）を調整し、HEX・RGB・HSL形式でコピーできます。デザインの参考画像から配色を素早く取り出す作業に最適です。',
     tags: ['デザイン', '画像', 'カラー'],
-    boothUrl: 'https://knkk.booth.pm/items/8547675',
+    boothUrl: 'https://knkk.booth.pm/items/8559823',
     hasWebVersion: true,
     releasedAt: '2026-06-26',
     features: [
@@ -961,7 +961,7 @@ export const tools: Tool[] = [
     description:
       'URLを入力するとそのページの og:title / og:description / og:image などの OGP メタタグをサーバーサイドで取得し、Twitter Card・Facebook・Slack の3種類のカードUIでプレビュー表示します。SNSシェア前にサムネイルやタイトルが正しく設定されているかを即確認できます。',
     tags: ['開発者向け', 'SEO', 'SNS'],
-    boothUrl: 'https://knkk.booth.pm/items/8547674',
+    boothUrl: 'https://knkk.booth.pm/items/8559836',
     hasWebVersion: true,
     releasedAt: '2026-06-26',
     features: [
@@ -983,7 +983,7 @@ export const tools: Tool[] = [
     description:
       '列数・行数・ギャップをスライダーで設定し、セルをクリックしてスパンを指定するだけでCSS Gridコードが自動生成されます。Holy Grail・12カラムなどのプリセット付き。生成したCSS・HTMLをワンクリックでコピーできます。',
     tags: ['CSS', '開発者向け', 'レイアウト'],
-    boothUrl: 'https://knkk.booth.pm/items/8547672',
+    boothUrl: 'https://knkk.booth.pm/items/8559808',
     hasWebVersion: true,
     releasedAt: '2026-06-26',
     features: [
