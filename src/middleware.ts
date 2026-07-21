@@ -4,6 +4,7 @@ const CANONICAL = 'https://devtools-hub-koma26.vercel.app'
 const NON_CANONICAL_HOSTS = [
   'devtools-hub-nanan-s-projects.vercel.app',
   'devtools-hub-kanazaoki-nanan-s-projects.vercel.app',
+  'devtools-hub-koma.vercel.app',
   'web-site-three-phi.vercel.app',
 ]
 
