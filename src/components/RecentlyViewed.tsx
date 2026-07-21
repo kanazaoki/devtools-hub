@@ -30,7 +30,7 @@ export function RecentlyViewed() {
   return (
     <section className="mb-10">
       <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-muted">Recently Viewed</p>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {recentTools.map((tool) => (
           <Link
             key={tool.slug}
