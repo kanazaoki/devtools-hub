@@ -107,16 +107,8 @@ export default function Home({ searchParams }: { searchParams: { cat?: string; q
       {/* 最近見たツール */}
       <RecentlyViewed />
 
-      {/* ツールグリッド */}
-      <section id="tools">
-        <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-muted">
-          All Tools
-        </p>
-        <ToolGrid initialCategory={initialCategory} initialQuery={initialQuery} />
-      </section>
-
       {/* サービス紹介 */}
-      <section className="mt-16 mb-6 grid gap-6 sm:grid-cols-3 text-sm">
+      <section className="mb-10 grid gap-6 sm:grid-cols-3 text-sm">
         <div className="rounded-lg border border-border bg-surface p-6">
           <p className="font-mono text-xs uppercase tracking-widest text-teal mb-3">No Install</p>
           <h2 className="font-semibold text-bright mb-2">インストール不要</h2>
@@ -142,6 +134,14 @@ export default function Home({ searchParams }: { searchParams: { cat?: string; q
             で配布しています。
           </p>
         </div>
+      </section>
+
+      {/* ツールグリッド */}
+      <section id="tools">
+        <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-muted">
+          All Tools
+        </p>
+        <ToolGrid initialCategory={initialCategory} initialQuery={initialQuery} />
       </section>
 
 {/* AdSense — グリッド下 */}
