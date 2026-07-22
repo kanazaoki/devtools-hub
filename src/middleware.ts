@@ -1,10 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
-const CANONICAL = 'https://devtools-hub-koma26.vercel.app'
+const CANONICAL = 'https://devtools-hub.vercel.app'
 const NON_CANONICAL_HOSTS = [
   'devtools-hub-nanan-s-projects.vercel.app',
   'devtools-hub-kanazaoki-nanan-s-projects.vercel.app',
   'devtools-hub-koma.vercel.app',
+  'devtools-hub-koma26.vercel.app',
   'web-site-three-phi.vercel.app',
 ]
 
