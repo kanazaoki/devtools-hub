@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('uuid-generator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/uuid-generator',
+    canonical: 'https://devtools-hub.dev/tools/uuid-generator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

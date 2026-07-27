@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('keyboard-event-tester', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/keyboard-event-tester',
+    canonical: 'https://devtools-hub.dev/tools/keyboard-event-tester',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

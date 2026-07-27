@@ -14,7 +14,7 @@ const tool = tools.find((t) => t.slug === 'fake-data-generator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('fake-data-generator', tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/fake-data-generator' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/fake-data-generator' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('fake-data-generator', tool.description),

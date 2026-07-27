@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('text-case-converter', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/text-case-converter',
+    canonical: 'https://devtools-hub.dev/tools/text-case-converter',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

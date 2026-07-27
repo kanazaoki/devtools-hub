@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('aspect-ratio-calculator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/aspect-ratio-calculator',
+    canonical: 'https://devtools-hub.dev/tools/aspect-ratio-calculator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/cidr-calculator',
+    canonical: 'https://devtools-hub.dev/tools/cidr-calculator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

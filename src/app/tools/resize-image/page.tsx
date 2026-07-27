@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('resize-image', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/resize-image',
+    canonical: 'https://devtools-hub.dev/tools/resize-image',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

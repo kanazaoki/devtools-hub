@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/color-mix-previewer',
+    canonical: 'https://devtools-hub.dev/tools/color-mix-previewer',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

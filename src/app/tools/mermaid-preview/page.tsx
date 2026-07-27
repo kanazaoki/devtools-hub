@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('mermaid-preview', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/mermaid-preview',
+    canonical: 'https://devtools-hub.dev/tools/mermaid-preview',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

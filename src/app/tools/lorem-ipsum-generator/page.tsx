@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('lorem-ipsum-generator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/lorem-ipsum-generator',
+    canonical: 'https://devtools-hub.dev/tools/lorem-ipsum-generator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

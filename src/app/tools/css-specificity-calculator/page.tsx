@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('css-specificity-calculator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/css-specificity-calculator',
+    canonical: 'https://devtools-hub.dev/tools/css-specificity-calculator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

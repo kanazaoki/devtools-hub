@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('og-tag-preview', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/og-tag-preview',
+    canonical: 'https://devtools-hub.dev/tools/og-tag-preview',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

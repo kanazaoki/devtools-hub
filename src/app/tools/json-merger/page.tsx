@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-merger', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/json-merger',
+    canonical: 'https://devtools-hub.dev/tools/json-merger',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

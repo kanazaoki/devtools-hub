@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('timestamp-converter', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/timestamp-converter',
+    canonical: 'https://devtools-hub.dev/tools/timestamp-converter',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

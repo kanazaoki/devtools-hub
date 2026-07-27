@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-size-analyzer', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/json-size-analyzer',
+    canonical: 'https://devtools-hub.dev/tools/json-size-analyzer',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

@@ -15,7 +15,7 @@ const tool = tools.find((t) => t.slug === 'timezone-converter')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/timezone-converter' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/timezone-converter' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription(tool.slug, tool.description),

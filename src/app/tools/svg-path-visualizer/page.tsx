@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('svg-path-visualizer', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/svg-path-visualizer',
+    canonical: 'https://devtools-hub.dev/tools/svg-path-visualizer',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

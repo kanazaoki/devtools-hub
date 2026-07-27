@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('css-layer-visualizer', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/css-layer-visualizer',
+    canonical: 'https://devtools-hub.dev/tools/css-layer-visualizer',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

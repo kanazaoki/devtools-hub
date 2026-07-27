@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-path-tester', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/json-path-tester',
+    canonical: 'https://devtools-hub.dev/tools/json-path-tester',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

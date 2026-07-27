@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('curl-to-code', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/curl-to-code',
+    canonical: 'https://devtools-hub.dev/tools/curl-to-code',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

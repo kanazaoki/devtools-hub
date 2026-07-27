@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-diff', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/json-diff',
+    canonical: 'https://devtools-hub.dev/tools/json-diff',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

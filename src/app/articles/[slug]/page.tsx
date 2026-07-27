@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${article.title} | devtools-hub`,
     description: article.description,
     alternates: {
-      canonical: `https://devtools-hub.vercel.app/articles/${slug}`,
+      canonical: `https://devtools-hub.dev/articles/${slug}`,
     },
     openGraph: {
       title: article.title,
@@ -52,7 +52,7 @@ export default async function ArticlePage({ params }: Props) {
     publisher: {
       '@type': 'Organization',
       name: 'devtools-hub',
-      url: 'https://devtools-hub.vercel.app',
+      url: 'https://devtools-hub.dev',
     },
   }
 

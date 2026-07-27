@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('css-selector-tester', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/css-selector-tester',
+    canonical: 'https://devtools-hub.dev/tools/css-selector-tester',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

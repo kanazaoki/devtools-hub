@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('bitwise-calculator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/bitwise-calculator',
+    canonical: 'https://devtools-hub.dev/tools/bitwise-calculator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

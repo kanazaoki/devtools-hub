@@ -14,7 +14,7 @@ const tool = tools.find((t) => t.slug === 'http-response-mock')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('http-response-mock', tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/http-response-mock' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/http-response-mock' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('http-response-mock', tool.description),

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('font-inspector', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/font-inspector',
+    canonical: 'https://devtools-hub.dev/tools/font-inspector',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

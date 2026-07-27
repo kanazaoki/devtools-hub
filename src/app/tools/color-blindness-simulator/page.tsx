@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/color-blindness-simulator',
+    canonical: 'https://devtools-hub.dev/tools/color-blindness-simulator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

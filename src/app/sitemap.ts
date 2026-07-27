@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 import { tools } from '@/data/tools'
 
-const BASE = 'https://devtools-hub.vercel.app'
+const BASE = 'https://devtools-hub.dev'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const toolUrls: MetadataRoute.Sitemap = tools.map((tool) => ({

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/json-csv-converter',
+    canonical: 'https://devtools-hub.dev/tools/json-csv-converter',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

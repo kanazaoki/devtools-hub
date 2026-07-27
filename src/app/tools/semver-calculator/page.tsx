@@ -14,7 +14,7 @@ const tool = tools.find((t) => t.slug === 'semver-calculator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('semver-calculator', tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/semver-calculator' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/semver-calculator' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('semver-calculator', tool.description),

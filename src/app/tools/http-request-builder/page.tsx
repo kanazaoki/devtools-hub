@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('http-request-builder', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/http-request-builder',
+    canonical: 'https://devtools-hub.dev/tools/http-request-builder',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

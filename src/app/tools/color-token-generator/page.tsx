@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('color-token-generator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/color-token-generator',
+    canonical: 'https://devtools-hub.dev/tools/color-token-generator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

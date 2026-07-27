@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: '記事一覧 | devtools-hub',
   description: 'JSON・CSS・HTTP・正規表現・JWT・画像最適化など、Web開発に役立つ実践的な技術記事を公開しています。',
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/articles',
+    canonical: 'https://devtools-hub.dev/articles',
   },
 }
 

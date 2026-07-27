@@ -14,7 +14,7 @@ const tool = tools.find((t) => t.slug === 'cookie-inspector')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('cookie-inspector', tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/cookie-inspector' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/cookie-inspector' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('cookie-inspector', tool.description),

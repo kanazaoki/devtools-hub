@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     'devtools-hub は個人開発者 KOMA が作る、開発者・クリエイター向けの無料 Web ツール集です。90本以上のツールを無料公開中。',
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/about',
+    canonical: 'https://devtools-hub.dev/about',
   },
 }
 

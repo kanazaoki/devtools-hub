@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('qr-code', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/qr-code',
+    canonical: 'https://devtools-hub.dev/tools/qr-code',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

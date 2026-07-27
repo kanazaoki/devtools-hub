@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-to-sql', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/json-to-sql',
+    canonical: 'https://devtools-hub.dev/tools/json-to-sql',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

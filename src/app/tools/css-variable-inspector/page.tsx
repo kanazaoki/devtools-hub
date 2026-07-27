@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('css-variable-inspector', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/css-variable-inspector',
+    canonical: 'https://devtools-hub.dev/tools/css-variable-inspector',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: '利用規約',
   description: 'devtools-hub の利用規約です。当サイトのツールをご利用になる前にお読みください。',
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/terms',
+    canonical: 'https://devtools-hub.dev/terms',
   },
 }
 

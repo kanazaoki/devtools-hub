@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     'devtools-hub のツールカテゴリ一覧。開発者向け・CSS・デザイン・画像・テキスト・カラー・ゲーム開発・AI の8カテゴリに分類されたツールを探せます。',
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/category',
+    canonical: 'https://devtools-hub.dev/category',
   },
 }
 

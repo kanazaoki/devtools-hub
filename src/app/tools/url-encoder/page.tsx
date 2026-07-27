@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('url-encoder', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/url-encoder',
+    canonical: 'https://devtools-hub.dev/tools/url-encoder',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

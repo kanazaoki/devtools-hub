@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: getMetaDescription('mime-type-lookup', tool.description),
   robots: { index: false },
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/mime-type-lookup',
+    canonical: 'https://devtools-hub.dev/tools/mime-type-lookup',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('container-query-builder', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/container-query-builder',
+    canonical: 'https://devtools-hub.dev/tools/container-query-builder',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

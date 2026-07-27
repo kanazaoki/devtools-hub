@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
   description:
     '個人開発者が作った開発・デザイン向けツールを無料公開。カラーコード変換、グラデーションエディタ、画像変換、テキストレイアウト確認など。デスクトップ版は BOOTH で配布中。',
-  metadataBase: new URL('https://devtools-hub.vercel.app'),
+  metadataBase: new URL('https://devtools-hub.dev'),
   openGraph: {
     type: 'website',
     locale: 'ja_JP',

@@ -15,7 +15,7 @@ const tool = tools.find((t) => t.slug === 'ascii-art-generator')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/ascii-art-generator' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/ascii-art-generator' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription(tool.slug, tool.description),

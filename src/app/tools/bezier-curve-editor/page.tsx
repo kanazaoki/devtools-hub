@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('bezier-curve-editor', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/bezier-curve-editor',
+    canonical: 'https://devtools-hub.dev/tools/bezier-curve-editor',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

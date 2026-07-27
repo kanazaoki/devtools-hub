@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: 'お問い合わせ',
   description: 'devtools-hub へのお問い合わせ。バグ報告・機能リクエスト・その他ご意見はメールまたはリクエストフォームからどうぞ。',
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/contact',
+    canonical: 'https://devtools-hub.dev/contact',
   },
 }
 

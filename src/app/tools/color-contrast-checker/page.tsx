@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('color-contrast-checker', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/color-contrast-checker',
+    canonical: 'https://devtools-hub.dev/tools/color-contrast-checker',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

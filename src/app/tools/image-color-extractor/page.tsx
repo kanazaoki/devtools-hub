@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('image-color-extractor', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/image-color-extractor',
+    canonical: 'https://devtools-hub.dev/tools/image-color-extractor',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

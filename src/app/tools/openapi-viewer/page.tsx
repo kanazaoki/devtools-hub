@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('openapi-viewer', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/openapi-viewer',
+    canonical: 'https://devtools-hub.dev/tools/openapi-viewer',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

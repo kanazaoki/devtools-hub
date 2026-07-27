@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('css-clip-path-generator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/css-clip-path-generator',
+    canonical: 'https://devtools-hub.dev/tools/css-clip-path-generator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

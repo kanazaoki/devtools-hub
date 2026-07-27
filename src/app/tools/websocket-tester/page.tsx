@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('websocket-tester', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/websocket-tester',
+    canonical: 'https://devtools-hub.dev/tools/websocket-tester',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-to-typescript', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/json-to-typescript',
+    canonical: 'https://devtools-hub.dev/tools/json-to-typescript',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

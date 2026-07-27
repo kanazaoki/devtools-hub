@@ -14,7 +14,7 @@ const tool = tools.find((t) => t.slug === 'json-flattener')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-flattener', tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/json-flattener' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/json-flattener' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('json-flattener', tool.description),

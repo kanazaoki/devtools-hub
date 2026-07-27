@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     'devtools-hub の使い方ガイド。キーワード検索・カテゴリフィルタ・お気に入り機能・New バッジ・デスクトップ版について説明します。',
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/guide',
+    canonical: 'https://devtools-hub.dev/guide',
   },
 }
 

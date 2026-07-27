@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('json-schema-validator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/json-schema-validator',
+    canonical: 'https://devtools-hub.dev/tools/json-schema-validator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

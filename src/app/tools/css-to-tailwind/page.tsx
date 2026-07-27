@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/css-to-tailwind',
+    canonical: 'https://devtools-hub.dev/tools/css-to-tailwind',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

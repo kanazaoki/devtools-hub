@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('yaml-json-converter', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/yaml-json-converter',
+    canonical: 'https://devtools-hub.dev/tools/yaml-json-converter',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

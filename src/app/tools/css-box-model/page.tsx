@@ -15,7 +15,7 @@ const tool = tools.find((t) => t.slug === 'css-box-model')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/css-box-model' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/css-box-model' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription(tool.slug, tool.description),

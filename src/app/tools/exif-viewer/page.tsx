@@ -14,7 +14,7 @@ const tool = tools.find((t) => t.slug === 'exif-viewer')!
 export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('exif-viewer', tool.description),
-  alternates: { canonical: 'https://devtools-hub.vercel.app/tools/exif-viewer' },
+  alternates: { canonical: 'https://devtools-hub.dev/tools/exif-viewer' },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
     description: getMetaDescription('exif-viewer', tool.description),

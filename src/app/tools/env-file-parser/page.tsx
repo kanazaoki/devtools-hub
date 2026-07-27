@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/env-file-parser',
+    canonical: 'https://devtools-hub.dev/tools/env-file-parser',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

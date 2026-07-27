@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription(tool.slug, tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/html-playground',
+    canonical: 'https://devtools-hub.dev/tools/html-playground',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

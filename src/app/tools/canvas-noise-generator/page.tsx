@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('canvas-noise-generator', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/canvas-noise-generator',
+    canonical: 'https://devtools-hub.dev/tools/canvas-noise-generator',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

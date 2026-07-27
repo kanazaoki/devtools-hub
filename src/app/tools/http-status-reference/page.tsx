@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: getMetaDescription(tool.slug, tool.description),
   robots: { index: false },
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/http-status-reference',
+    canonical: 'https://devtools-hub.dev/tools/http-status-reference',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

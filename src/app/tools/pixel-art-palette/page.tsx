@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('pixel-art-palette', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/pixel-art-palette',
+    canonical: 'https://devtools-hub.dev/tools/pixel-art-palette',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('html-to-markdown', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/html-to-markdown',
+    canonical: 'https://devtools-hub.dev/tools/html-to-markdown',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,

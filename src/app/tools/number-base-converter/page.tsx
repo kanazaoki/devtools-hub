@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: `${tool.name} — ${tool.tagline}`,
   description: getMetaDescription('number-base-converter', tool.description),
   alternates: {
-    canonical: 'https://devtools-hub.vercel.app/tools/number-base-converter',
+    canonical: 'https://devtools-hub.dev/tools/number-base-converter',
   },
   openGraph: {
     title: `${tool.name} | devtools-hub`,
