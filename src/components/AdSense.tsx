@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-export const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? ''
+export const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-1932495595438110'
 
 interface AdSenseProps {
   slot: string

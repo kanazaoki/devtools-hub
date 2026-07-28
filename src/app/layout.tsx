@@ -5,9 +5,14 @@ import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 import { BackToTop } from '@/components/BackToTop'
 import { PageProgress } from '@/components/PageProgress'
-import { ADSENSE_CLIENT } from '@/components/AdSense'
 import { FeedbackKitWidget } from '@/components/FeedbackKitWidget'
 import './globals.css'
+
+// Read directly here (server component). Importing this from the 'use client'
+// AdSense module turned it into a client-reference proxy → `client=[object Object]`
+// in the loader script, which broke AdSense site verification. Public pub id
+// (also in /ads.txt) is kept as a fallback so verification never breaks.
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT || 'ca-pub-1932495595438110'
 
 export const metadata: Metadata = {
   title: {
@@ -17,6 +22,9 @@ export const metadata: Metadata = {
   description:
     '個人開発者が作った開発・デザイン向けツールを無料公開。カラーコード変換、グラデーションエディタ、画像変換、テキストレイアウト確認など。デスクトップ版は BOOTH で配布中。',
   metadataBase: new URL('https://devtools-hub.dev'),
+  other: {
+    'google-adsense-account': ADSENSE_CLIENT,
+  },
   openGraph: {
     type: 'website',
     locale: 'ja_JP',
