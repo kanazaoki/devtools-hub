@@ -50,7 +50,7 @@ function CollapsibleSection({ label, defaultOpen = true, children }: any) {
           open ? 'bg-zinc-800/50' : 'hover:bg-zinc-800/25'].join(' ')}
       >
         <span className={['w-[2px] h-3 rounded-full shrink-0 transition-all duration-200',
-          open ? 'bg-amber-500/70' : 'bg-zinc-700'].join(' ')} />
+          open ? 'bg-teal/70' : 'bg-zinc-700'].join(' ')} />
         <span className={['text-[10px] font-semibold tracking-[0.14em] uppercase flex-1 transition-colors',
           open ? 'text-zinc-300' : 'text-zinc-500 group-hover:text-zinc-400'].join(' ')}>{label}</span>
         <svg width="9" height="5" viewBox="0 0 9 5" fill="none"
@@ -109,7 +109,7 @@ function MultiDropZone({ images, activeIndex, onImages, onActiveChange }: any) {
         onDrop={(e) => { e.preventDefault(); setDragging(false); processFiles(e.dataTransfer.files) }}
         onClick={() => inputRef.current?.click()}
         className={['flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed cursor-pointer transition-all min-h-[140px]',
-          dragging ? 'border-amber-500/60 bg-amber-500/5 scale-[1.01]' : 'border-zinc-700 hover:border-zinc-600 bg-zinc-800/20'].join(' ')}
+          dragging ? 'border-teal/60 bg-teal/5 scale-[1.01]' : 'border-zinc-700 hover:border-zinc-600 bg-zinc-800/20'].join(' ')}
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-zinc-500">
           <path d="M12 4v12M7 9l5-5 5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -142,7 +142,7 @@ function MultiDropZone({ images, activeIndex, onImages, onActiveChange }: any) {
         {images.map((img: any, i: number) => (
           <div key={img.id} className="relative shrink-0 cursor-pointer" onClick={() => onActiveChange(i)}>
             <div className={['w-14 h-14 rounded-lg overflow-hidden border-2 transition-all',
-              i === activeIndex ? 'border-amber-500' : 'border-zinc-700 opacity-60 hover:opacity-100'].join(' ')}>
+              i === activeIndex ? 'border-teal' : 'border-zinc-700 opacity-60 hover:opacity-100'].join(' ')}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={img.url} alt={`scene ${i + 1}`} className="w-full h-full object-cover" />
             </div>
@@ -180,7 +180,7 @@ function CoordInput({ label, value, onChange }: any) {
       <span className="text-[10px] text-zinc-400 w-3">{label}</span>
       <input type="number" min={0} max={100} value={value}
         onChange={(e) => onChange(Math.max(0, Math.min(100, Number(e.target.value))))}
-        className="w-11 rounded bg-zinc-800 border border-zinc-700/80 text-zinc-200 text-xs px-1.5 py-0.5 text-center tabular-nums font-mono focus:outline-none focus:border-amber-500/50 transition-colors" />
+        className="w-11 rounded bg-zinc-800 border border-zinc-700/80 text-zinc-200 text-xs px-1.5 py-0.5 text-center tabular-nums font-mono focus:outline-none focus:border-teal/50 transition-colors" />
     </label>
   )
 }
@@ -214,20 +214,20 @@ function TextBlock({
 
       <div className={visible ? '' : 'opacity-25 pointer-events-none select-none'}>
         <textarea value={text} onChange={(e) => onTextChange(e.target.value)} placeholder={placeholder} rows={2}
-          className="w-full rounded-lg bg-zinc-900 border border-zinc-700/60 text-zinc-100 placeholder-zinc-700 px-2.5 py-2 text-[13px] resize-none leading-relaxed focus:outline-none focus:border-amber-500/40 transition-colors mb-1.5" />
+          className="w-full rounded-lg bg-zinc-900 border border-zinc-700/60 text-zinc-100 placeholder-zinc-700 px-2.5 py-2 text-[13px] resize-none leading-relaxed focus:outline-none focus:border-teal/40 transition-colors mb-1.5" />
 
         <div className="flex items-center gap-1.5">
-          <input type="range" min={14} max={200} value={fontSize} onChange={(e) => onFontSizeChange(Number(e.target.value))} className="flex-1 min-w-0 accent-amber-500" />
+          <input type="range" min={14} max={200} value={fontSize} onChange={(e) => onFontSizeChange(Number(e.target.value))} className="flex-1 min-w-0 accent-teal" />
           <span className="text-[10px] text-zinc-500 font-mono w-6 text-right tabular-nums shrink-0">{fontSize}</span>
           <input type="color" value={fontColor} onChange={(e) => onFontColorChange(e.target.value)} title="文字色" className="w-6 h-6 rounded-md cursor-pointer shrink-0" style={{ colorScheme: 'dark' }} />
           <button type="button" title="太字" onClick={() => onFontBoldChange(!fontBold)}
             className={['w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-black border transition-all shrink-0',
-              fontBold ? 'border-amber-500/40 bg-amber-500/12 text-amber-400' : 'border-zinc-700/80 bg-zinc-800/40 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'].join(' ')}>B</button>
+              fontBold ? 'border-teal/40 bg-teal/12 text-teal' : 'border-zinc-700/80 bg-zinc-800/40 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'].join(' ')}>B</button>
           <div className="flex shrink-0 rounded-md overflow-hidden border border-zinc-700/80">
             {ALIGN_OPTIONS.map(({ id, icon }) => (
               <button key={id} type="button" title={id} onClick={() => onAlignChange?.(id)}
                 className={['w-6 h-6 flex items-center justify-center text-[12px] border-r last:border-r-0 border-zinc-700/80 transition-all',
-                  align === id ? 'bg-amber-500/12 text-amber-400' : 'bg-zinc-800/40 text-zinc-500 hover:bg-zinc-700/50 hover:text-zinc-300'].join(' ')}>{icon}</button>
+                  align === id ? 'bg-teal/12 text-teal' : 'bg-zinc-800/40 text-zinc-500 hover:bg-zinc-700/50 hover:text-zinc-300'].join(' ')}>{icon}</button>
             ))}
           </div>
         </div>
@@ -244,11 +244,11 @@ function TextBlock({
         <div className="flex items-center gap-1.5 mt-1.5">
           <button type="button" onClick={() => onPillChange({ ...(pill || {}), enabled: !pill?.enabled })}
             className={['px-2 py-0.5 rounded-md text-[10px] font-medium border transition-all shrink-0',
-              pill?.enabled ? 'border-amber-500/40 bg-amber-500/10 text-amber-400' : 'border-zinc-700/80 bg-zinc-800/40 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'].join(' ')}>背景</button>
+              pill?.enabled ? 'border-teal/40 bg-teal/10 text-teal' : 'border-zinc-700/80 bg-zinc-800/40 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300'].join(' ')}>背景</button>
           {pill?.enabled && (
             <>
               <input type="color" value={pill?.color || '#000000'} onChange={(e) => onPillChange({ ...(pill || {}), color: e.target.value })} className="w-6 h-6 rounded-md cursor-pointer shrink-0" style={{ colorScheme: 'dark' }} />
-              <input type="range" min={0} max={100} value={pill?.opacity ?? 50} onChange={(e) => onPillChange({ ...(pill || {}), opacity: Number(e.target.value) })} className="flex-1 min-w-0 accent-amber-500" />
+              <input type="range" min={0} max={100} value={pill?.opacity ?? 50} onChange={(e) => onPillChange({ ...(pill || {}), opacity: Number(e.target.value) })} className="flex-1 min-w-0 accent-teal" />
               <span className="text-[10px] text-zinc-500 font-mono w-6 text-right shrink-0">{pill?.opacity ?? 50}</span>
             </>
           )}
@@ -337,9 +337,9 @@ function FrameSelector({ frameType, onChange, frameColor = 'black', onColorChang
           return (
             <button key={id} type="button" onClick={() => onChange(id)}
               className={['flex flex-col items-center gap-1 py-2 px-1 rounded-xl border transition-all',
-                active ? 'border-amber-500/50 bg-amber-500/8' : 'border-zinc-700 bg-zinc-800/40 hover:border-zinc-600'].join(' ')}>
+                active ? 'border-teal/50 bg-teal/8' : 'border-zinc-700 bg-zinc-800/40 hover:border-zinc-600'].join(' ')}>
               <div className="text-center leading-tight">
-                <div className={`text-[10px] font-semibold ${active ? 'text-amber-400' : 'text-zinc-300'}`}>{label}</div>
+                <div className={`text-[10px] font-semibold ${active ? 'text-teal' : 'text-zinc-300'}`}>{label}</div>
                 <div className="text-[8px] text-zinc-500 mt-0.5">{sub}</div>
               </div>
             </button>
@@ -352,7 +352,7 @@ function FrameSelector({ frameType, onChange, frameColor = 'black', onColorChang
           return (
             <button key={id} type="button" onClick={() => onButtonLayoutChange?.(id)}
               className={['py-1.5 px-0.5 rounded-lg border text-[9px] font-semibold transition-all',
-                active ? 'border-amber-500/50 bg-amber-500/8 text-amber-400' : 'border-zinc-700 bg-zinc-800/40 text-zinc-400 hover:border-zinc-600'].join(' ')}>{label}</button>
+                active ? 'border-teal/50 bg-teal/8 text-teal' : 'border-zinc-700 bg-zinc-800/40 text-zinc-400 hover:border-zinc-600'].join(' ')}>{label}</button>
           )
         })}
       </div>
@@ -360,13 +360,13 @@ function FrameSelector({ frameType, onChange, frameColor = 'black', onColorChang
         {FRAME_PRESETS.map(({ id, label, swatch }) => (
           <button key={id} type="button" title={label} onClick={() => onColorChange?.(id)}
             className={['flex-1 flex items-center justify-center py-1 rounded-lg border transition-all',
-              frameColor === id ? 'border-amber-500/50 bg-amber-500/8' : 'border-zinc-700 bg-zinc-800/40 hover:border-zinc-600'].join(' ')}>
+              frameColor === id ? 'border-teal/50 bg-teal/8' : 'border-zinc-700 bg-zinc-800/40 hover:border-zinc-600'].join(' ')}>
             <span className="w-3 h-3 rounded-full border border-zinc-600/50" style={{ backgroundColor: swatch }} />
           </button>
         ))}
         <label title="カスタム" onClick={() => { if (isPreset) onColorChange?.(lastCustomRef.current) }}
           className={['flex-1 flex items-center justify-center py-1 rounded-lg border cursor-pointer transition-all',
-            !isPreset ? 'border-amber-500/50 bg-amber-500/8' : 'border-zinc-700 bg-zinc-800/40 hover:border-zinc-600'].join(' ')}>
+            !isPreset ? 'border-teal/50 bg-teal/8' : 'border-zinc-700 bg-zinc-800/40 hover:border-zinc-600'].join(' ')}>
           <span className="w-3 h-3 rounded-full border border-zinc-600/50 overflow-hidden shrink-0">
             {isPreset
               ? <span className="block w-full h-full" style={{ background: 'conic-gradient(red,yellow,lime,cyan,blue,magenta,red)' }} />
@@ -399,16 +399,16 @@ function BgControls({ bgType, onBgTypeChange, bgColor, onBgColorChange, bgColor2
         {[{ id: 'solid', label: '単色' }, { id: 'gradient', label: 'グラデ' }, { id: 'blur', label: 'ぼかし' }, { id: 'image', label: '画像' }].map(({ id, label }) => (
           <button key={id} type="button" onClick={() => onBgTypeChange(id)}
             className={['flex-1 py-1.5 px-0.5 rounded-md text-[11px] font-medium transition-all',
-              bgType === id ? 'bg-amber-500/15 border border-amber-500/40 text-amber-400' : 'text-zinc-500 hover:text-zinc-400 border border-transparent'].join(' ')}>{label}</button>
+              bgType === id ? 'bg-teal/15 border border-teal/40 text-teal' : 'text-zinc-500 hover:text-zinc-400 border border-transparent'].join(' ')}>{label}</button>
         ))}
       </div>
 
       {bgType === 'blur' && (
         <div className="flex flex-col gap-2.5">
-          <p className="text-[11px] text-amber-300/80 leading-relaxed rounded-lg bg-amber-500/6 border border-amber-500/20 px-3 py-2">スクリーンショットを自動的にぼかして背景に使います。</p>
+          <p className="text-[11px] text-teal/80 leading-relaxed rounded-lg bg-teal/6 border border-teal/20 px-3 py-2">スクリーンショットを自動的にぼかして背景に使います。</p>
           <div className="flex items-center gap-3">
             <span className="text-[10px] text-zinc-500 w-14 shrink-0">ぼかし強度</span>
-            <input type="range" min={5} max={60} value={blurSigma} onChange={(e) => onBlurSigmaChange(Number(e.target.value))} className="flex-1 accent-amber-500" />
+            <input type="range" min={5} max={60} value={blurSigma} onChange={(e) => onBlurSigmaChange(Number(e.target.value))} className="flex-1 accent-teal" />
             <span className="text-[10px] text-zinc-500 w-12 text-right shrink-0">{blurSigma <= 15 ? 'うっすら' : blurSigma <= 35 ? '標準' : 'ガッツリ'}</span>
           </div>
         </div>
@@ -419,7 +419,7 @@ function BgControls({ bgType, onBgTypeChange, bgColor, onBgColorChange, bgColor2
           <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onBgImageChange(f) }} />
           <div onClick={() => fileRef.current?.click()} onDragOver={(e) => { e.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)} onDrop={handleDrop}
             className={['w-full py-3 rounded-lg border border-dashed cursor-pointer transition-all text-xs flex flex-col items-center justify-center gap-1',
-              dragging ? 'border-amber-500/70 bg-amber-500/8 text-amber-400' : bgImageName ? 'border-zinc-600 bg-zinc-800/40 text-zinc-400 hover:border-zinc-500' : 'border-zinc-700 text-zinc-500 hover:border-amber-500/40 hover:text-amber-400'].join(' ')}>
+              dragging ? 'border-teal/70 bg-teal/8 text-teal' : bgImageName ? 'border-zinc-600 bg-zinc-800/40 text-zinc-400 hover:border-zinc-500' : 'border-zinc-700 text-zinc-500 hover:border-teal/40 hover:text-teal'].join(' ')}>
             <span className="text-lg leading-none">{dragging ? '📥' : '🖼'}</span>
             <span>{dragging ? 'ここにドロップ' : bgImageName || 'クリックまたはドロップで選択'}</span>
           </div>
@@ -427,7 +427,7 @@ function BgControls({ bgType, onBgTypeChange, bgColor, onBgColorChange, bgColor2
             <>
               <div className="flex items-center gap-3">
                 <span className="text-[10px] text-zinc-500 shrink-0">表示位置</span>
-                <input type="range" min={0} max={100} value={bgImageOffsetY ?? 50} onChange={(e) => onBgImageOffsetYChange?.(Number(e.target.value))} className="flex-1 accent-amber-500" />
+                <input type="range" min={0} max={100} value={bgImageOffsetY ?? 50} onChange={(e) => onBgImageOffsetYChange?.(Number(e.target.value))} className="flex-1 accent-teal" />
                 <span className="text-[10px] text-zinc-500 font-mono w-6 text-right shrink-0">{(bgImageOffsetY ?? 50) === 0 ? '上' : (bgImageOffsetY ?? 50) === 100 ? '下' : `${bgImageOffsetY ?? 50}%`}</span>
               </div>
               <button type="button" onClick={() => onBgImageChange(null)} className="text-[10px] text-zinc-600 hover:text-zinc-400 text-center transition-colors">削除</button>
@@ -457,7 +457,7 @@ function BgControls({ bgType, onBgTypeChange, bgColor, onBgColorChange, bgColor2
           {BG_DIRECTIONS.map((d) => (
             <button key={d.id} type="button" onClick={() => onBgDirectionChange(d.id)}
               className={['flex-1 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center justify-center gap-1',
-                bgDirection === d.id ? 'border-amber-500/50 bg-amber-500/10 text-amber-400' : 'border-zinc-700 bg-zinc-800/40 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400'].join(' ')}>
+                bgDirection === d.id ? 'border-teal/50 bg-teal/10 text-teal' : 'border-zinc-700 bg-zinc-800/40 text-zinc-500 hover:border-zinc-600 hover:text-zinc-400'].join(' ')}>
               <span className="text-base leading-none">{d.icon}</span><span>{d.label}</span>
             </button>
           ))}
@@ -481,12 +481,12 @@ function LogoPanel({ logoName, onLogo, onReset, logoSize, onLogoSizeChange, logo
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-zinc-500 w-10 shrink-0">サイズ</span>
-          <input type="range" min={5} max={40} value={logoSize} onChange={(e) => onLogoSizeChange(Number(e.target.value))} className="flex-1 accent-amber-500" />
+          <input type="range" min={5} max={40} value={logoSize} onChange={(e) => onLogoSizeChange(Number(e.target.value))} className="flex-1 accent-teal" />
           <span className="text-[10px] text-zinc-500 font-mono w-6 text-right shrink-0">{logoSize}%</span>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-zinc-500 w-10 shrink-0">角丸</span>
-          <input type="range" min={0} max={50} value={logoCornerRadius} onChange={(e) => onLogoCornerRadiusChange(Number(e.target.value))} className="flex-1 accent-amber-500" />
+          <input type="range" min={0} max={50} value={logoCornerRadius} onChange={(e) => onLogoCornerRadiusChange(Number(e.target.value))} className="flex-1 accent-teal" />
           <span className="text-[10px] text-zinc-500 font-mono w-6 text-right shrink-0">{logoCornerRadius === 0 ? '□' : logoCornerRadius === 50 ? '○' : `${logoCornerRadius}%`}</span>
         </div>
         <p className="text-[9px] text-zinc-600">プレビュー上の緑ハンドルをドラッグで位置調整</p>
@@ -526,14 +526,14 @@ function FontDropZone({ fontList, selectedFont, onFontAdd, onFontRemove, onFontS
       {fontList.length > 0 && (
         <div className="flex flex-col gap-0.5 rounded-lg bg-zinc-800/30 border border-zinc-700/50 overflow-hidden">
           <label className="flex items-center gap-2 px-2.5 py-2 cursor-pointer hover:bg-zinc-800/60 transition-colors">
-            <input type="radio" checked={!selectedFont} onChange={() => onFontSelect('')} className="w-3 h-3 accent-amber-500 shrink-0" />
+            <input type="radio" checked={!selectedFont} onChange={() => onFontSelect('')} className="w-3 h-3 accent-teal shrink-0" />
             <span className={['text-xs flex-1 transition-colors', !selectedFont ? 'text-zinc-300' : 'text-zinc-500'].join(' ')}>デフォルト</span>
           </label>
           <div className="border-t border-zinc-700/40" />
           {fontList.map(({ family, name }: any) => (
             <label key={family} className="flex items-center gap-2 px-2.5 py-2 cursor-pointer hover:bg-zinc-800/60 transition-colors group">
-              <input type="radio" checked={selectedFont === family} onChange={() => onFontSelect(family)} className="w-3 h-3 accent-amber-500 shrink-0" />
-              <span className={['text-xs flex-1 truncate transition-colors', selectedFont === family ? 'text-amber-300' : 'text-zinc-400'].join(' ')}>{name}</span>
+              <input type="radio" checked={selectedFont === family} onChange={() => onFontSelect(family)} className="w-3 h-3 accent-teal shrink-0" />
+              <span className={['text-xs flex-1 truncate transition-colors', selectedFont === family ? 'text-teal' : 'text-zinc-400'].join(' ')}>{name}</span>
               <button type="button" onClick={(e) => { e.preventDefault(); onFontRemove(family) }} className="w-4 h-4 text-zinc-700 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all text-xs leading-none rounded flex items-center justify-center shrink-0">×</button>
             </label>
           ))}
@@ -543,7 +543,7 @@ function FontDropZone({ fontList, selectedFont, onFontAdd, onFontRemove, onFontS
         onDrop={(e) => { e.preventDefault(); setDragging(false); if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]) }}
         onClick={() => !loading && inputRef.current?.click()}
         className={['flex items-center gap-3 rounded-lg border border-dashed px-3 py-2.5 transition-all', loading ? 'cursor-wait opacity-60' : 'cursor-pointer',
-          dragging ? 'border-amber-500/50 bg-amber-500/5' : 'border-zinc-700 hover:border-zinc-600 bg-zinc-800/20'].join(' ')}>
+          dragging ? 'border-teal/50 bg-teal/5' : 'border-zinc-700 hover:border-zinc-600 bg-zinc-800/20'].join(' ')}>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-zinc-600 shrink-0"><path d="M3 13L6.5 3h3L13 13" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /><path d="M4.5 9.5h7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
         <div>
           <p className="text-xs text-zinc-400">{loading ? '読み込み中...' : '.ttf / .otf を追加'}</p>
@@ -574,15 +574,15 @@ function TemplatePanel({ currentSettings, onLoad }: any) {
     <div className="flex flex-col gap-2">
       <div className="flex gap-1.5">
         <input value={name} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSave()} placeholder="テンプレート名"
-          className="flex-1 min-w-0 rounded-lg bg-zinc-800 border border-zinc-700/80 text-zinc-100 placeholder-zinc-600 px-2.5 py-1.5 text-xs focus:outline-none focus:border-amber-500/50 transition-colors" />
-        <button type="button" onClick={handleSave} className="px-2.5 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-400 text-xs font-medium hover:bg-amber-500/25 transition-all shrink-0">保存</button>
+          className="flex-1 min-w-0 rounded-lg bg-zinc-800 border border-zinc-700/80 text-zinc-100 placeholder-zinc-600 px-2.5 py-1.5 text-xs focus:outline-none focus:border-teal/50 transition-colors" />
+        <button type="button" onClick={handleSave} className="px-2.5 py-1.5 rounded-lg bg-teal/15 border border-teal/40 text-teal text-xs font-medium hover:bg-teal/25 transition-all shrink-0">保存</button>
       </div>
       {templates.length > 0 ? (
         <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
           {templates.map((t) => (
             <div key={t.id} className="flex items-center gap-1 rounded-lg border border-zinc-700/60 bg-zinc-800/50 px-2 py-1.5">
               <span className="flex-1 min-w-0 text-xs text-zinc-300 truncate">{t.name}</span>
-              <button type="button" onClick={() => onLoad(t.settings)} className="text-[10px] text-zinc-500 hover:text-amber-400 transition-colors shrink-0 px-1.5 py-0.5 rounded hover:bg-amber-500/10">読込</button>
+              <button type="button" onClick={() => onLoad(t.settings)} className="text-[10px] text-zinc-500 hover:text-teal transition-colors shrink-0 px-1.5 py-0.5 rounded hover:bg-teal/10">読込</button>
               <button type="button" onClick={() => persist(templates.filter((x) => x.id !== t.id))} className="text-[10px] text-zinc-600 hover:text-red-400 transition-colors shrink-0 w-4 text-center">×</button>
             </div>
           ))}
@@ -682,7 +682,7 @@ const PreviewCanvas = forwardRef(function PreviewCanvas(props: any, ref: any) {
           className="relative rounded-2xl shadow-2xl shadow-black/60 border border-zinc-800"
           style={{ width: `${previewW}px`, height: `${previewH}px`, maxWidth: '100%', display: 'block' }} />
         {logoEl && <DragHandle x={logoPosX} y={logoPosY} colorClass="text-lime-400" borderClass="border-lime-400/70" bgClass="bg-lime-500/20" label="◈" draggingRef={draggingRef} which="logo" />}
-        <DragHandle x={textX} y={textY} colorClass="text-amber-400" borderClass="border-amber-400/70" bgClass="bg-amber-500/20" label="T" draggingRef={draggingRef} which="text" />
+        <DragHandle x={textX} y={textY} colorClass="text-teal" borderClass="border-teal/70" bgClass="bg-teal/20" label="T" draggingRef={draggingRef} which="text" />
         <DragHandle x={subTextX} y={subTextY} colorClass="text-sky-400" borderClass="border-sky-400/70" bgClass="bg-sky-500/20" label="S" draggingRef={draggingRef} which="subText" />
         {extraTexts.map((et: any, i: number) => {
           const c = EXTRA_COLORS[i % EXTRA_COLORS.length]
@@ -691,7 +691,7 @@ const PreviewCanvas = forwardRef(function PreviewCanvas(props: any, ref: any) {
       </div>
       <div className="flex items-center gap-3 flex-wrap justify-center text-[11px] text-zinc-400">
         {logoEl && <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-lime-500/70 border border-lime-400/80 inline-block" />ロゴ</span>}
-        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-amber-500/70 border border-amber-400/80 inline-block" />キャッチ</span>
+        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-teal/70 border border-teal/80 inline-block" />キャッチ</span>
         <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-sky-500/70 border border-sky-400/80 inline-block" />サブ</span>
       </div>
     </div>
@@ -732,16 +732,16 @@ function GeneratePanel({ sizes, onSizeChange, loading, error, onGenerate, imageC
                 <span className="text-[9px] font-semibold tracking-[0.15em] uppercase text-zinc-600">{group.label}</span>
                 {group.sub && (<><span className="text-zinc-700">·</span><span className="text-[9px] font-semibold tracking-[0.12em] uppercase text-zinc-600">{group.sub}</span></>)}
                 <div className="flex-1 h-px bg-zinc-800/80 ml-1" />
-                <button type="button" onClick={() => group.items.forEach((i) => onSizeChange(i.id, !allChecked))} className="text-[9px] text-zinc-600 hover:text-amber-400 transition-colors font-medium">{allChecked ? '全解除' : '全選択'}</button>
+                <button type="button" onClick={() => group.items.forEach((i) => onSizeChange(i.id, !allChecked))} className="text-[9px] text-zinc-600 hover:text-teal transition-colors font-medium">{allChecked ? '全解除' : '全選択'}</button>
               </div>
               <div className="flex flex-col gap-0.5">
                 {group.items.map((item) => (
                   <label key={item.id} className="flex items-center gap-2.5 cursor-pointer group rounded-md px-2 py-1.5 -mx-2 transition-colors hover:bg-zinc-800/60">
-                    <input type="checkbox" checked={!!sizes[item.id]} onChange={(e) => onSizeChange(item.id, e.target.checked)} className="w-3.5 h-3.5 rounded cursor-pointer shrink-0 accent-amber-500" />
+                    <input type="checkbox" checked={!!sizes[item.id]} onChange={(e) => onSizeChange(item.id, e.target.checked)} className="w-3.5 h-3.5 rounded cursor-pointer shrink-0 accent-teal" />
                     <span className={['text-[13px] flex-1 transition-colors', sizes[item.id] ? 'text-zinc-200' : 'text-zinc-500 group-hover:text-zinc-300'].join(' ')}>{item.label}</span>
                     <span className="text-[10px] text-zinc-700 font-mono tabular-nums">{item.detail}</span>
                     <button type="button" onClick={(e) => { e.preventDefault(); onDownloadSingle?.(item.id) }} title={`${item.label} PNG 1枚保存`}
-                      className="flex items-center gap-1 pl-1.5 pr-2 py-0.5 rounded-md border border-zinc-700/80 text-zinc-500 hover:border-amber-500/50 hover:text-amber-400 hover:bg-amber-500/6 transition-all shrink-0 text-[9px] font-medium">
+                      className="flex items-center gap-1 pl-1.5 pr-2 py-0.5 rounded-md border border-zinc-700/80 text-zinc-500 hover:border-teal/50 hover:text-teal hover:bg-teal/6 transition-all shrink-0 text-[9px] font-medium">
                       <DownloadIcon /><span>PNG</span>
                     </button>
                   </label>
@@ -762,7 +762,7 @@ function GeneratePanel({ sizes, onSizeChange, loading, error, onGenerate, imageC
 
       <button type="button" onClick={onGenerate} disabled={loading || !anySelected}
         className={['w-full py-3 px-4 rounded-xl font-bold text-[13px] tracking-wide transition-all select-none flex items-center justify-center gap-2',
-          loading || !anySelected ? 'bg-zinc-800/60 text-zinc-600 cursor-not-allowed border border-zinc-700/50' : 'bg-amber-500 hover:bg-amber-400 active:scale-[0.97] text-zinc-950 shadow-[0_4px_24px_rgba(245,158,11,0.25)]'].join(' ')}>
+          loading || !anySelected ? 'bg-zinc-800/60 text-zinc-600 cursor-not-allowed border border-zinc-700/50' : 'bg-teal hover:opacity-90 active:scale-[0.97] text-zinc-950 shadow-[0_4px_24px_rgba(0,200,150,0.25)]'].join(' ')}>
         {loading ? (
           <><span className="inline-block w-4 h-4 border-2 border-zinc-600 border-t-zinc-300 rounded-full animate-spin" /><span>生成中...</span></>
         ) : (
@@ -772,7 +772,7 @@ function GeneratePanel({ sizes, onSizeChange, loading, error, onGenerate, imageC
       </button>
 
       {totalImages > selectedCount ? (
-        <p className="text-[10px] text-amber-500/50 text-center leading-relaxed">{imgCnt > 1 && `${imgCnt}シーン × `}{selectedCount}サイズ = <span className="font-semibold text-amber-400/80">{totalImages}枚</span>を一括生成</p>
+        <p className="text-[10px] text-teal/50 text-center leading-relaxed">{imgCnt > 1 && `${imgCnt}シーン × `}{selectedCount}サイズ = <span className="font-semibold text-teal/80">{totalImages}枚</span>を一括生成</p>
       ) : (
         <p className="text-[10px] text-zinc-600 text-center leading-relaxed">ストア申請対応の高解像度PNG<br />フォルダ分けしてZIPで出力</p>
       )}
@@ -784,7 +784,7 @@ function GeneratePanel({ sizes, onSizeChange, loading, error, onGenerate, imageC
 function Toast({ message, onClose }: any) {
   useEffect(() => { const t = setTimeout(onClose, 2600); return () => clearTimeout(t) }, [onClose])
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-zinc-900 border border-amber-500/30 text-amber-300 text-[13px] shadow-2xl shadow-black/60">{message}</div>
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-zinc-900 border border-teal/30 text-teal text-[13px] shadow-2xl shadow-black/60">{message}</div>
   )
 }
 
@@ -1117,7 +1117,7 @@ export function MockupBuilder() {
         </button>
         <div className="w-px h-4 bg-zinc-800 mx-1" />
         <button type="button" onClick={handleExportJson} className="px-2.5 py-1 rounded-md text-[11px] font-medium border border-zinc-700/80 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200 transition-all">JSON 書き出し</button>
-        <button type="button" onClick={() => jsonInputRef.current?.click()} className="px-2.5 py-1 rounded-md text-[11px] font-medium border border-zinc-700/80 text-zinc-400 hover:border-amber-500/40 hover:text-amber-400 transition-all">JSON 読み込み</button>
+        <button type="button" onClick={() => jsonInputRef.current?.click()} className="px-2.5 py-1 rounded-md text-[11px] font-medium border border-zinc-700/80 text-zinc-400 hover:border-teal/40 hover:text-teal transition-all">JSON 読み込み</button>
         <input ref={jsonInputRef} type="file" accept=".json" className="hidden" onChange={(e) => { handleImportJson(e.target.files?.[0]); e.target.value = '' }} />
       </div>
 
@@ -1131,14 +1131,14 @@ export function MockupBuilder() {
               <>
                 <div className="flex items-center gap-2 mt-2">
                   <span className="text-[10px] text-zinc-500 shrink-0">表示位置</span>
-                  <input type="range" min={0} max={100} value={screenshotOffsetY} onChange={(e) => setScreenshotOffsetY(Number(e.target.value))} className="flex-1 accent-amber-500" />
+                  <input type="range" min={0} max={100} value={screenshotOffsetY} onChange={(e) => setScreenshotOffsetY(Number(e.target.value))} className="flex-1 accent-teal" />
                   <span className="text-[10px] text-zinc-500 font-mono w-5 text-right shrink-0">{screenshotOffsetY === 0 ? '上' : screenshotOffsetY === 100 ? '下' : screenshotOffsetY}</span>
                 </div>
                 <div className="flex flex-col gap-1.5 mt-2 pt-2 border-t border-zinc-800/60">
                   {[{ key: 'brightness', label: '明るさ', min: 50, max: 150 }, { key: 'contrast', label: 'コントラスト', min: 50, max: 150 }, { key: 'saturation', label: '彩度', min: 0, max: 200 }].map(({ key, label, min, max }) => (
                     <div key={key} className="flex items-center gap-2">
                       <span className="text-[10px] text-zinc-500 w-16 shrink-0">{label}</span>
-                      <input type="range" min={min} max={max} value={screenshotFilter[key]} onChange={(e) => setScreenshotFilter((v: any) => ({ ...v, [key]: Number(e.target.value) }))} className="flex-1 accent-amber-500" />
+                      <input type="range" min={min} max={max} value={screenshotFilter[key]} onChange={(e) => setScreenshotFilter((v: any) => ({ ...v, [key]: Number(e.target.value) }))} className="flex-1 accent-teal" />
                       <span className="text-[10px] text-zinc-500 font-mono w-7 text-right shrink-0">{screenshotFilter[key]}</span>
                     </div>
                   ))}
@@ -1156,18 +1156,18 @@ export function MockupBuilder() {
               <div className="flex flex-col gap-1.5 mt-2">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-zinc-500 w-12 shrink-0">サイズ</span>
-                  <input type="range" min={60} max={100} value={frameScale} onChange={(e) => setFrameScale(Number(e.target.value))} className="flex-1 accent-amber-500" />
+                  <input type="range" min={60} max={100} value={frameScale} onChange={(e) => setFrameScale(Number(e.target.value))} className="flex-1 accent-teal" />
                   <span className="text-[10px] text-zinc-500 font-mono w-7 text-right shrink-0">{frameScale}%</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] text-zinc-500 w-12 shrink-0">上マージン</span>
-                  <input type="range" min={0} max={50} value={frameOffsetY} onChange={(e) => setFrameOffsetY(Number(e.target.value))} className="flex-1 accent-amber-500" />
+                  <input type="range" min={0} max={50} value={frameOffsetY} onChange={(e) => setFrameOffsetY(Number(e.target.value))} className="flex-1 accent-teal" />
                   <span className="text-[10px] text-zinc-500 font-mono w-7 text-right shrink-0">{frameOffsetY}%</span>
                 </div>
                 <div className="flex items-center gap-2 pt-0.5">
                   <span className="text-[10px] text-zinc-500 flex-1">シャドウ</span>
                   <button type="button" onClick={() => setFrameShadow((v: any) => ({ ...v, enabled: !v.enabled }))}
-                    className={['relative w-8 h-4 rounded-full transition-colors duration-200', frameShadow.enabled ? 'bg-amber-500' : 'bg-zinc-700'].join(' ')}>
+                    className={['relative w-8 h-4 rounded-full transition-colors duration-200', frameShadow.enabled ? 'bg-teal' : 'bg-zinc-700'].join(' ')}>
                     <span className={['absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-transform duration-200', frameShadow.enabled ? 'translate-x-4' : 'translate-x-0.5'].join(' ')} />
                   </button>
                 </div>
@@ -1176,17 +1176,17 @@ export function MockupBuilder() {
                     <div className="flex items-center gap-2">
                       <input type="color" value={frameShadow.color} onChange={(e) => setFrameShadow((v: any) => ({ ...v, color: e.target.value }))} className="w-6 h-6 rounded cursor-pointer shrink-0" style={{ colorScheme: 'dark' }} />
                       <span className="text-[10px] text-zinc-500 w-8 shrink-0">ぼかし</span>
-                      <input type="range" min={0} max={80} value={frameShadow.blur} onChange={(e) => setFrameShadow((v: any) => ({ ...v, blur: Number(e.target.value) }))} className="flex-1 accent-amber-500" />
+                      <input type="range" min={0} max={80} value={frameShadow.blur} onChange={(e) => setFrameShadow((v: any) => ({ ...v, blur: Number(e.target.value) }))} className="flex-1 accent-teal" />
                       <span className="text-[10px] text-zinc-500 font-mono w-5 text-right shrink-0">{frameShadow.blur}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] text-zinc-500 w-14 shrink-0">オフセット</span>
-                      <input type="range" min={-40} max={80} value={frameShadow.offsetY} onChange={(e) => setFrameShadow((v: any) => ({ ...v, offsetY: Number(e.target.value) }))} className="flex-1 accent-amber-500" />
+                      <input type="range" min={-40} max={80} value={frameShadow.offsetY} onChange={(e) => setFrameShadow((v: any) => ({ ...v, offsetY: Number(e.target.value) }))} className="flex-1 accent-teal" />
                       <span className="text-[10px] text-zinc-500 font-mono w-5 text-right shrink-0">{frameShadow.offsetY}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] text-zinc-500 w-14 shrink-0">不透明度</span>
-                      <input type="range" min={0} max={100} value={frameShadow.opacity} onChange={(e) => setFrameShadow((v: any) => ({ ...v, opacity: Number(e.target.value) }))} className="flex-1 accent-amber-500" />
+                      <input type="range" min={0} max={100} value={frameShadow.opacity} onChange={(e) => setFrameShadow((v: any) => ({ ...v, opacity: Number(e.target.value) }))} className="flex-1 accent-teal" />
                       <span className="text-[10px] text-zinc-500 font-mono w-6 text-right shrink-0">{frameShadow.opacity}%</span>
                     </div>
                   </div>
@@ -1199,14 +1199,14 @@ export function MockupBuilder() {
             <div className="flex items-center gap-2 mb-2">
               <span className="text-[10px] text-zinc-400 flex-1">スクリーンに色を重ねる</span>
               <button type="button" onClick={() => setScreenshotOverlay((v: any) => ({ ...v, enabled: !v.enabled }))}
-                className={['relative w-8 h-4 rounded-full transition-colors duration-200', screenshotOverlay.enabled ? 'bg-amber-500' : 'bg-zinc-700'].join(' ')}>
+                className={['relative w-8 h-4 rounded-full transition-colors duration-200', screenshotOverlay.enabled ? 'bg-teal' : 'bg-zinc-700'].join(' ')}>
                 <span className={['absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-transform duration-200', screenshotOverlay.enabled ? 'translate-x-4' : 'translate-x-0.5'].join(' ')} />
               </button>
             </div>
             {screenshotOverlay.enabled && (
               <div className="flex items-center gap-2">
                 <input type="color" value={screenshotOverlay.color} onChange={(e) => setScreenshotOverlay((v: any) => ({ ...v, color: e.target.value }))} className="w-7 h-7 rounded cursor-pointer shrink-0" style={{ colorScheme: 'dark' }} />
-                <input type="range" min={0} max={100} value={screenshotOverlay.opacity} onChange={(e) => setScreenshotOverlay((v: any) => ({ ...v, opacity: Number(e.target.value) }))} className="flex-1 accent-amber-500" />
+                <input type="range" min={0} max={100} value={screenshotOverlay.opacity} onChange={(e) => setScreenshotOverlay((v: any) => ({ ...v, opacity: Number(e.target.value) }))} className="flex-1 accent-teal" />
                 <span className="text-[10px] text-zinc-500 font-mono w-6 text-right shrink-0">{screenshotOverlay.opacity}%</span>
               </div>
             )}
@@ -1264,7 +1264,7 @@ export function MockupBuilder() {
                 </React.Fragment>
               ))}
               <button type="button" onClick={addExtraText}
-                className="w-full py-2 rounded-lg border border-dashed border-zinc-700/50 text-zinc-600 text-[11px] font-medium hover:border-amber-500/30 hover:text-amber-500/60 transition-all flex items-center justify-center gap-1.5">
+                className="w-full py-2 rounded-lg border border-dashed border-zinc-700/50 text-zinc-600 text-[11px] font-medium hover:border-teal/30 hover:text-teal/60 transition-all flex items-center justify-center gap-1.5">
                 <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M5.5 1v9M1 5.5h9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>テキスト追加
               </button>
             </div>
