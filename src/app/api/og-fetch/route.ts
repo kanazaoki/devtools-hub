@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { normalizeUrl, assertPublicHost } from '@/lib/urlGuard'
+import { rateLimit, clientIp } from '@/lib/rateLimit'
 
 const MAX_BYTES = 1 * 1024 * 1024 // 1 MB
 
@@ -58,61 +60,37 @@ function extractMeta(html: string, baseUrl: string): OgData {
   }
 }
 
-function isPrivateUrl(urlStr: string): boolean {
-  try {
-    const { hostname } = new URL(urlStr)
-    const hn = hostname.toLowerCase().replace(/^\[|\]$/g, '')
-    if (hn === 'localhost' || hn === '0.0.0.0' || hn === '::1') return true
-    const ipv4 = hn.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/)
-    if (ipv4) {
-      const [a, b] = [Number(ipv4[1]), Number(ipv4[2])]
-      if (a === 10) return true
-      if (a === 127) return true
-      if (a === 169 && b === 254) return true
-      if (a === 172 && b >= 16 && b <= 31) return true
-      if (a === 192 && b === 168) return true
-      if (a === 0) return true
-      if (a === 100 && b >= 64 && b <= 127) return true
-    }
-    if (hn.startsWith('fe80') || hn.startsWith('fc') || hn.startsWith('fd')) return true
-    return false
-  } catch {
-    return true
-  }
-}
-
 export async function POST(req: NextRequest) {
-  let url: string
+  const rl = rateLimit(`og-fetch:${clientIp(req)}`)
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: 'リクエストが多すぎます。しばらくしてからお試しください' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfter) } }
+    )
+  }
+
+  let rawUrl: unknown
   try {
-    const body = await req.json()
-    url = body.url?.trim()
+    rawUrl = (await req.json())?.url
   } catch {
     return NextResponse.json({ error: 'リクエストの形式が正しくありません' }, { status: 400 })
   }
 
-  if (!url) {
-    return NextResponse.json({ error: 'URLを入力してください' }, { status: 400 })
+  const norm = normalizeUrl(rawUrl)
+  if ('error' in norm) {
+    return NextResponse.json({ error: norm.error }, { status: 400 })
   }
 
-  if (!/^https?:\/\//i.test(url)) {
-    url = 'https://' + url
-  }
-
-  try {
-    new URL(url)
-  } catch {
-    return NextResponse.json({ error: '有効なURLを入力してください' }, { status: 400 })
-  }
-
-  if (isPrivateUrl(url)) {
-    return NextResponse.json({ error: '有効なURLを入力してください' }, { status: 400 })
+  const blocked = await assertPublicHost(norm.url)
+  if (blocked) {
+    return NextResponse.json({ error: blocked }, { status: 400 })
   }
 
   try {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 10000)
 
-    const res = await fetch(url, {
+    const res = await fetch(norm.url, {
       signal: controller.signal,
       redirect: 'error',
       headers: {
@@ -129,17 +107,32 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const contentLength = Number(res.headers.get('content-length') ?? 0)
-    if (contentLength > MAX_BYTES) {
+    const declared = Number(res.headers.get('content-length') ?? 0)
+    if (declared > MAX_BYTES) {
       return NextResponse.json({ error: 'ページサイズが大きすぎます' }, { status: 413 })
     }
 
-    const html = await res.text()
-    if (html.length > MAX_BYTES) {
-      return NextResponse.json({ error: 'ページサイズが大きすぎます' }, { status: 413 })
+    // Stream with a hard cap so a missing/spoofed content-length can't buffer
+    // an unbounded response into memory.
+    const reader = res.body?.getReader()
+    if (!reader) {
+      return NextResponse.json({ error: 'OG タグの取得に失敗しました' }, { status: 502 })
+    }
+    const chunks: Uint8Array[] = []
+    let total = 0
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      total += value.byteLength
+      if (total > MAX_BYTES) {
+        await reader.cancel()
+        return NextResponse.json({ error: 'ページサイズが大きすぎます' }, { status: 413 })
+      }
+      chunks.push(value)
     }
 
-    const data = extractMeta(html, url)
+    const html = new TextDecoder('utf-8').decode(Buffer.concat(chunks))
+    const data = extractMeta(html, norm.url)
 
     return NextResponse.json({ data })
   } catch (err: unknown) {
