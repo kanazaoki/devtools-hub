@@ -382,8 +382,8 @@ export const seoContent: Record<string, SeoArticleData> = {
   },
 
   'color-deck': {
-    heading: 'カラーコード変換の基礎 — HEX・RGB・HSL・HSVの使い分け',
-    intro: 'Webデザイン・ゲーム開発・UI設計では複数のカラー形式を使い分ける場面が頻繁にあります。各形式の特徴を理解することで、ツール間の色の移し替えがスムーズになります。',
+    heading: 'カラースウォッチの保存とスポイト活用 — 配色を手元に貯める作業術',
+    intro: 'デザインやUI実装では、拾った色・決めた配色をその場で貯めておけると作業が速くなります。Color Deck はスポイトで色を拾い、各カラー形式に変換し、お気に入りスウォッチとして保存できるカラー作業ツールです。単発の形式変換だけが必要な場合は「Color Format Converter」が向いています。',
     sections: [
       { title: 'HEX（16進数）カラーコードとは', body: 'HEXカラーは#RRGGBBの形式で赤・緑・青の各成分を00〜FFの16進数で表現します。CSSで最もよく使われる形式で、#FFFFFFが白、#000000が黒です。3桁の省略形（#RGB）は各桁を2回繰り返した値と同義で、#F00は#FF0000と同じ赤を表します。CSS Color Level 4からはアルファチャンネル付きのHEX8形式（#RRGGBBAA）が使えるようになりました。例えば#FF000080は50%透明の赤です。Figma・Sketch・Adobe XDなどのデザインツールとの色の受け渡しはHEX形式が最も手軽です。' },
       { title: 'RGB・RGBAの違いと使いどころ', body: 'RGBは赤・緑・青を0〜255の整数で指定するCSS形式（rgb(255, 0, 0)）です。RGBAはアルファチャンネル（0〜1の透明度）を加えたもので、半透明の重なり表現に使います。GameEngineではRGBA floatとして0〜1の小数で扱うことが多く、Unity・Godotなどはこの形式を採用しています。CSS Color Level 4からはrgb(255 0 0 / 50%)のような空白区切りの新記法（Modern Color Syntax）が使えます。JavaScriptのCanvas APIやWebGLではrgba形式の値を直接渡すことができ、imageDataのデータ配列はR・G・B・Aの順の8ビット整数配列として扱われます。' },

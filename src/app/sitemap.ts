@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { tools } from '@/data/tools'
+import { CATEGORIES } from '@/data/categories'
 
 const BASE = 'https://devtools-hub.dev'
 
@@ -9,6 +10,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: tool.releasedAt ? new Date(tool.releasedAt) : new Date('2026-06-01'),
     changeFrequency: 'monthly',
     priority: 0.8,
+  }))
+
+  const categoryUrls: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({
+    url: `${BASE}/category/${c.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 0.6,
   }))
 
   return [
@@ -36,6 +44,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
+    {
+      url: `${BASE}/category`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+    ...categoryUrls,
     ...toolUrls,
   ]
 }

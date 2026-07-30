@@ -64,9 +64,9 @@ export const tools: Tool[] = [
   {
     slug: 'color-deck',
     name: 'Color Deck',
-    tagline: 'カラーコード変換 & パレット保存',
+    tagline: 'カラースウォッチ保存 & 形式変換',
     description:
-      'HEX・RGB・CSS rgba()・RGBA float・HSV・HSL をリアルタイムに相互変換。スポイト機能・アルファスライダー・お気に入りパレット（最大8色）付き。開発・デザイン作業中いつでも手元に置けるカラーツール。',
+      '作業中の色をお気に入りスウォッチ（最大8色・ブラウザ保存）として貯めながら進められるカラー作業ツール。スポイトで拾った色を HEX・RGB・CSS rgba()・RGBA float・HSV・HSL に変換し、アルファ調整もその場で。単発の形式変換ではなく「配色を手元に置いて作業する」用途向け。デスクトップ版はグローバルホットキーで常駐します。',
     tags: ['カラー', 'デザイン', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8629564',
     hasWebVersion: true,
