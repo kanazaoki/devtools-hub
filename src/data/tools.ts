@@ -14,7 +14,7 @@ export interface Tool {
 export const tools: Tool[] = [
   {
     slug: 'base64-studio',
-    name: 'base64-studio',
+    name: 'Base64 Studio',
     tagline: 'Base64 エンコード & デコード',
     description:
       'テキストや画像を Base64 に変換。Standard / URL-safe 切り替え・Data URI 形式での出力に対応。Base64 文字列を貼り付けるだけで元のテキスト・画像に自動復元。',
@@ -63,7 +63,7 @@ export const tools: Tool[] = [
   },
   {
     slug: 'color-deck',
-    name: 'color-deck',
+    name: 'Color Deck',
     tagline: 'カラーコード変換 & パレット保存',
     description:
       'HEX・RGB・CSS rgba()・RGBA float・HSV・HSL をリアルタイムに相互変換。スポイト機能・アルファスライダー・お気に入りパレット（最大8色）付き。開発・デザイン作業中いつでも手元に置けるカラーツール。',
@@ -87,7 +87,7 @@ export const tools: Tool[] = [
   },
   {
     slug: 'gradient-deck',
-    name: 'Gradient Deck',
+    name: 'Gradient Editor',
     tagline: 'グラデーションエディタ',
     description:
       'linear / radial / conic グラデーションをリアルタイムで編集。CSS・JSON 形式でコードをワンクリックコピー。内蔵プリセット集付き。UI デザイナー・フロントエンドエンジニア・ゲーム開発者向け。',
@@ -135,7 +135,7 @@ export const tools: Tool[] = [
   },
   {
     slug: 'text-deck',
-    name: 'text-deck',
+    name: 'Snippet Launcher',
     tagline: 'スニペットランチャー',
     description:
       '定型文・コードスニペット・よく使うテキストをカード型で管理。タグ・カテゴリでフィルタリングし、ワンクリックでクリップボードにコピー。ブラウザに自動保存されるので、次回もそのまま使える。',
