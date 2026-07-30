@@ -989,17 +989,6 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
-  'url-parser-builder': {
-    heading: 'URLの構造 — スキーム・ホスト・パス・クエリ・フラグメントの解説',
-    intro: 'URLはWebリソースを一意に識別するアドレスで、複数の部品から構成されています。Webアプリ開発ではURLを正確にパースし構築する場面が頻繁にあります。JavaScriptのURL APIを使った処理の基礎を理解しておくことが重要です。',
-    sections: [
-      { title: 'URLの各コンポーネント', body: 'https://user:pass@example.com:8080/path/page?key=value&foo=bar#section を分解すると、スキーム（https）・認証情報（user:pass）・ホスト（example.com）・ポート（8080）・パス（/path/page）・クエリ（key=value&foo=bar）・フラグメント（section）になります。クエリ文字列のパラメータはURLSearchParamsで扱います。' },
-      { title: 'JavaScriptのURL API', body: 'const url = new URL("https://example.com/path?q=hello") で URL オブジェクトを作成できます。url.hostname・url.pathname・url.searchParams.get("q")でそれぞれの部品にアクセスできます。searchParamsはURLSearchParamsオブジェクトでset・get・delete・forEach等のメソッドが使えます。' },
-      { title: 'URLエンコードとデコード', body: 'URLに日本語や特殊文字を含む場合はパーセントエンコードが必要です。encodeURIComponent("日本語")は%E6%97%A5%E6%9C%AC%E8%AA%9Eになります。encodeURI はURL全体をエンコードし、: / ? & = などは変換しません。decodeURIComponent でデコードします。クエリパラメータの値には encodeURIComponent を使うのが正しいです。' },
-      { title: 'URLパースツールの活用', body: 'URL Parser & Builderに任意のURLを貼り付けるとスキーム・ホスト・パス・クエリパラメータ・フラグメントを分解して表示します。クエリパラメータは一覧表示され、追加・編集・削除が可能です。変更後のURLを再構築してコピーする機能もあり、複雑なURLの生成やAPIのクエリパラメータ確認に便利です。' },
-    ],
-  },
-
   'sql-formatter': {
     heading: 'SQLフォーマットとクエリの読みやすさ — インデント・大文字化の慣例',
     intro: 'SQLはデータベースの操作言語で、整形されていないクエリは長さに関係なく非常に読みにくくなります。適切なフォーマット（インデント・キーワードの大文字化・改行）によって可読性を大幅に向上させ、デバッグや共同作業を効率化できます。',

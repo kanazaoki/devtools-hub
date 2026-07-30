@@ -338,7 +338,7 @@ export const articles: Article[] = [
       },
     ],
     conclusion: 'URLはWebアプリケーションのインターフェースの一部です。パスパラメータでリソースを識別し、クエリパラメータで絞り込みを表現するという原則を守ることで、一貫性があり理解しやすいAPI設計になります。また、URLに機密情報を含めないというセキュリティ原則は見落としやすいため、設計レビュー時に意識的にチェックする習慣をつけましょう。',
-    relatedTools: ['url-parser-builder', 'url-encoder', 'url-builder'],
+    relatedTools: ['url-encoder', 'url-builder'],
   },
   {
     slug: 'cors-guide',

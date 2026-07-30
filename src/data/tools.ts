@@ -1225,25 +1225,6 @@ export const tools: Tool[] = [
     ],
   },
   {
-    slug: 'url-parser-builder',
-    name: 'URL Parser / Builder',
-    tagline: 'URLを構成要素に分解・クエリパラメータをGUI編集して再構築',
-    description:
-      'URLを protocol / username / password / host / port / pathname / query params / hash に分解してリアルタイム表示。クエリパラメータをGUI上で追加・編集・削除でき、変更が即座にURLへ反映されます。エンコード/デコード表示の切り替えや、完全URL・各パーツ単独のコピーにも対応。',
-    tags: ['URL', 'Web開発', '開発者向け'],
-    boothUrl: 'https://knkk.booth.pm/items/8564286',
-    hasWebVersion: true,
-    releasedAt: '2026-06-30',
-    desktopFeatures: [],
-    features: [
-      'URL → protocol / host / pathname / query params / hash にリアルタイム分解',
-      'クエリパラメータをGUIで追加・編集・削除、URL に即時反映',
-      'エンコード済み（%E3%81%82）↔ デコード（あ）の表示切り替え',
-      '完全URL・各パーツ・クエリ文字列をワンクリックコピー',
-      '無効なURLは即座にエラー表示',
-    ],
-  },
-  {
     slug: 'sql-formatter',
     name: 'SQL Formatter',
     tagline: 'SQLをキーワード大文字化・インデント整形・Minify',

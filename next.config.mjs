@@ -22,6 +22,16 @@ const nextConfig = {
       },
     ]
   },
+  async redirects() {
+    return [
+      // url-parser-builder was merged into url-builder (duplicate tool).
+      {
+        source: '/tools/url-parser-builder',
+        destination: '/tools/url-builder',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig;
