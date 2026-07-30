@@ -19,6 +19,36 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    slug: 'optimize-svg-for-web',
+    title: 'SVGを最適化してWebに載せる手順 — 軽量化からReact化まで',
+    description:
+      'デザインツールで書き出したSVGを、不要なメタデータ除去・数値の丸め・minifyで軽量化し、Webやreactコンポーネントとして使うまでの手順を、確認→最適化→コンポーネント化の流れで解説します。',
+    publishedAt: '2026-07-31',
+    tags: ['SVG', '画像', 'Web開発'],
+    intro:
+      'アイコンやイラストをSVGで扱うと拡大しても綺麗で軽い…はずですが、IllustratorやInkscapeから書き出したSVGは、編集用のメタデータや冗長な数値でファイルが膨らんでいることがよくあります。そのままWebに載せると読み込みが遅くなったり、インライン展開したときにコードが読みにくくなったりします。この記事では、SVGを確認し、安全に最適化し、Reactコンポーネントとして使うまでの流れを順番に紹介します。',
+    sections: [
+      {
+        heading: '1. まずSVGの中身とサイズを確認する',
+        body: '最適化の前に、SVGが正しく表示されるか・viewBoxや要素構成がどうなっているかを確認します。SVGビューアにコードを貼り付けると、レンダリング結果とviewBox・色などの情報を一目で確認できます。ここで元の見た目を把握しておくと、最適化後に崩れていないかを比較しやすくなります。',
+        tool: 'svg-viewer',
+      },
+      {
+        heading: '2. 不要データを除去して軽量化する',
+        body: 'SVGを最適化ツールに通し、コメント・XML宣言・<metadata>・Inkscapeなどのエディタ属性を除去し、座標の数値を適切な桁数に丸め、タグ間の空白を最小化します。エディタ書き出しのSVGはこれだけで数十%小さくなることも珍しくありません。数値の丸めは桁を落としすぎると形が崩れるため、プレビューを見ながら調整するのがコツです。width/heightやviewBoxは表示に関わるので残します。',
+        tool: 'svg-optimizer',
+      },
+      {
+        heading: '3. Reactコンポーネントとして使う',
+        body: '最適化したSVGをReactで使う場合は、属性をJSX仕様（class→className、stroke-width→strokeWidth など）に変換する必要があります。変換ツールを使えばSVGコードを貼り付けるだけでReact/TypeScriptのコンポーネントになり、fillやsizeをpropsで受け取れる形にもできます。fillにcurrentColorを指定すれば、テキストの色に追従するアイコンコンポーネントとして再利用できます。',
+        tool: 'svg-to-react',
+      },
+    ],
+    conclusion:
+      'SVGは「確認 → 最適化 → コンポーネント化」の流れで扱うと、軽くて再利用しやすい形になります。エディタから書き出したSVGはまず最適化に通す、を習慣にするだけでページの読み込みが軽くなり、インラインSVGのコードも読みやすくなります。最適化は必ずプレビューで見た目を確認し、崩れる場合は数値の丸め桁数を増やして調整してください。',
+    relatedTools: ['svg-viewer', 'svg-optimizer', 'svg-to-react', 'svg-path-visualizer'],
+  },
+  {
     slug: 'api-json-to-typed-code',
     title: 'APIのJSONから型安全なコードを作る手順 — TypeScript・Go・Zod',
     description:

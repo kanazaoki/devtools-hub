@@ -9,6 +9,7 @@ import { SvgToReact } from '@/components/tools/SvgToReact'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { SeoArticle } from '@/components/SeoArticle'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 const tool = tools.find((t) => t.slug === 'svg-to-react')!
 
@@ -90,6 +91,7 @@ export default function SvgToReactPage() {
         <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
 
+      <RelatedGuides toolSlug={tool.slug} />
       <SeoArticle slug="svg-to-react" />
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />

@@ -2516,6 +2516,25 @@ export const tools: Tool[] = [
     ],
     desktopFeatures: [],
   },
+  {
+    slug: 'svg-optimizer',
+    name: 'SVG Optimizer',
+    tagline: 'SVGを圧縮・最適化してファイルサイズを削減',
+    description:
+      'SVGコードを貼り付けるだけで、コメント・メタデータ・Inkscape等のエディタ情報を除去し、数値を丸め、空白を最小化してファイルサイズを削減します。プレビューで見た目が崩れていないか確認でき、最適化後は .svg でダウンロードもコピーも可能。処理はすべてブラウザ内で完結し、SVGはサーバーに送信されません。',
+    tags: ['SVG', '画像', '開発者向け'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-31',
+    features: [
+      'コメント・XML宣言・DOCTYPE・metadata を除去',
+      'Inkscape / sodipodi のエディタ属性・要素・名前空間を削除',
+      'パスや座標の数値を指定桁数に丸めてサイズ削減',
+      'タグ間の空白を最小化（minify）',
+      '削減率をリアルタイム表示＋プレビューで見た目を確認',
+    ],
+    desktopFeatures: [],
+  },
 ]
 
 export function getToolBySlug(slug: string): Tool | undefined {
