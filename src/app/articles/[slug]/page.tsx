@@ -109,12 +109,29 @@ export default async function ArticlePage({ params }: Props) {
 
         {/* Sections */}
         <div className="space-y-8 divide-y divide-border">
-          {article.sections.map((section) => (
-            <div key={section.heading} className="pt-8 first:pt-0 first:border-0">
-              <h2 className="text-base font-semibold text-bright mb-3">{section.heading}</h2>
-              <p className="text-sm leading-relaxed text-primary">{section.body}</p>
-            </div>
-          ))}
+          {article.sections.map((section) => {
+            const stepTool = section.tool ? tools.find((t) => t.slug === section.tool) : null
+            return (
+              <div key={section.heading} className="pt-8 first:pt-0 first:border-0">
+                <h2 className="text-base font-semibold text-bright mb-3">{section.heading}</h2>
+                <p className="text-sm leading-relaxed text-primary">{section.body}</p>
+                {stepTool && (
+                  <Link
+                    href={`/tools/${stepTool.slug}`}
+                    className="group mt-4 flex items-center gap-3 rounded-lg border border-border bg-surface p-3 pl-4 transition-all duration-150 hover:border-teal/50 hover:bg-teal/5"
+                    style={{ borderLeftColor: 'rgb(0,200,150)', borderLeftWidth: '3px' }}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-teal">この手順で使うツール</p>
+                      <p className="mt-0.5 font-mono text-sm font-semibold text-bright">{stepTool.name}</p>
+                      <p className="truncate text-xs text-dim">{stepTool.tagline}</p>
+                    </div>
+                    <span aria-hidden="true" className="shrink-0 text-teal transition-transform group-hover:translate-x-0.5">→</span>
+                  </Link>
+                )}
+              </div>
+            )
+          })}
         </div>
 
         {/* Conclusion */}

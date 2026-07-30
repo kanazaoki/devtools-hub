@@ -1,6 +1,8 @@
 export interface ArticleSection {
   heading: string
   body: string
+  /** slug of the tool used in this step (renders an inline "この手順で使うツール" link) */
+  tool?: string
 }
 
 export interface Article {
@@ -16,6 +18,53 @@ export interface Article {
 }
 
 export const articles: Article[] = [
+  {
+    slug: 'api-json-to-typed-code',
+    title: 'APIのJSONから型安全なコードを作る手順 — TypeScript・Go・Zod',
+    description:
+      'APIレスポンスのJSONを、TypeScriptの型・Goのstruct・Zodスキーマに自動変換して型安全に扱う手順を、整形→検証→生成→ランタイム検証の流れで解説します。手書きの型定義のミスをなくし、API連携のバグを減らせます。',
+    publishedAt: '2026-07-30',
+    tags: ['JSON', 'TypeScript', 'Go', '開発tips'],
+    intro:
+      'REST APIのレスポンスをコードで扱うとき、型定義を手書きしていませんか。ネストの深いJSONの型を手で書くと、フィールド名のタイプミス・optionalの付け忘れ・配列とオブジェクトの取り違えが起きがちです。実際のJSONレスポンスから型を自動生成すれば、これらのミスを防ぎつつ、TypeScript・Go・Zodなど複数の言語/ライブラリ向けの定義を一気に用意できます。この記事では、APIのJSONを型安全なコードに落とし込む手順を、実際のツールとあわせて順番に紹介します。',
+    sections: [
+      {
+        heading: '1. まずJSONを整形して構造を把握する',
+        body: 'APIから返ってきたJSONは1行に圧縮されていたり、インデントがバラバラだったりして構造を把握しづらいことがあります。まずは貼り付けて整形し、どこがオブジェクトでどこが配列か、null になりうるフィールドはどれかを目で確認します。整形と同時に構文エラー（末尾カンマ・クォート漏れなど）もチェックできるので、後段の型生成でつまずく前に不正なJSONを弾けます。ここで全体像を掴んでおくと、次以降の型生成の結果もレビューしやすくなります。',
+        tool: 'json-studio',
+      },
+      {
+        heading: '2. 型と必須項目をスキーマで検証する（任意）',
+        body: '型を生成する前に「本来どういう型・必須項目であるべきか」を JSON Schema で定義しておくと、実データとの食い違いを早期に発見できます。スキーマと実際のレスポンスを並べて入力すると、型不一致・必須漏れ・フォーマット違反がどのフィールドで起きているかを一覧で確認できます。フロントとバックエンドで認識がズレやすいAPIの境界を、スキーマという共通の「契約」として固められます。堅牢さを重視するプロジェクトで特に有効な工程です。',
+        tool: 'json-schema-validator',
+      },
+      {
+        heading: '3. TypeScriptの型（interface）を生成する',
+        body: '構造が固まったら、TypeScript の型定義を自動生成します。レスポンスを貼り付けると、ネストしたオブジェクトは別 interface に分割され、null になりうる値は optional（?）プロパティとして推論されます。手書きで数十フィールドの型を書くとタイプミスや optional の付け忘れが起きがちですが、実データから生成することでこれを防げます。生成した型はそのまま API クライアントの戻り値の型として使えます。',
+        tool: 'json-to-typescript',
+      },
+      {
+        heading: '4. Goの構造体（struct）を生成する',
+        body: 'Go で扱う場合は struct と json タグが必要です。レスポンスから struct 定義を生成すると、json:"フィールド名" タグが自動で付きます。数値は int / float64、null は interface{} に推論され、id→ID・url→URL などの頭字語は Go の慣習に合わせて大文字化されます。配列内のオブジェクトは全要素のキーをマージするため、サンプルによってフィールドが欠けても取りこぼしません。omitempty を付けるかどうかもトグルで選べます。',
+        tool: 'json-to-go',
+      },
+      {
+        heading: '5. Zodでランタイム検証を追加する',
+        body: 'TypeScript の型は「コンパイル時」のチェックしかできず、実行時に API が想定外のデータを返しても検知できません。そこで Zod スキーマを生成し、レスポンスを parse で実行時に検証すると、型と実データの乖離を実行時に捕まえられます。Zod はスキーマから TypeScript の型も推論できるため、「型定義」と「ランタイム検証」を1つのスキーマで両立できます。外部APIやユーザー入力など、信頼できないデータの入り口に置くのが効果的です。',
+        tool: 'json-to-zod',
+      },
+    ],
+    conclusion:
+      '型安全なコードの理想は「コンパイル時の型（TypeScript の interface / Go の struct）」と「実行時の検証（Zod など）」の両立です。JSONを整形して構造を掴み、必要ならスキーマで検証し、各言語の型を生成する——この流れを習慣にすると、API連携のバグを大きく減らせます。APIのレスポンス仕様が変わったときは JSON Diff で旧レスポンスと新レスポンスの差分を確認し、変わったフィールドだけ型を更新すれば、追従も最小の手間で済みます。',
+    relatedTools: [
+      'json-studio',
+      'json-schema-validator',
+      'json-to-typescript',
+      'json-to-go',
+      'json-to-zod',
+      'json-diff',
+    ],
+  },
   {
     slug: 'json-debug-techniques',
     title: 'JSONのデバッグを素早く終わらせる5つの手法',
