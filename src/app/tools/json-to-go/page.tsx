@@ -7,6 +7,7 @@ import { JsonToGo } from '@/components/tools/JsonToGo'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { RelatedGuides } from '@/components/RelatedGuides'
 import { SeoArticle } from '@/components/SeoArticle'
 import { getMetaDescription } from '@/data/seo-content'
 
@@ -91,6 +92,7 @@ export default function JsonToGoPage() {
         </ul>
       </section>
 
+      <RelatedGuides toolSlug={tool.slug} />
       <DesktopOnlyFeatures tool={tool} />
 
       {tool.boothUrl && (

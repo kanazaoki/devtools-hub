@@ -1,6 +1,7 @@
 ﻿import type { Metadata } from 'next'
 import Link from 'next/link'
 import { tools } from '@/data/tools'
+import { articles } from '@/data/articles'
 import { ToolGrid } from '@/components/ToolGrid'
 import { RecentlyViewed } from '@/components/RecentlyViewed'
 import { AdSense } from '@/components/AdSense'
@@ -24,6 +25,9 @@ export default function Home({ searchParams }: { searchParams: { cat?: string; q
   const initialCategory = searchParams.cat ? (getCategoryBySlug(searchParams.cat)?.tag ?? null) : null
   const initialQuery = searchParams.q ?? ''
   const featuredTools = FEATURED_SLUGS.map((slug) => tools.find((t) => t.slug === slug)!).filter(Boolean)
+  const guideArticles = [...articles]
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+    .slice(0, 3)
 
   return (
     <main className="py-12">
@@ -132,6 +136,35 @@ export default function Home({ searchParams }: { searchParams: { cat?: string; q
           ))}
         </div>
       </section>
+
+      {/* 使い方ガイド */}
+      {guideArticles.length > 0 && (
+        <section className="mb-10">
+          <div className="mb-4 flex items-center justify-between">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-muted">使い方ガイド</p>
+            <Link href="/articles" className="font-mono text-[11px] text-muted transition-colors hover:text-teal">
+              すべて見る →
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {guideArticles.map((a) => (
+              <Link
+                key={a.slug}
+                href={`/articles/${a.slug}`}
+                className="group flex flex-col rounded-lg border border-border bg-surface p-5 pl-6 transition-colors hover:border-teal/50"
+                style={{ borderLeftColor: 'rgb(0,200,150)', borderLeftWidth: '3px' }}
+              >
+                <span aria-hidden="true" className="mb-2 text-lg">📖</span>
+                <p className="mb-2 line-clamp-2 text-sm font-semibold text-bright transition-colors group-hover:text-teal">
+                  {a.title}
+                </p>
+                <p className="line-clamp-3 flex-1 text-xs leading-relaxed text-dim">{a.description}</p>
+                <span className="mt-3 font-mono text-[11px] text-teal">手順を見る →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 最近見たツール */}
       <RecentlyViewed />

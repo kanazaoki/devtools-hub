@@ -8,6 +8,7 @@ import { JsonDiff } from '@/components/tools/JsonDiff'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { SeoArticle } from '@/components/SeoArticle'
+import { RelatedGuides } from '@/components/RelatedGuides'
 import { getMetaDescription } from '@/data/seo-content'
 
 const tool = tools.find((t) => t.slug === 'json-diff')!
@@ -76,6 +77,7 @@ export default function JsonDiffPage() {
 
       <hr className="mb-8 border-border" />
 
+      <RelatedGuides toolSlug={tool.slug} />
       <SeoArticle slug="json-diff" />
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
