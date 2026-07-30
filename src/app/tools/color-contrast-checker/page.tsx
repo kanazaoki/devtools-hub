@@ -8,6 +8,7 @@ import { ColorContrastChecker } from '@/components/tools/ColorContrastChecker'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
+import { RelatedGuides } from '@/components/RelatedGuides'
 import { SeoArticle } from '@/components/SeoArticle'
 import { getMetaDescription } from '@/data/seo-content'
 
@@ -92,6 +93,7 @@ export default function ColorContrastCheckerPage() {
         </ul>
       </section>
 
+      <RelatedGuides toolSlug={tool.slug} />
       <DesktopOnlyFeatures tool={tool} />
 
       <hr className="mb-8 border-border" />

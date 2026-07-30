@@ -9,6 +9,7 @@ import { ColorBlindnessSimulator } from '@/components/tools/ColorBlindnessSimula
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { SeoArticle } from '@/components/SeoArticle'
+import { RelatedGuides } from '@/components/RelatedGuides'
 
 const tool = tools.find((t) => t.slug === 'color-blindness-simulator')!
 
@@ -84,6 +85,7 @@ export default function ColorBlindnessSimulatorPage() {
 
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />
 
+      <RelatedGuides toolSlug={tool.slug} />
       <SeoArticle slug="color-blindness-simulator" />
 
       {relatedTools.length > 0 && (
