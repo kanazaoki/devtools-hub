@@ -124,6 +124,7 @@ export function ToolCard({ tool, isNew = false, isFavorited = false, onToggleFav
               使ってみる →
             </p>
           </div>
+          {tool.boothUrl && (
           <a
             href={tool.boothUrl}
             target="_blank"
@@ -148,6 +149,7 @@ export function ToolCard({ tool, isNew = false, isFavorited = false, onToggleFav
               <line x1="10" y1="14" x2="21" y2="3" />
             </svg>
           </a>
+          )}
         </div>
       </div>
     </div>

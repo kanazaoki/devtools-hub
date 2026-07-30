@@ -1389,6 +1389,17 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'json-to-go': {
+    heading: 'JSONからGoのstructを自動生成する方法とjsonタグ設計',
+    intro: 'GoでJSONを扱うにはstructとjsonタグの定義が必要です。JSON to GoはAPIレスポンスや設定ファイルのJSONを貼り付けるだけでstruct定義を生成し、手書きによるフィールド名・型・タグのミスを防ぎます。ネスト構造や配列にも対応し、そのままコードに貼り付けて使えます。',
+    sections: [
+      { title: 'Goでstructとjsonタグが必要な理由', body: 'Goの標準ライブラリ encoding/json は、JSONのキーとstructのフィールドを json:"..." タグで対応付けます。タグを省くとフィールド名（エクスポートのため大文字始まり）とJSONキー（小文字・スネークケースが多い）が一致せず、アンマーシャル時に値が入りません。JSON to Go は各フィールドに json:"元のキー" を自動付与するため、この対応付けミスを防げます。手書きで数十フィールドのタグを書く手間もなくなります。' },
+      { title: '型推論とinterface{}の扱い', body: 'JSONの値からGoの型を推論します。文字列はstring、真偽値はbool、整数はint、小数はfloat64にマッピングします。nullや型が定まらない値は interface{} になります。JSONでは数値はすべてnumberですが、小数点の有無で int と float64 を自動で切り替えます。金額IDなど大きな整数を扱う場合は、生成後に int64 や json.Number へ手動で調整してください。' },
+      { title: 'ネストオブジェクトと配列のstruct化', body: 'ネストしたオブジェクトは無名struct（匿名構造体）としてインラインに展開されるため、1つの型定義で自己完結します。オブジェクトの配列は全要素のキーをマージして網羅的なstructを生成するので、サンプルによってフィールドが欠けても取りこぼしません。ルートがJSON配列（[ {...}, {...} ]）の場合も []struct として正しく生成します。再利用したいネスト部分は、生成後に名前付き型として切り出すと可読性が上がります。' },
+      { title: 'omitemptyとGoの頭字語（ID・URL）の慣習', body: 'json:"field,omitempty" を付けると、ゼロ値（空文字・0・nil）のフィールドをJSON出力時に省略できます。APIリクエストのボディなど「値がある時だけ送りたい」ケースで有効です。トグルで一括切り替えできます。またGoの命名慣習では ID・URL・API・HTTP などの頭字語は UserID・APIURL のように全て大文字にします。JSON to Go はこれらの頭字語を自動で大文字化するため、gofmt を通せばそのまま実務で使える idiomatic な定義になります。' },
+    ],
+  },
+
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {

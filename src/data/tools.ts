@@ -2516,6 +2516,25 @@ export const tools: Tool[] = [
     ],
     desktopFeatures: ['生成した robots.txt を任意のパスにファイル保存'],
   },
+  {
+    slug: 'json-to-go',
+    name: 'JSON to Go',
+    tagline: 'JSONからGoの構造体（struct）を自動生成',
+    description:
+      'JSONを貼り付けるだけでGoのstruct定義をリアルタイム生成。json:"..."タグ・omitempty対応、ネストは無名structにインライン展開、配列内オブジェクトはキーをマージ。数値はint/float64、nullはinterface{}に型推論し、フィールド名はGoの慣習（PascalCase・ID/URLなどの頭字語）で出力します。ブラウザ内で完結し、貼り付けたJSONはサーバーに送信されません。',
+    tags: ['開発者向け', 'Go', 'JSON'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-30',
+    features: [
+      'JSONからGoのstruct定義をリアルタイム生成',
+      'json:"field" タグを自動付与・omitempty トグル対応',
+      'ネストオブジェクトを無名 struct にインライン展開',
+      '配列内オブジェクトの全キーをマージして網羅的に生成',
+      '数値=int/float64・null=interface{}・頭字語(ID/URL)を慣習表記',
+    ],
+    desktopFeatures: [],
+  },
 ]
 
 export function getToolBySlug(slug: string): Tool | undefined {
