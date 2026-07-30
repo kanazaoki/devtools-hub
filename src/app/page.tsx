@@ -10,8 +10,6 @@ import { getCategoryBySlug } from '@/data/categories'
 const CATEGORY_COUNT = 8
 const desktopCount = tools.filter((t) => t.boothUrl).length
 
-const FEATURED_SLUGS = ['webp-studio', 'resize-image', 'mockup-builder'] as const
-
 export const metadata: Metadata = {
   title: 'devtools-hub — 開発者・クリエイター向け無料 Web ツール集',
   description:
@@ -24,7 +22,9 @@ export const metadata: Metadata = {
 export default function Home({ searchParams }: { searchParams: { cat?: string; q?: string } }) {
   const initialCategory = searchParams.cat ? (getCategoryBySlug(searchParams.cat)?.tag ?? null) : null
   const initialQuery = searchParams.q ?? ''
-  const featuredTools = FEATURED_SLUGS.map((slug) => tools.find((t) => t.slug === slug)!).filter(Boolean)
+  const newestTools = [...tools]
+    .sort((a, b) => b.releasedAt.localeCompare(a.releasedAt))
+    .slice(0, 3)
   const guideArticles = [...articles]
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
     .slice(0, 3)
@@ -78,33 +78,26 @@ export default function Home({ searchParams }: { searchParams: { cat?: string; q
       {/* AdSense — ヒーロー直下 */}
       <AdSense slot="1651467900" format="horizontal" className="mb-10" />
 
-      {/* 主力ツール */}
+      {/* 新着ツール */}
       <section className="mb-10">
-        <p className="mb-4 font-mono text-[11px] uppercase tracking-widest text-muted">Featured</p>
+        <p className="mb-4 font-mono text-[11px] uppercase tracking-widest text-muted">新着ツール</p>
         <div className="grid gap-4 sm:grid-cols-3">
-          {featuredTools.map((tool) => (
+          {newestTools.map((tool) => (
             <Link
               key={tool.slug}
               href={`/tools/${tool.slug}`}
               className="group flex flex-col rounded-lg border border-border bg-surface p-5 transition-colors hover:border-teal/50"
             >
-              <div className="mb-3 flex items-center justify-between">
-                <span className="font-mono text-sm font-semibold text-bright group-hover:text-teal transition-colors">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <span className="font-mono text-sm font-semibold text-bright group-hover:text-teal transition-colors truncate">
                   {tool.name}
                 </span>
-                <span className="rounded bg-teal/10 px-2 py-0.5 font-mono text-[10px] text-teal">
-                  Web 無料 + 有料版あり
+                <span className="shrink-0 rounded bg-teal/10 px-2 py-0.5 font-mono text-[10px] text-teal">
+                  NEW
                 </span>
               </div>
-              <p className="mb-4 text-xs leading-relaxed text-dim flex-1">{tool.tagline}</p>
-              <div className="space-y-1">
-                {tool.desktopFeatures.slice(0, 2).map((f) => (
-                  <p key={f} className="flex items-start gap-1.5 text-xs text-muted">
-                    <span className="mt-0.5 shrink-0 text-teal">+</span>
-                    {f}
-                  </p>
-                ))}
-              </div>
+              <p className="text-xs leading-relaxed text-dim flex-1">{tool.tagline}</p>
+              <span className="mt-4 font-mono text-[11px] text-teal">使ってみる →</span>
             </Link>
           ))}
         </div>
