@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!article) return {}
 
   return {
-    title: `${article.title} | devtools-hub`,
+    title: article.title,
     description: article.description,
     alternates: {
       canonical: `https://devtools-hub.dev/articles/${slug}`,
