@@ -1,10 +1,11 @@
 import Link from 'next/link'
+import { CATEGORIES } from '@/data/categories'
 
 export function Footer() {
   return (
     <footer className="border-t border-border mt-24">
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="font-mono text-xs font-semibold tracking-widest text-primary uppercase">
               devtools-hub
@@ -13,6 +14,27 @@ export function Footer() {
               開発者・クリエイター向け無料 Web ツール集。<br />デスクトップ版は BOOTH で販売中。
             </p>
           </div>
+
+          <div>
+            <Link
+              href="/category"
+              className="text-xs font-semibold uppercase tracking-widest text-muted mb-3 inline-block hover:text-dim transition-colors"
+            >
+              Categories
+            </Link>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+              {CATEGORIES.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/category/${c.slug}`}
+                  className="text-sm text-dim hover:text-primary transition-colors"
+                >
+                  {c.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
           <div className="flex flex-col gap-2">
             <p className="text-xs font-semibold uppercase tracking-widest text-muted mb-1">
               Links
