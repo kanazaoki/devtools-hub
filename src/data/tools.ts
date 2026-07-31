@@ -139,7 +139,7 @@ export const tools: Tool[] = [
     tagline: 'スニペットランチャー',
     description:
       '定型文・コードスニペット・よく使うテキストをカード型で管理。タグ・カテゴリでフィルタリングし、ワンクリックでクリップボードにコピー。ブラウザに自動保存されるので、次回もそのまま使える。',
-    tags: ['テキスト', '効率化', '開発者向け'],
+    tags: ['テキスト', 'ユーティリティ', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8448296',
     hasWebVersion: true,
     releasedAt: '2026-06-13',
@@ -184,7 +184,7 @@ export const tools: Tool[] = [
     tagline: 'PNG/JPG → WebP/AVIF 一括変換',
     description:
       'PNG・JPG 画像を WebP または AVIF 形式に一括変換。品質スライダー・変換前後比較プレビュー・ファイルサイズ削減率表示付き。ドラッグ & ドロップで複数ファイルを一度に変換し、ZIP でまとめてダウンロード。',
-    tags: ['画像', '変換', '最適化'],
+    tags: ['画像', 'データ変換', '最適化'],
     boothUrl: 'https://knkk.booth.pm/items/8447752',
     hasWebVersion: true,
     releasedAt: '2026-06-13',
@@ -1288,7 +1288,7 @@ export const tools: Tool[] = [
     tagline: 'HTMLをReact/JSXに変換 — class→className・style文字列→オブジェクト・void要素自己閉じ',
     description:
       'HTMLを貼り付けるとReact/JSXに即変換。class→className、for→htmlFor、tabindex→tabIndexなどの属性名変換、インラインstyle文字列→styleオブジェクト記法（camelCase）、onclick→onClick等のイベントハンドラ変換、imgやinputなどvoid要素の自己閉じタグ補完、HTMLコメント→JSXコメント変換をすべて自動で処理します。',
-    tags: ['React', 'HTML', '変換', '開発者向け'],
+    tags: ['React', 'HTML', 'データ変換', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8564512',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
@@ -1875,7 +1875,7 @@ export const tools: Tool[] = [
     tagline: '最大5都市のタイムゾーンを同時変換・ビジネスアワー重複をビジュアル表示',
     description:
       '30都市以上のタイムゾーンプリセットから最大5都市を選択し、基準日時を入力すると全タイムゾーンの時刻を即変換。各タイムゾーンの現在時刻を1秒単位でリアルタイム表示します。24時間タイムラインにビジネスアワー（9〜18時）を重ね、重複する時間帯をハイライト表示します。',
-    tags: ['開発者向け', '効率化', '時刻'],
+    tags: ['開発者向け', 'ユーティリティ', '時刻'],
     boothUrl: 'https://knkk.booth.pm/items/8580855',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
@@ -2541,7 +2541,7 @@ export const tools: Tool[] = [
     tagline: 'XMLとJSONを双方向にリアルタイム相互変換',
     description:
       'XMLコードを貼り付けるとJSONに、JSONを貼り付けるとXMLに、リアルタイムで相互変換します。SOAP・RSS・設定ファイル・APIレスポンスなど、XMLとJSONをまたぐ作業に対応。属性は @_ プレフィックス、テキストは #text で表現し、同名の兄弟要素は自動で配列化します。処理はすべてブラウザ内で完結し、データは外部に送信されません。',
-    tags: ['開発者向け', 'XML', 'JSON', '変換'],
+    tags: ['開発者向け', 'XML', 'JSON', 'データ変換'],
     boothUrl: '',
     hasWebVersion: true,
     releasedAt: '2026-07-31',
