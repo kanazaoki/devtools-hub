@@ -19,6 +19,41 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    slug: 'ogp-meta-tags-guide',
+    title: 'OGP・メタタグを正しく設定する手順 — SNSと検索での見え方を最適化',
+    description:
+      'タイトル・ディスクリプション・OGP・Twitterカード・favicon・robots.txt を正しく設定して、検索結果とSNSシェア時の見え方を最適化する手順を、生成→プレビュー確認→アイコン→クロール制御の流れで解説します。',
+    publishedAt: '2026-07-31',
+    tags: ['SEO', 'OGP', 'Web開発'],
+    intro:
+      'ページをSNSでシェアしたとき、タイトルや画像が意図通りに表示されず「素っ気ないリンク」になってしまった経験はないでしょうか。検索結果やSNSカードでの見え方は、HTMLの <head> に入れるメタタグ（title・description・OGP・Twitter Card）で決まります。ここを整えるだけでクリック率が変わることもある一方、後回しにされがちな部分でもあります。この記事では、メタタグを生成し、実際の見え方を確認し、faviconとクロール制御まで含めて、公開前に押さえておきたい設定を順番に紹介します。',
+    sections: [
+      {
+        heading: '1. タイトル・ディスクリプション・OGPタグを作る',
+        body: 'まずは <head> に入れる基本セットを用意します。title と meta description は検索結果に表示される最重要項目で、descriptionは概ね120〜160文字が目安です。あわせて OGP（og:title / og:description / og:image / og:url）と Twitter Card（summary_large_image など）を設定すると、SNSでシェアされたときにカード形式で表示されます。メタタグジェネレーターは基本・OGP・Twitterの3タブで各項目を入力でき、文字数カウントを見ながら過不足なくコードを生成できます。og:image は 1200×630px を基準にすると多くのSNSで綺麗に表示されます。',
+        tool: 'meta-tag-generator',
+      },
+      {
+        heading: '2. SNSでの実際の見え方をプレビューで確認する',
+        body: '生成したタグが意図通りに表示されるかは、実際のカード表示で確認するのが確実です。OGタグプレビューにページのURLを入れると、設定されているOGPメタタグを取得し、Twitter / Facebook / Slack でどう見えるかを並べて確認できます。「画像が出ない」「タイトルが途中で切れる」「古い画像がキャッシュされている」といった問題は、コードを眺めるだけでは気づきにくいものです。公開後にこのプレビューで一度チェックしておくと、シェアされてから表示崩れに気づく事故を防げます。',
+        tool: 'og-tag-preview',
+      },
+      {
+        heading: '3. ファビコン（アイコン）を用意する',
+        body: 'ブラウザのタブやブックマーク、検索結果の一部に表示される favicon も、サイトの印象を左右する小さなメタ要素です。用意されていないとデフォルトの汎用アイコンになり、他サイトとの見分けがつきにくくなります。ファビコンジェネレーターを使えば、絵文字やテキストから 16 / 32 / 64px の favicon を即座に生成でき、背景色・文字色もカスタマイズできます。まだ用意していないサイトは、この工程でアイコンを作って <head> に link rel="icon" として追加しておきましょう。',
+        tool: 'favicon-generator',
+      },
+      {
+        heading: '4. クローラーの制御を設定する（robots.txt）',
+        body: 'メタタグで見え方を整えたら、検索エンジンのクローラーに「どこを見てよいか」を伝える robots.txt も用意します。管理画面やプレビュー環境など、検索結果に出したくないパスを Disallow で除外し、Sitemap の場所を明記しておくとクロールとインデックスが効率化されます。robots.txt ジェネレーターは User-agent / Allow / Disallow / Crawl-delay / Sitemap をGUIで組み立て、リアルタイムでプレビューできます。なお robots.txt はアクセス自体を止めるものではないため、本当に隠したいページは認証やnoindexで別途保護してください。',
+        tool: 'robots-txt-generator',
+      },
+    ],
+    conclusion:
+      'OGP・メタタグの設定は「生成 → プレビューで実際の見え方を確認 → favicon → クロール制御」の流れで、公開前に一度通しておくと安心です。特に og:image と description は、検索結果やSNSでのクリック率に直結しながら見落とされやすいポイントです。テンプレート化して新規ページに使い回せるようにしておくと、毎回の設定漏れを防げます。公開後は必ず一度、実際のSNSカードでプレビューして、画像とタイトルが意図通りに出ているかを確認しましょう。',
+    relatedTools: ['meta-tag-generator', 'og-tag-preview', 'favicon-generator', 'robots-txt-generator'],
+  },
+  {
     slug: 'xml-to-json-workflow',
     title: 'XMLをJSONに変換して扱う手順 — SOAP・RSS・設定ファイル',
     description:
