@@ -1411,6 +1411,17 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'cors-header-builder': {
+    heading: 'CORSのAccess-Controlヘッダーを正しく設定する方法',
+    intro: 'CORSエラーは、フロントエンドとAPIのオリジン（スキーム・ホスト・ポートの組み合わせ）が異なるときに、ブラウザの同一オリジンポリシーによって発生します。解決するにはサーバー側が適切な Access-Control-* レスポンスヘッダーを返す必要があります。CORS Header Builderは、許可するオリジンやメソッドを指定するだけで、正しいヘッダーとサーバー設定を生成し、typicalな誤設定を警告します。',
+    sections: [
+      { title: 'CORSヘッダーの基本セット', body: 'CORSの中核となるのは4つのヘッダーです。Access-Control-Allow-Origin は許可するオリジンを指定し、単一のオリジンか * （全許可）のいずれかを取ります。Access-Control-Allow-Methods は許可するHTTPメソッド、Access-Control-Allow-Headers はリクエストで使えるカスタムヘッダー（Authorization・Content-Type など）を指定します。Access-Control-Max-Age はプリフライト結果のキャッシュ秒数で、設定するとOPTIONSリクエストの発生頻度を減らせます。これらを手書きするとスペルミスやカンマ区切りの誤りが起きやすいため、GUIで生成すると確実です。' },
+      { title: 'プリフライト（OPTIONS）への対応', body: 'PUT・DELETE・PATCH や、Content-Type が application/json のPOST、カスタムヘッダー付きのリクエストは「非シンプルリクエスト」となり、本リクエストの前にブラウザが自動でOPTIONSリクエスト（プリフライト）を送ります。サーバーがこのOPTIONSに対して Allow-Methods や Allow-Headers を含むレスポンスを返さないと、本リクエストが送られずCORSエラーになります。「GETは動くのにPOSTで失敗する」典型的な原因がこれです。生成される nginx 設定では OPTIONS を 204 で即応答する形にしており、プリフライトの取りこぼしを防ぎます。' },
+      { title: 'credentials とワイルドカードの落とし穴', body: 'Cookieや認証情報を含むリクエスト（fetch の credentials: "include"）を許可する場合、Access-Control-Allow-Credentials: true を返します。ここで最も多い誤りが、Allow-Origin に * を指定したまま credentials を有効にすることです。この組み合わせはCSRF対策としてブラウザが明確に拒否し、* は使えません。必ず具体的なオリジンを指定する必要があります。同様に、credentials 有効時は Allow-Headers の * も無効です。CORS Header Builderはこれらの矛盾をリアルタイムで検出して警告するため、本番で初めて気づく事故を防げます。' },
+      { title: '複数オリジンの許可と本番での最小権限', body: 'Access-Control-Allow-Origin は単一値か * しか取れないため、複数のオリジンを許可したい場合は、リクエストの Origin ヘッダーを許可リストと照合し、一致したものだけを動的に返す実装が必要です。Express の cors ミドルウェアは origin に配列を渡すとこの挙動を自動で行うため、生成コードもその形にしています。開発中に「とりあえず * で全許可」にしたまま本番に出すとCSRFの温床になるため、本番ではフロントエンドのオリジンだけを明示的に許可する最小権限設定にしましょう。Next.js などのBFF構成でフロントとAPIを同一オリジンにできる場合は、そもそもCORS設定が不要になり最も安全です。' },
+    ],
+  },
+
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {

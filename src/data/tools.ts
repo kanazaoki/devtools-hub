@@ -2554,6 +2554,25 @@ export const tools: Tool[] = [
     ],
     desktopFeatures: [],
   },
+  {
+    slug: 'cors-header-builder',
+    name: 'CORS Header Builder',
+    tagline: 'CORSのAccess-ControlヘッダーをGUIで生成',
+    description:
+      '許可するオリジン・メソッド・ヘッダー・credentials・max-age をGUIで指定するだけで、Access-Control-* レスポンスヘッダーと nginx / Express / Next.js の設定スニペットを生成します。「* と credentials の併用」など、ブラウザに拒否される典型的な誤設定はリアルタイムで警告。処理はすべてブラウザ内で完結します。',
+    tags: ['開発者向け', 'CORS', 'HTTP', 'セキュリティ'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-31',
+    features: [
+      'オリジン・メソッド・ヘッダー・credentials・max-age をGUI指定',
+      'Access-Control-* レスポンスヘッダーを生成',
+      'nginx / Express(cors) / Next.js の設定スニペットを出力',
+      '複数オリジンは許可リスト照合の動的設定コードを生成',
+      '「* × credentials」など誤設定をリアルタイム警告',
+    ],
+    desktopFeatures: [],
+  },
 ]
 
 export function getToolBySlug(slug: string): Tool | undefined {

@@ -627,7 +627,7 @@ export const articles: Article[] = [
       },
       {
         heading: '正しいAccess-Controlヘッダーの設定',
-        tool: 'http-headers-reference',
+        tool: 'cors-header-builder',
         body: '`Access-Control-Allow-Origin` は許可するオリジンを指定します。`*`（ワイルドカード）は全オリジンを許可しますが、Cookieや認証ヘッダーを含むリクエスト（`credentials: "include"`）では `*` が使えず、具体的なオリジンを指定する必要があります。`Access-Control-Allow-Methods` は許可するHTTPメソッドをカンマ区切りで指定します。`Access-Control-Allow-Headers` はリクエストで使えるカスタムヘッダー（`Authorization`・`Content-Type` など）を指定します。`Access-Control-Max-Age` はプリフライトのキャッシュ時間（秒）で、設定することでプリフライトの発生頻度を減らせます。`Access-Control-Allow-Credentials: true` はCookieや認証情報の送信を許可します。この場合 `Allow-Origin` に `*` は指定できず、具体的なオリジンが必要です。',
       },
       {
@@ -637,6 +637,6 @@ export const articles: Article[] = [
       },
     ],
     conclusion: 'CORSは「セキュリティ上の制限」であり、バグではありません。正しい理解は「ブラウザが同一オリジンポリシーでアクセスをブロックしているのを、サーバー側のヘッダーで許可する」というものです。プリフライトリクエストへの対応・CredentialsとAllow-Originの組み合わせルール・本番での最小権限設定という3点を押さえることで、安全かつ正しいCORS設定が実装できます。',
-    relatedTools: ['http-headers-reference', 'http-request-builder', 'curl-to-code'],
+    relatedTools: ['cors-header-builder', 'http-headers-reference', 'http-request-builder', 'curl-to-code'],
   },
 ]
