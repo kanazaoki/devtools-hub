@@ -7,7 +7,6 @@ import { XmlJsonConverter } from '@/components/tools/XmlJsonConverter'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
-import { RelatedGuides } from '@/components/RelatedGuides'
 import { SeoArticle } from '@/components/SeoArticle'
 import { getMetaDescription } from '@/data/seo-content'
 
@@ -92,7 +91,6 @@ export default function XmlJsonConverterPage() {
         </ul>
       </section>
 
-      <RelatedGuides toolSlug={tool.slug} />
       <DesktopOnlyFeatures tool={tool} />
 
       {tool.boothUrl && (

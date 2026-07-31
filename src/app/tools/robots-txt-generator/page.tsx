@@ -8,7 +8,6 @@ import { ToolCard } from '@/components/ToolCard'
 import { RobotsTxtGenerator } from '@/components/tools/RobotsTxtGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
-import { RelatedGuides } from '@/components/RelatedGuides'
 import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'robots-txt-generator')!
@@ -85,7 +84,6 @@ export default function RobotsTxtGeneratorPage() {
         </ul>
       </section>
 
-      <RelatedGuides toolSlug="robots-txt-generator" />
 
       <hr className="mb-8 border-border" />
 

@@ -8,7 +8,6 @@ import { ToolCard } from '@/components/ToolCard'
 import { MetaTagGenerator } from '@/components/tools/MetaTagGenerator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
-import { RelatedGuides } from '@/components/RelatedGuides'
 import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'meta-tag-generator')!
@@ -77,7 +76,6 @@ export default function MetaTagGeneratorPage() {
         </ul>
       </section>
 
-      <RelatedGuides toolSlug="meta-tag-generator" />
 
       <hr className="mb-8 border-border" />
 

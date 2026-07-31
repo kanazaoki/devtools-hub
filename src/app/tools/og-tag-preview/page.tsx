@@ -8,7 +8,6 @@ import { OgTagPreview } from '@/components/tools/OgTagPreview'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { DesktopOnlyFeatures } from '@/components/DesktopOnlyFeatures'
-import { RelatedGuides } from '@/components/RelatedGuides'
 import { SeoArticle } from '@/components/SeoArticle'
 import { getMetaDescription } from '@/data/seo-content'
 
@@ -78,7 +77,6 @@ export default function OgTagPreviewPage() {
         </ul>
       </section>
 
-      <RelatedGuides toolSlug="og-tag-preview" />
 
       <DesktopOnlyFeatures tool={tool} />
 

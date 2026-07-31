@@ -42,6 +42,22 @@ export default async function ArticlePage({ params }: Props) {
     ? tools.filter((t) => article.relatedTools!.includes(t.slug))
     : []
 
+  // Related guides: other articles ranked by shared tags (weighted) and shared
+  // tools, so clusters (JSON / CSS / color / HTTP …) link to each other.
+  const relatedArticles = articles
+    .filter((a) => a.slug !== article.slug)
+    .map((a) => {
+      const tagOverlap = a.tags.filter((t) => article.tags.includes(t)).length
+      const toolOverlap = (a.relatedTools ?? []).filter((t) =>
+        (article.relatedTools ?? []).includes(t)
+      ).length
+      return { article: a, score: tagOverlap * 2 + toolOverlap }
+    })
+    .filter((x) => x.score > 0)
+    .sort((x, y) => y.score - x.score)
+    .slice(0, 3)
+    .map((x) => x.article)
+
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -149,6 +165,29 @@ export default async function ArticlePage({ params }: Props) {
           <h2 className="mb-4 font-mono text-xs font-semibold uppercase tracking-widest text-muted">このツールで試す</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {relatedToolData.map((t) => <ToolCard key={t.slug} tool={t} />)}
+          </div>
+        </section>
+      )}
+
+      {/* Related guides */}
+      {relatedArticles.length > 0 && (
+        <section className="mt-10 pt-8 border-t border-border">
+          <h2 className="mb-4 font-mono text-xs font-semibold uppercase tracking-widest text-muted">関連ガイド</h2>
+          <div className="flex flex-col gap-3">
+            {relatedArticles.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/articles/${g.slug}`}
+                className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-all duration-150 hover:border-teal/50 hover:bg-teal/5"
+              >
+                <span aria-hidden="true" className="mt-0.5 shrink-0">📖</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-bright transition-colors group-hover:text-teal">{g.title}</p>
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dim">{g.description}</p>
+                </div>
+                <span aria-hidden="true" className="shrink-0 text-teal transition-transform group-hover:translate-x-0.5">→</span>
+              </Link>
+            ))}
           </div>
         </section>
       )}

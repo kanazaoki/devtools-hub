@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { CATEGORIES, getCategoryBySlug } from '@/data/categories'
 import { tools } from '@/data/tools'
+import { articles } from '@/data/articles'
 import { ToolCard } from '@/components/ToolCard'
 import { AdSense } from '@/components/AdSense'
 
@@ -40,6 +41,16 @@ export default function CategoryPage({ params }: Props) {
     .sort((a, b) => a.name.localeCompare(b.name, 'ja'))
   const others = CATEGORIES.filter((c) => c.slug !== cat.slug)
 
+  // Guides whose tools belong to this category → category → guide → tool path.
+  const catToolSlugs = new Set(catTools.map((t) => t.slug))
+  const catGuides = articles
+    .filter(
+      (a) =>
+        (a.relatedTools ?? []).some((s) => catToolSlugs.has(s)) ||
+        a.sections.some((s) => s.tool != null && catToolSlugs.has(s.tool))
+    )
+    .slice(0, 3)
+
   return (
     <main className="py-12">
       <nav className="mb-6 flex items-center gap-2 font-mono text-xs text-muted">
@@ -71,6 +82,30 @@ export default function CategoryPage({ params }: Props) {
         </div>
       ) : (
         <p className="text-sm text-muted">このカテゴリのツールは準備中です。</p>
+      )}
+
+      {catGuides.length > 0 && (
+        <section className="mt-14 border-t border-border pt-8">
+          <h2 className="mb-4 font-mono text-xs font-semibold uppercase tracking-widest text-muted">
+            使い方ガイド
+          </h2>
+          <div className="flex flex-col gap-3">
+            {catGuides.map((g) => (
+              <Link
+                key={g.slug}
+                href={`/articles/${g.slug}`}
+                className="group flex items-start gap-3 rounded-lg border border-border bg-surface p-4 transition-all duration-150 hover:border-teal/50 hover:bg-teal/5"
+              >
+                <span aria-hidden="true" className="mt-0.5 shrink-0">📖</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-bright transition-colors group-hover:text-teal">{g.title}</p>
+                  <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-dim">{g.description}</p>
+                </div>
+                <span aria-hidden="true" className="shrink-0 text-teal transition-transform group-hover:translate-x-0.5">→</span>
+              </Link>
+            ))}
+          </div>
+        </section>
       )}
 
       <section className="mt-14 border-t border-border pt-8">

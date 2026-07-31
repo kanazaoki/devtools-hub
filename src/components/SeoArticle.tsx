@@ -1,4 +1,5 @@
 import { seoContent } from '@/data/seo-content'
+import { RelatedGuides } from './RelatedGuides'
 
 interface SeoArticleProps {
   slug: string
@@ -6,9 +7,11 @@ interface SeoArticleProps {
 
 export function SeoArticle({ slug }: SeoArticleProps) {
   const content = seoContent[slug]
-  if (!content) return null
 
-  const faqSchema = {
+  // The how-to guide link is rendered for every tool (RelatedGuides returns
+  // null when no guide references this slug), independent of SEO content —
+  // so wiring it here surfaces it on all tool pages automatically.
+  const faqSchema = content && {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: content.sections.map((s) => ({
@@ -20,11 +23,14 @@ export function SeoArticle({ slug }: SeoArticleProps) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <article className="mb-12">
+      <RelatedGuides toolSlug={slug} />
+      {content && (
+        <>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+          />
+          <article className="mb-12">
         <hr className="mb-8 border-border" />
         <h2 className="mb-3 text-lg font-bold text-bright">{content.heading}</h2>
         <p className="mb-6 text-sm leading-relaxed text-primary">{content.intro}</p>
@@ -36,7 +42,9 @@ export function SeoArticle({ slug }: SeoArticleProps) {
             </div>
           ))}
         </div>
-      </article>
+          </article>
+        </>
+      )}
     </>
   )
 }
