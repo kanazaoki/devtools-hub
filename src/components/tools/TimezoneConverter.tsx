@@ -78,10 +78,16 @@ const SLOT_COLORS = ['#00C896', '#60a5fa', '#f59e0b', '#e879f9', '#f87171']
 
 export function TimezoneConverter() {
   const [slots, setSlots] = useState(['Asia/Tokyo', 'America/New_York', 'Europe/London'])
-  const [baseDate, setBaseDate] = useState(() => toLocalISO(new Date()))
-  const [now, setNow] = useState(new Date())
+  // Deterministic defaults so SSR and the first client render match (no
+  // hydration errors); the real base date / current time are set on mount.
+  const [baseDate, setBaseDate] = useState('')
+  const [now, setNow] = useState(() => new Date(0))
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
+    setBaseDate(toLocalISO(new Date()))
+    setNow(new Date())
+    setReady(true)
     const id = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(id)
   }, [])
@@ -144,7 +150,7 @@ export function TimezoneConverter() {
       <div className="space-y-2">
         {slots.map((tz, i) => {
           const converted = isValid ? formatInTZ(tz, parsedBase) : '—'
-          const currentTime = formatInTZ(tz, now)
+          const currentTime = ready ? formatInTZ(tz, now) : '—'
           const offset = getUTCOffset(tz, now)
           const city = CITIES.find(c => c.tz === tz)
           const color = SLOT_COLORS[i % SLOT_COLORS.length]

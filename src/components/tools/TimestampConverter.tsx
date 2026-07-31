@@ -75,20 +75,26 @@ function ResultTable({ rows }: { rows: ResultRow[] }) {
 }
 
 export function TimestampConverter() {
-  const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const tzList = TIMEZONES.includes(localTz) ? TIMEZONES : [localTz, ...TIMEZONES]
-
-  const [nowMs, setNowMs] = useState(Date.now)
+  // Deterministic defaults for SSR + first client render so the markup matches
+  // (avoids hydration errors). Real time/timezone are filled in on mount.
+  const [nowMs, setNowMs] = useState(0)
+  const [localTz, setLocalTz] = useState('UTC')
+  const [tz, setTz] = useState('UTC')
   const [tsInput, setTsInput] = useState('')
   const [unit, setUnit] = useState<'s' | 'ms'>('s')
-  const [tz, setTz] = useState(localTz)
   const [dtDate, setDtDate] = useState('')
   const [dtTime, setDtTime] = useState('')
 
   useEffect(() => {
+    const lz = Intl.DateTimeFormat().resolvedOptions().timeZone
+    setLocalTz(lz)
+    setTz(lz)
+    setNowMs(Date.now())
     const id = setInterval(() => setNowMs(Date.now()), 1000)
     return () => clearInterval(id)
   }, [])
+
+  const tzList = TIMEZONES.includes(localTz) ? TIMEZONES : [localTz, ...TIMEZONES]
 
   const applyTs = useCallback((val: string, u: 's' | 'ms' = 's') => {
     setTsInput(val)
@@ -121,6 +127,7 @@ export function TimestampConverter() {
   ] : []
 
   const nowS = Math.floor(nowMs / 1000)
+  const ready = nowMs > 0
 
   return (
     <div className="space-y-3">
@@ -128,8 +135,8 @@ export function TimestampConverter() {
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-surface-hi px-4 py-3">
         <div>
           <p className="mb-1 font-mono text-[10px] uppercase tracking-widest text-muted">Now</p>
-          <span className="font-mono text-sm text-teal">{nowS}</span>
-          <span className="ml-3 font-mono text-[10px] text-muted">{new Date(nowMs).toLocaleString('ja-JP')}</span>
+          <span className="font-mono text-sm text-teal">{ready ? nowS : '—'}</span>
+          <span className="ml-3 font-mono text-[10px] text-muted">{ready ? new Date(nowMs).toLocaleString('ja-JP') : ''}</span>
         </div>
         <div className="flex flex-wrap gap-2">
           <CopyButton text={String(nowS)} label="Copy s" />
