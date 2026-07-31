@@ -145,10 +145,10 @@ export function SvgViewer() {
 
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-2 overflow-hidden rounded border border-border">
+      <div className="grid grid-cols-1 overflow-hidden rounded border border-border sm:grid-cols-2">
 
         {/* ── Left: code editor ────────────────────── */}
-        <div className="relative flex flex-col border-r border-border">
+        <div className="relative flex flex-col border-b border-border sm:border-b-0 sm:border-r">
           {/* orange left-accent when valid */}
           <span
             aria-hidden="true"

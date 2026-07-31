@@ -163,12 +163,11 @@ export function JsonToGo() {
         </span>
       </div>
 
-      {/* Split editor panel */}
-      <div className="overflow-hidden rounded border border-border">
-        {/* Panel headers */}
-        <div className="grid grid-cols-2 border-b border-border">
-          {/* JSON header */}
-          <div className="flex items-center justify-between border-r border-border bg-surface px-4 py-2.5">
+      {/* Split editor panel — stacks on mobile, side-by-side on sm+ */}
+      <div className="grid grid-cols-1 overflow-hidden rounded border border-border sm:grid-cols-2">
+        {/* JSON column */}
+        <div className="flex flex-col border-b border-border sm:border-b-0 sm:border-r">
+          <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-2.5">
             <div className="flex items-center gap-2.5">
               <span className="h-2 w-2 rounded-full bg-amber-500/70 shrink-0" />
               <span className="font-mono text-[10px] uppercase tracking-widest text-muted">JSON</span>
@@ -177,8 +176,25 @@ export function JsonToGo() {
               <span className="font-mono text-[9px] tabular-nums text-muted/40">{input.length} chars</span>
             )}
           </div>
-          {/* Go header */}
-          <div className="flex items-center justify-between bg-surface px-4 py-2.5">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={'{\n  "id": 1,\n  "userName": "alice",\n  "isActive": true,\n  "tags": ["a", "b"],\n  "profile": { "age": 30, "city": "Tokyo" }\n}'}
+            data-testid="input-area"
+            rows={16}
+            spellCheck={false}
+            className="flex-1 resize-none bg-bg p-4 font-mono text-xs leading-relaxed text-primary placeholder:text-muted/20 focus:outline-none"
+          />
+          {error && (
+            <div className="border-t border-red-500/20 bg-red-500/5 px-4 py-2">
+              <p className="font-mono text-[10px] text-red-400">{error}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Go column */}
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-2.5">
             <div className="flex items-center gap-2.5">
               <span className="inline-flex h-4 w-6 items-center justify-center rounded-sm bg-cyan-700/60 font-mono text-[8px] font-bold text-cyan-100 shrink-0">
                 GO
@@ -198,45 +214,14 @@ export function JsonToGo() {
               {copied ? '✓ Copied!' : 'Copy'}
             </button>
           </div>
-        </div>
-
-        {/* Editor body */}
-        <div className="grid grid-cols-2">
-          {/* JSON input */}
-          <div className="flex flex-col border-r border-border">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={'{\n  "id": 1,\n  "userName": "alice",\n  "isActive": true,\n  "tags": ["a", "b"],\n  "profile": { "age": 30, "city": "Tokyo" }\n}'}
-              data-testid="input-area"
-              rows={18}
-              spellCheck={false}
-              className="flex-1 resize-none bg-bg p-4 font-mono text-xs leading-relaxed text-primary placeholder:text-muted/20 focus:outline-none"
-            />
-            {error && (
-              <div className="border-t border-red-500/20 bg-red-500/5 px-4 py-2">
-                <p className="font-mono text-[10px] text-red-400">{error}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Go output */}
-          <div className="relative flex flex-col">
-            <span
-              aria-hidden="true"
-              className={`absolute inset-y-0 left-0 w-[2px] transition-colors duration-300 ${
-                output && !error ? 'bg-cyan-500/40' : 'bg-border/0'
-              }`}
-            />
-            <textarea
-              value={output}
-              readOnly
-              placeholder="Go の struct 定義がここに生成されます"
-              data-testid="output-area"
-              rows={18}
-              className="flex-1 resize-none bg-bg/70 p-4 pl-5 font-mono text-xs leading-relaxed text-cyan-300/80 placeholder:text-muted/20 focus:outline-none"
-            />
-          </div>
+          <textarea
+            value={output}
+            readOnly
+            placeholder="Go の struct 定義がここに生成されます"
+            data-testid="output-area"
+            rows={16}
+            className="flex-1 resize-none bg-bg/70 p-4 font-mono text-xs leading-relaxed text-cyan-300/80 placeholder:text-muted/20 focus:outline-none"
+          />
         </div>
       </div>
 

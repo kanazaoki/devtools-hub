@@ -186,12 +186,18 @@ export function YamlJsonConverter() {
         <FormatSelector label="To" value={to} onChange={setTo} />
       </div>
 
-      {/* Split editor */}
-      <div className="overflow-hidden rounded border border-border">
-        {/* Panel headers */}
-        <div className="grid grid-cols-2 border-b border-border">
+      {/* Split editor — stacks on mobile, side-by-side on sm+ */}
+      <div className="grid grid-cols-1 overflow-hidden rounded border border-border sm:grid-cols-2">
+        {/* Input column */}
+        <div className="relative flex flex-col border-b border-border sm:border-b-0 sm:border-r">
+          <span
+            aria-hidden="true"
+            className={`absolute inset-y-0 left-0 z-10 w-[2px] transition-colors duration-300 ${
+              input.trim() && !error ? fromStyle.leftLine : 'bg-transparent'
+            }`}
+          />
           {/* Input header */}
-          <div className="flex items-center justify-between border-r border-border bg-surface/60 px-4 py-2.5">
+          <div className="flex items-center justify-between border-b border-border bg-surface/60 px-4 py-2.5">
             <div className="flex items-center gap-2">
               <span className={`h-2 w-2 rounded-full ${fromStyle.dot}`} />
               <span className={`font-mono text-[10px] font-semibold uppercase tracking-widest ${fromStyle.headerText}`}>
@@ -206,9 +212,35 @@ export function YamlJsonConverter() {
               Clear
             </button>
           </div>
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={fromStyle.placeholder}
+            data-testid="input-area"
+            rows={18}
+            spellCheck={false}
+            className="flex-1 resize-none bg-bg p-4 pl-5 font-mono text-xs leading-relaxed text-primary placeholder:text-muted/15 focus:outline-none"
+          />
+          {error && (
+            <div
+              className="border-t border-red-500/20 bg-red-500/5 px-4 py-2"
+              data-testid="error-bar"
+            >
+              <p className="font-mono text-[10px] leading-relaxed text-red-400">{error}</p>
+            </div>
+          )}
+        </div>
 
+        {/* Output column */}
+        <div className="relative flex flex-col">
+          <span
+            aria-hidden="true"
+            className={`absolute inset-y-0 left-0 z-10 w-[2px] transition-colors duration-300 ${
+              output && !error ? toStyle.leftLine : 'bg-transparent'
+            }`}
+          />
           {/* Output header */}
-          <div className="flex items-center justify-between bg-surface/40 px-4 py-2.5">
+          <div className="flex items-center justify-between border-b border-border bg-surface/40 px-4 py-2.5">
             <div className="flex items-center gap-2">
               <span className={`h-2 w-2 rounded-full ${toStyle.dot}`} />
               <span className={`font-mono text-[10px] font-semibold uppercase tracking-widest ${toStyle.headerText}`}>
@@ -228,54 +260,14 @@ export function YamlJsonConverter() {
               {copied ? '✓ Copied!' : 'Copy'}
             </button>
           </div>
-        </div>
-
-        {/* Editor body */}
-        <div className="grid grid-cols-2">
-          {/* Input panel */}
-          <div className="relative flex flex-col border-r border-border">
-            <span
-              aria-hidden="true"
-              className={`absolute inset-y-0 left-0 w-[2px] transition-colors duration-300 ${
-                input.trim() && !error ? fromStyle.leftLine : 'bg-transparent'
-              }`}
-            />
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={fromStyle.placeholder}
-              data-testid="input-area"
-              rows={18}
-              spellCheck={false}
-              className="flex-1 resize-none bg-bg p-4 pl-5 font-mono text-xs leading-relaxed text-primary placeholder:text-muted/15 focus:outline-none"
-            />
-            {error && (
-              <div
-                className="border-t border-red-500/20 bg-red-500/5 px-4 py-2"
-                data-testid="error-bar"
-              >
-                <p className="font-mono text-[10px] leading-relaxed text-red-400">{error}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Output panel */}
-          <div className="relative flex flex-col">
-            <span
-              aria-hidden="true"
-              className={`absolute inset-y-0 left-0 w-[2px] transition-colors duration-300 ${
-                output && !error ? toStyle.leftLine : 'bg-transparent'
-              }`}
-            />
-            <textarea
-              value={output}
-              readOnly
-              placeholder="変換結果がここに表示されます"
-              data-testid="output-area"
-              rows={18}
-              className={`flex-1 resize-none bg-bg/60 p-4 pl-5 font-mono text-xs leading-relaxed placeholder:text-muted/15 focus:outline-none ${toStyle.outputText}`}
-            />
-          </div>
+          <textarea
+            value={output}
+            readOnly
+            placeholder="変換結果がここに表示されます"
+            data-testid="output-area"
+            rows={18}
+            className={`flex-1 resize-none bg-bg/60 p-4 pl-5 font-mono text-xs leading-relaxed placeholder:text-muted/15 focus:outline-none ${toStyle.outputText}`}
+          />
         </div>
       </div>
     </div>

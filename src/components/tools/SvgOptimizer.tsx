@@ -127,48 +127,20 @@ export function SvgOptimizer() {
         )}
       </div>
 
-      {/* Split editor */}
+      {/* Split editor — stacks on mobile, side-by-side on sm+ */}
       <div className="overflow-hidden rounded border border-border">
-        <div className="grid grid-cols-2 border-b border-border">
-          <div className="flex items-center justify-between border-r border-border bg-surface px-4 py-2.5">
-            <div className="flex items-center gap-2.5">
-              <span className="h-2 w-2 rounded-full bg-amber-500/70 shrink-0" />
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted">SVG 入力</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          {/* SVG input column */}
+          <div className="flex flex-col border-b border-border sm:border-b-0 sm:border-r">
+            <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-2.5">
+              <div className="flex items-center gap-2.5">
+                <span className="h-2 w-2 rounded-full bg-amber-500/70 shrink-0" />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted">SVG 入力</span>
+              </div>
+              {inBytes > 0 && (
+                <span className="font-mono text-[9px] tabular-nums text-muted/40">{inBytes.toLocaleString()} B</span>
+              )}
             </div>
-            {inBytes > 0 && (
-              <span className="font-mono text-[9px] tabular-nums text-muted/40">{inBytes.toLocaleString()} B</span>
-            )}
-          </div>
-          <div className="flex items-center justify-between bg-surface px-4 py-2.5">
-            <div className="flex items-center gap-2.5">
-              <span className="inline-flex h-4 w-8 items-center justify-center rounded-sm bg-teal/20 font-mono text-[8px] font-bold text-teal shrink-0">
-                MIN
-              </span>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-muted">最適化後</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={handleDownload}
-                disabled={!output}
-                className="rounded bg-surface-hi px-2.5 py-1 font-mono text-[9px] font-medium text-muted transition-all duration-150 hover:bg-teal/10 hover:text-teal disabled:cursor-not-allowed disabled:opacity-30"
-              >
-                .svg
-              </button>
-              <button
-                onClick={handleCopy}
-                disabled={!output}
-                className={`rounded px-2.5 py-1 font-mono text-[9px] font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-30 ${
-                  copied ? 'bg-teal/20 text-teal' : 'bg-surface-hi text-muted hover:bg-teal/10 hover:text-teal'
-                }`}
-              >
-                {copied ? '✓ Copied!' : 'Copy'}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2">
-          <div className="flex flex-col border-r border-border">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -183,19 +155,41 @@ export function SvgOptimizer() {
               </div>
             )}
           </div>
-          <div className="relative flex flex-col">
-            <span
-              aria-hidden="true"
-              className={`absolute inset-y-0 left-0 w-[2px] transition-colors duration-300 ${
-                output ? 'bg-teal/40' : 'bg-border/0'
-              }`}
-            />
+
+          {/* Optimized output column */}
+          <div className="flex flex-col">
+            <div className="flex items-center justify-between border-b border-border bg-surface px-4 py-2.5">
+              <div className="flex items-center gap-2.5">
+                <span className="inline-flex h-4 w-8 items-center justify-center rounded-sm bg-teal/20 font-mono text-[8px] font-bold text-teal shrink-0">
+                  MIN
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-muted">最適化後</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={handleDownload}
+                  disabled={!output}
+                  className="rounded bg-surface-hi px-2.5 py-1 font-mono text-[9px] font-medium text-muted transition-all duration-150 hover:bg-teal/10 hover:text-teal disabled:cursor-not-allowed disabled:opacity-30"
+                >
+                  .svg
+                </button>
+                <button
+                  onClick={handleCopy}
+                  disabled={!output}
+                  className={`rounded px-2.5 py-1 font-mono text-[9px] font-medium transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-30 ${
+                    copied ? 'bg-teal/20 text-teal' : 'bg-surface-hi text-muted hover:bg-teal/10 hover:text-teal'
+                  }`}
+                >
+                  {copied ? '✓ Copied!' : 'Copy'}
+                </button>
+              </div>
+            </div>
             <textarea
               value={output}
               readOnly
               placeholder="最適化された SVG がここに表示されます"
               rows={16}
-              className="flex-1 resize-none bg-bg/70 p-4 pl-5 font-mono text-xs leading-relaxed text-teal/80 placeholder:text-muted/20 focus:outline-none"
+              className="flex-1 resize-none bg-bg/70 p-4 font-mono text-xs leading-relaxed text-teal/80 placeholder:text-muted/20 focus:outline-none"
             />
           </div>
         </div>
