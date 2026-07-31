@@ -1400,6 +1400,17 @@ export const seoContent: Record<string, SeoArticleData> = {
     ],
   },
 
+  'xml-json-converter': {
+    heading: 'XMLとJSONを相互変換する方法 — 属性・テキスト・配列の扱い',
+    intro: 'SOAP APIやRSS、各種設定ファイルは今もXMLで提供されることが多く、JavaScript中心の開発ではJSONに変換して扱いたい場面が頻繁にあります。XML ↔ JSON Converterは、XMLとJSONを双方向にリアルタイム変換します。XMLの属性・テキスト・繰り返し要素をJSONでどう表現するかという「変換のルール」を理解しておくと、意図通りの結果を得られます。',
+    sections: [
+      { title: 'XMLとJSONの構造的な違い', body: 'XMLは要素（タグ）・属性・テキストの3つで構造を表しますが、JSONにはオブジェクト・配列・値しかありません。そのため変換にはマッピングの約束事が必要です。このツールでは、要素はJSONのキーに、属性は「@_名前」というキーに、要素が持つテキストは「#text」というキーに対応させます。この方式は fast-xml-parser など広く使われるライブラリと同じ慣習で、変換結果をそのままNode.jsなどのコードでも扱いやすくなっています。' },
+      { title: '属性(@_)とテキスト(#text)の表現', body: '<user id="1">Alice</user> のように属性とテキストの両方を持つ要素は、{ "user": { "@_id": "1", "#text": "Alice" } } になります。属性を持たず、テキストだけの要素（<name>Alice</name>）は { "name": "Alice" } とシンプルな値になります。逆にJSON→XMLでは、@_で始まるキーは属性に、#textキーはタグ内のテキストに戻ります。この規則があるため、XML→JSON→XMLと往復しても属性とテキストの区別が保たれます。' },
+      { title: '同名の繰り返し要素は配列になる', body: 'XMLでは <item>A</item><item>B</item> のように同じタグを繰り返して複数の値を表します。JSONでは配列がその役割を担うため、同名の兄弟要素は自動的に配列 { "item": ["A", "B"] } に変換されます。注意点として、要素が1つしかない場合は配列にならず単一の値になります（{ "item": "A" }）。RSSの記事一覧のように「1件でも配列で扱いたい」場合は、変換後のコード側で配列に正規化しておくと、要素数によって型が変わる問題を避けられます。' },
+      { title: 'SOAP・RSS・設定ファイルでの実践', body: 'SOAPレスポンスの解析では、名前空間プレフィックス（soap:Envelope など）もキー名としてそのまま保持されるため、Envelope→Body→中身とたどってJSONとして扱えます。RSS/Atomフィードは channel や item を配列として取り出せば記事一覧をJavaScriptで処理できます。逆に、JSONで管理している設定を古いXMLベースのツールに渡す必要がある場合はJSON→XMLが役立ちます。XMLには型がないため数値やbooleanは文字列になりますが、「数値・真偽値を型変換」オプションを使えば "30"→30、"true"→true のように、失われない範囲でJSONらしい型に変換できます。' },
+    ],
+  },
+
 }
 
 export function getMetaDescription(slug: string, fallback: string): string {

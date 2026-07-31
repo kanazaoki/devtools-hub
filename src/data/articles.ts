@@ -19,6 +19,41 @@ export interface Article {
 
 export const articles: Article[] = [
   {
+    slug: 'xml-to-json-workflow',
+    title: 'XMLをJSONに変換して扱う手順 — SOAP・RSS・設定ファイル',
+    description:
+      'SOAPレスポンスやRSS、XMLの設定ファイルをJSONに変換してJavaScriptで扱う手順を、変換→整形・確認→型生成→逆変換の流れで解説します。属性・テキスト・繰り返し要素の扱いも整理します。',
+    publishedAt: '2026-07-31',
+    tags: ['XML', 'JSON', '開発tips'],
+    intro:
+      'SOAP API・RSS/Atomフィード・古いシステムの設定ファイルなど、実務では今もXMLに出会います。一方でフロントエンドやNode.jsのコードはJSON前提で書かれていることが多く、XMLのままだと扱いづらい場面がよくあります。この記事では、XMLをJSONに変換してコードで扱い、必要なら型を付け、逆方向にも戻せるようにするまでの手順を、実際のツールとあわせて順番に紹介します。XMLの属性やテキスト、繰り返し要素をJSONでどう表現するかも整理します。',
+    sections: [
+      {
+        heading: '1. XMLをJSONに変換する',
+        body: 'まずはXMLを貼り付けてJSONに変換します。ここで押さえておきたいのが変換のルールです。要素はJSONのキーになり、属性は「@_名前」というキー、要素が持つテキストは「#text」というキーに対応します。<user id="1">Alice</user> なら { "user": { "@_id": "1", "#text": "Alice" } } という形です。属性を持たずテキストだけの要素はシンプルに { "name": "Alice" } になります。SOAPの soap:Envelope のような名前空間プレフィックスもキー名としてそのまま保持されるため、Envelope→Bodyとたどって中身にアクセスできます。',
+        tool: 'xml-json-converter',
+      },
+      {
+        heading: '2. 変換したJSONを整形・確認する',
+        body: '変換結果のJSONを整形して、どこがオブジェクトでどこが配列になっているかを確認します。特に注意したいのが繰り返し要素です。<item>A</item><item>B</item> は配列 { "item": ["A","B"] } になりますが、要素が1つしかないと配列にならず単一の値になります。RSSの記事一覧のように「1件でも配列で扱いたい」データは、この段階で挙動を把握しておくと、後のコードで要素数によって型が変わる不具合を避けられます。整形と同時に構文エラーも確認できるので、変換が想定通りかをここでレビューします。',
+        tool: 'json-studio',
+      },
+      {
+        heading: '3. JSONから型定義を作る（APIで扱う場合）',
+        body: '変換したJSONをTypeScriptのコードで扱うなら、型定義を用意しておくと安全です。JSONを貼り付けると、ネストしたオブジェクトは別interfaceに分割され、値の型が推論されます。ここで前段の「繰り返し要素が1件だと配列にならない」点が効いてきます。実データに1件しか含まれていないと配列でない型が生成されるため、フィードや一覧系のフィールドは生成後に配列型へ手直ししておくと、本番で複数件返ってきたときに型がズレません。型を用意しておけば、XML由来のデータでも補完とチェックが効くようになります。',
+        tool: 'json-to-typescript',
+      },
+      {
+        heading: '4. JSONをXMLに戻す（逆方向が必要なとき）',
+        body: 'JSONで管理している設定を、XMLしか受け付けない既存ツールやSOAPリクエストに渡したい場合は、逆方向の変換を使います。@_で始まるキーは属性に、#textキーはタグ内のテキストに戻るため、変換ルールを守っていればXML→JSON→XMLと往復しても属性とテキストの区別が保たれます。XMLには型がないので数値やbooleanは文字列になりますが、これは仕様通りです。ルート要素が1つになるようにJSONを組んでおくと、そのままwell-formedなXMLとして出力できます。',
+        tool: 'xml-json-converter',
+      },
+    ],
+    conclusion:
+      'XMLは「JSONに変換してから扱う」と決めておくと、JavaScript/TypeScriptの世界でそのまま処理でき、必要なときはXMLに戻すこともできます。ポイントは属性(@_)・テキスト(#text)・繰り返し要素(配列)の3つのルールと、「要素が1件だと配列にならない」挙動の2点です。この手順を通しておけば、SOAP・RSS・設定ファイルのようなXMLデータを、型安全なコードで安心して扱えるようになります。外部XMLの仕様が変わったときは JSON Diff で変換後のJSONを新旧比較すると、変わったフィールドだけを最小の手間で追従できます。',
+    relatedTools: ['xml-json-converter', 'json-studio', 'json-to-typescript', 'json-diff'],
+  },
+  {
     slug: 'accessible-color-palette',
     title: 'アクセシブルな配色を決める手順 — コントラスト比と色覚対応',
     description:

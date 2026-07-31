@@ -2535,6 +2535,25 @@ export const tools: Tool[] = [
     ],
     desktopFeatures: [],
   },
+  {
+    slug: 'xml-json-converter',
+    name: 'XML ↔ JSON Converter',
+    tagline: 'XMLとJSONを双方向にリアルタイム相互変換',
+    description:
+      'XMLコードを貼り付けるとJSONに、JSONを貼り付けるとXMLに、リアルタイムで相互変換します。SOAP・RSS・設定ファイル・APIレスポンスなど、XMLとJSONをまたぐ作業に対応。属性は @_ プレフィックス、テキストは #text で表現し、同名の兄弟要素は自動で配列化します。処理はすべてブラウザ内で完結し、データは外部に送信されません。',
+    tags: ['開発者向け', 'XML', 'JSON', '変換'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-07-31',
+    features: [
+      'XML → JSON / JSON → XML の双方向リアルタイム変換',
+      '属性(@_)・テキスト(#text)・同名要素の配列化を正しく処理',
+      'コメント・XML宣言・CDATA・名前空間プレフィックスに対応',
+      '数値・真偽値の型変換／XML宣言付与などのオプション',
+      'Swapで方向を入れ替え・結果を .json / .xml でダウンロード',
+    ],
+    desktopFeatures: [],
+  },
 ]
 
 export function getToolBySlug(slug: string): Tool | undefined {
