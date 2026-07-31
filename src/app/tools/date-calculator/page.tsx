@@ -8,6 +8,7 @@ import { ToolCard } from '@/components/ToolCard'
 import { DateCalculator } from '@/components/tools/DateCalculator'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
+import { RelatedGuides } from '@/components/RelatedGuides'
 import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'date-calculator')!
@@ -73,6 +74,8 @@ export default function DateCalculatorPage() {
           ))}
         </ul>
       </section>
+
+      <RelatedGuides toolSlug="date-calculator" />
 
       <hr className="mb-8 border-border" />
 

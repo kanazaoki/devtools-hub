@@ -8,6 +8,7 @@ import { ToolCard } from '@/components/ToolCard'
 import { TimezoneConverter } from '@/components/tools/TimezoneConverter'
 import { ToolJsonLd } from '@/components/ToolJsonLd'
 import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
+import { RelatedGuides } from '@/components/RelatedGuides'
 import { SeoArticle } from '@/components/SeoArticle'
 
 const tool = tools.find((t) => t.slug === 'timezone-converter')!
@@ -76,6 +77,9 @@ export default function TimezoneConverterPage() {
           ))}
         </ul>
       </section>
+
+      <RelatedGuides toolSlug="timezone-converter" />
+
       <hr className="mb-8 border-border" />
       <div className="mb-8">
         <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
