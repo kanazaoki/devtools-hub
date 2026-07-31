@@ -1633,7 +1633,7 @@ export const tools: Tool[] = [
     tagline: '日本語・英語テキストを URL-safe スラグに変換',
     description:
       'テキストを貼り付けるだけで URL-safe なスラグを即生成。日本語はローマ字変換してから変換します。区切り文字（ハイフン/アンダースコア）・大文字小文字モードの切り替えに対応。ブログ記事・商品ページなどの URL 設計に。',
-    tags: ['Web開発', 'テキスト', '開発ツール'],
+    tags: ['Web開発', 'テキスト', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8578645',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
@@ -1653,7 +1653,7 @@ export const tools: Tool[] = [
     tagline: 'CSS プロパティを Tailwind CSS クラスに変換',
     description:
       'CSS を貼り付けるだけで対応する Tailwind CSS クラスをリアルタイム提案。spacing・typography・color・flex・grid・border など主要プロパティに対応。対応外のプロパティは別欄に表示します。',
-    tags: ['CSS', 'Tailwind', 'Web開発', '開発ツール'],
+    tags: ['CSS', 'Tailwind', 'Web開発', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8578729',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
@@ -1736,7 +1736,7 @@ export const tools: Tool[] = [
     tagline: 'UA 文字列を解析してブラウザ・OS・デバイス情報を即表示',
     description:
       'User Agent 文字列を貼り付けるとブラウザ名・バージョン・OS・デバイス種別（Desktop / Mobile / Tablet）・レンダリングエンジン・Bot 判定を即表示。現在のブラウザ UA の自動取得、Chrome/Safari/Firefox/Googlebot などのプリセット、複数 UA の並べて比較にも対応。',
-    tags: ['ブラウザ', 'Web開発', '開発ツール'],
+    tags: ['ブラウザ', 'Web開発', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8577713',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
@@ -1778,7 +1778,7 @@ export const tools: Tool[] = [
     tagline: 'Unix パーミッションを octal・symbolic・日本語説明で相互変換',
     description:
       'ファイルパーミッション（755、644 など）を octal・symbolic（rwxr-xr-x）・日本語説明の3形式でリアルタイム相互変換。チェックボックスで直感的に設定でき、setuid/setgid/sticky bit にも対応。よく使うプリセットから即選択し、chmod コマンドをワンクリックでコピーできます。',
-    tags: ['Linux', 'サーバー', '開発ツール'],
+    tags: ['Linux', 'サーバー', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8577675',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
@@ -1818,7 +1818,7 @@ export const tools: Tool[] = [
     tagline: '言語・フレームワーク別テンプレートを組み合わせて .gitignore を即生成',
     description:
       'Node / Python / Unity / Go / Rust / Java / Swift / Kotlin / C++ / C# / React / Next.js / Electron / macOS / Windows / Linux / JetBrains / VSCode / Xcode の19種テンプレートから選んで組み合わせ。重複行を自動除去してマージした .gitignore をコピーまたはダウンロード。すべてブラウザ内処理でAPIアクセスなし。',
-    tags: ['Git', 'Web開発', '開発ツール'],
+    tags: ['Git', 'Web開発', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8579117',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
@@ -1837,7 +1837,7 @@ export const tools: Tool[] = [
     tagline: 'glob パターンのマッチングをリアルタイムで確認',
     description:
       '* ** ? {} [] に対応した自前実装のグロブエンジンで、入力したファイルパスリストとパターンを即座に照合。マッチしたパスを緑でハイライト表示。ブレース展開や文字クラスも完全対応。',
-    tags: ['CLI', 'Web開発', '開発ツール'],
+    tags: ['CLI', 'Web開発', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8579190',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
@@ -1960,7 +1960,7 @@ export const tools: Tool[] = [
     tagline: 'Header / Payload / Secret を入力してJWTをブラウザで即生成',
     description:
       'HS256 / HS384 / HS512 アルゴリズムに対応したJWT生成ツール。Header・Payload をJSON形式で入力し、Secret を指定するだけでトークンをリアルタイム生成。3パートの色分け表示付き。既存のJWT Decoderと対になるツール。',
-    tags: ['JWT', '認証', 'セキュリティ', '開発ツール'],
+    tags: ['JWT', '認証', 'セキュリティ', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8587334',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
@@ -1979,7 +1979,7 @@ export const tools: Tool[] = [
     tagline: 'Set-Cookie / Cookie ヘッダーを解析して属性・フラグを構造化表示',
     description:
       'Set-Cookie ヘッダーや Cookie ヘッダー文字列をペーストするだけで、name/value/expires/path/domain/HttpOnly/Secure/SameSite を一覧表示。有効期限の残り時間・期限切れ判定付き。複数クッキーの一括解析に対応。',
-    tags: ['HTTP', 'Cookie', 'セキュリティ', '開発ツール'],
+    tags: ['HTTP', 'Cookie', 'セキュリティ', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8587370',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
@@ -1998,7 +1998,7 @@ export const tools: Tool[] = [
     tagline: 'セマンティックバージョンのパース・バンプ・比較・範囲チェック',
     description:
       'バージョン文字列を入力するだけで major/minor/patch/prerelease を分解表示。patch/minor/major バンプ後のバージョンを即計算。2バージョンの大小比較と、^1.2.0 や ~1.2.0 などの範囲指定チェックにも対応。',
-    tags: ['npm', 'バージョン管理', '開発ツール'],
+    tags: ['npm', 'バージョン管理', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8587383',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
@@ -2017,7 +2017,7 @@ export const tools: Tool[] = [
     tagline: 'GUIでHTTPリクエストを組み立て curl / fetch / axios コードを即生成',
     description:
       'メソッド・URL・ヘッダー・ボディを入力するだけで、curl コマンド・JavaScript fetch・axios の3形式のコードをリアルタイムに生成。API開発・デバッグ・ドキュメント作成に役立ちます。',
-    tags: ['HTTP', 'API', '開発ツール', 'Web開発'],
+    tags: ['HTTP', 'API', '開発者向け', 'Web開発'],
     boothUrl: 'https://knkk.booth.pm/items/8587874',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
@@ -2036,7 +2036,7 @@ export const tools: Tool[] = [
     tagline: '2つのJSONを比較して追加・削除・変更をカラーハイライトで表示',
     description:
       '左右のペインに Before / After の JSON を貼り付けるだけで、追加・削除・変更された項目をリアルタイムに検出してハイライト表示。APIレスポンスの差分確認や設定ファイルの変更点チェックに。',
-    tags: ['JSON', '開発ツール', 'デバッグ'],
+    tags: ['JSON', '開発者向け', 'デバッグ'],
     boothUrl: 'https://knkk.booth.pm/items/8587957',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
@@ -2055,7 +2055,7 @@ export const tools: Tool[] = [
     tagline: 'Perlin / Simplex ノイズをブラウザで生成・調整して PNG 書き出し',
     description:
       'Perlin Noise と Simplex Noise をブラウザ上でリアルタイム生成。スケール・オクターブ・Persistence・Lacunarity・シード値をスライダーで調整し、グレースケールや Viridis / Plasma / Inferno カラーマップで可視化。PNG ダウンロードも可能。',
-    tags: ['Canvas', 'グラフィック', '開発ツール', 'ゲーム開発'],
+    tags: ['Canvas', 'グラフィック', '開発者向け', 'ゲーム開発'],
     boothUrl: 'https://knkk.booth.pm/items/8587971',
     hasWebVersion: true,
     releasedAt: '2026-07-05',
@@ -2074,7 +2074,7 @@ export const tools: Tool[] = [
     tagline: 'テスト用ダミーデータを一括生成 — JSON / CSV / TSV で出力',
     description:
       '名前・メール・電話番号・日付・UUID・ランダム数値・Lorem文の7種フィールドを選択し、最大100件のダミーデータを生成。JSON・CSV・TSV形式で出力してコピーまたはファイルダウンロードできます。DBテストやモックデータの準備に。',
-    tags: ['開発ツール', 'テスト', 'データ'],
+    tags: ['開発者向け', 'テスト', 'データ'],
     boothUrl: 'https://knkk.booth.pm/items/8594691',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
@@ -2093,7 +2093,7 @@ export const tools: Tool[] = [
     tagline: '画像のEXIFメタデータを表示 — 撮影情報・GPS座標・解像度',
     description:
       'JPEG画像をドロップするとEXIFメタデータを即表示。撮影日時・カメラメーカー/機種・ISO/絞り/シャッタースピード・焦点距離・解像度を確認できます。GPS情報があればGoogle Mapsリンクを生成。DataViewで自前パースするため通信不要・完全ローカル処理。',
-    tags: ['画像', '開発ツール', 'メタデータ'],
+    tags: ['画像', '開発者向け', 'メタデータ'],
     boothUrl: 'https://knkk.booth.pm/items/8594736',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
@@ -2112,7 +2112,7 @@ export const tools: Tool[] = [
     tagline: 'ネストしたJSONをフラット化・逆変換 — 区切り文字・配列対応',
     description:
       'ネストしたJSONを { "a.b.c": 1 } のようにフラット化し、逆変換（アンフラット）も可能。区切り文字は . / _ / / から選択できます。配列も key.0 / key.1 形式でフラット化。Redisキー設計・.env変換・設定ファイル整形に役立ちます。',
-    tags: ['JSON', '開発ツール', 'データ変換'],
+    tags: ['JSON', '開発者向け', 'データ変換'],
     boothUrl: 'https://knkk.booth.pm/items/8594758',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
@@ -2131,7 +2131,7 @@ export const tools: Tool[] = [
     tagline: 'レスポンスを組み立てて curl / fetch / 生HTTP形式で出力',
     description:
       'ステータスコード・ヘッダー（KV追加式）・ボディを組み立てて、curl / JavaScript fetch / 生HTTPレスポンスの3形式でコードを出力。APIドキュメント作成・テスト設計・モックサーバーの仕様書作りに役立ちます。',
-    tags: ['HTTP', 'API', '開発ツール'],
+    tags: ['HTTP', 'API', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8594770',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
@@ -2150,7 +2150,7 @@ export const tools: Tool[] = [
     tagline: 'AND/OR/XOR/NOT/SHIFT 演算を32ビット視覚化で確認',
     description:
       '2つの整数に対してAND・OR・XOR・NOT・LEFT SHIFT・RIGHT SHIFTを計算。入力値と結果を32ビット列で1桁ずつ色分け表示。10進/16進/2進で入力でき、結果は4形式でコピー可能。ビット演算の学習や低レイヤー開発のデバッグに。',
-    tags: ['開発ツール', 'ビット演算', '計算'],
+    tags: ['開発者向け', 'ビット演算', '計算'],
     boothUrl: 'https://knkk.booth.pm/items/8629538',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
@@ -2169,7 +2169,7 @@ export const tools: Tool[] = [
     tagline: '拡張子↔MIMEタイプを即検索 — 288種以上内蔵',
     description:
       'ファイル拡張子からContent-Typeを正引き、MIMEタイプから拡張子を逆引き。288種以上のMIMEタイプを内蔵しリアルタイムフィルタリング。テキスト/画像/動画/音声/アプリケーション別にカテゴリフィルタも可能。',
-    tags: ['開発ツール', 'HTTP', 'Web開発'],
+    tags: ['開発者向け', 'HTTP', 'Web開発'],
     boothUrl: 'https://knkk.booth.pm/items/8629541',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
@@ -2188,7 +2188,7 @@ export const tools: Tool[] = [
     tagline: 'OpenAPI 3.x / Swagger 2.0 仕様をビジュアル表示',
     description:
       'OpenAPI 3.x / Swagger 2.0 のYAML/JSONをペーストするとエンドポイント一覧・パラメーター・レスポンス定義を見やすく表示。HTTPメソッドを色分けし$refを自動解決。パス検索とメソッドフィルタで素早くナビゲート。',
-    tags: ['開発ツール', 'API', 'OpenAPI'],
+    tags: ['開発者向け', 'API', 'OpenAPI'],
     boothUrl: 'https://knkk.booth.pm/items/8629545',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
@@ -2207,7 +2207,7 @@ export const tools: Tool[] = [
     tagline: '複数JSONをDeep Merge — 配列戦略・最大5スロット対応',
     description:
       '最大5スロットのJSONオブジェクトを再帰的にDeep Mergeして結果を出力。配列マージ戦略（上書き/連結）を選択可能。後スロット優先で上書き。コピーと.jsonダウンロード対応。設定ファイルの合成・APIレスポンスのマージに。',
-    tags: ['JSON', '開発ツール', 'データ変換'],
+    tags: ['JSON', '開発者向け', 'データ変換'],
     boothUrl: 'https://knkk.booth.pm/items/8629549',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
@@ -2484,7 +2484,7 @@ export const tools: Tool[] = [
     tagline: 'User-agent ルール・Sitemap URL を GUI で設定して robots.txt を即生成',
     description:
       'ボット名・Allow/Disallow ルール・Crawl-delay・Sitemap URL を GUI で入力するだけでリアルタイムに robots.txt を生成。コピーまたは .txt ファイルとしてダウンロード可能。',
-    tags: ['SEO', 'Web開発', '開発ツール'],
+    tags: ['SEO', 'Web開発', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8579248',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
