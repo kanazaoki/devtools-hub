@@ -163,7 +163,7 @@ export const tools: Tool[] = [
     tagline: 'AIプロンプト管理ツール',
     description:
       'AI 画像生成向けプロンプトをカテゴリ & タグで管理。日本語タイトル ↔ 英語タグ対応。前提・顔・服・背景などのカテゴリからタグをチェックするだけで英語プロンプトを自動組み立て。',
-    tags: ['AI', '画像生成', 'クリエイター向け'],
+    tags: ['AI', '画像'],
     boothUrl: 'https://knkk.booth.pm/items/8488574',
     hasWebVersion: true,
     releasedAt: '2026-06-13',
@@ -892,7 +892,7 @@ export const tools: Tool[] = [
     tagline: 'cubic-bezier() をビジュアル操作で作成',
     description:
       'CSSアニメーションのイージング関数 cubic-bezier() をSVGキャンバス上でドラッグ操作して視覚的に作成。ease・ease-in-out・spring など9種のプリセットから始めてコントロールポイントを自由に調整できます。ボールアニメーションで実際の動きを確認しながら、生成したCSS値をワンクリックでコピー。',
-    tags: ['CSS', 'アニメーション', 'ジェネレーター'],
+    tags: ['CSS', 'アニメーション'],
     boothUrl: 'https://knkk.booth.pm/items/8561196',
     hasWebVersion: true,
     releasedAt: '2026-06-29',
@@ -914,7 +914,7 @@ export const tools: Tool[] = [
     tagline: 'ビジュアルエディターで clip-path CSS を生成',
     description:
       'polygon / circle / ellipse / inset の4形状をビジュアル操作してclip-pathのCSSコードをリアルタイム生成。プレビュー上でポイントをドラッグするだけで形状を編集でき、矢印・六角形・星型など8種のプリセット形状からも選択可能。生成したCSSはワンクリックでコピーできます。',
-    tags: ['CSS', 'デザイン', 'ジェネレーター'],
+    tags: ['CSS', 'デザイン'],
     boothUrl: 'https://knkk.booth.pm/items/8561216',
     hasWebVersion: true,
     releasedAt: '2026-06-29',
@@ -1269,7 +1269,7 @@ export const tools: Tool[] = [
     tagline: '数値を通貨・SI単位・指数表記など複数フォーマットで同時出力',
     description:
       '数値を入力すると、カンマ区切り・通貨（JPY/USD/EUR）・パーセント・SI単位（K/M/G/T）・指数表記などを一覧表示。ロケール（ja-JP / en-US / de-DE / zh-CN / fr-FR）を切り替えると桁区切り・小数点・通貨記号がロケールに応じて変化します。各フォーマットをクリックでコピー。',
-    tags: ['数値', 'フォーマット', '開発者向け'],
+    tags: ['数値', 'フォーマッター', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8564334',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
@@ -1328,7 +1328,7 @@ export const tools: Tool[] = [
     tagline: '文字列を1文字ずつ分解 — Unicodeコードポイント・UTF-8バイト数・文字種を可視化',
     description:
       '入力した文字列を1文字ずつ分解して、各文字のUnicodeコードポイント（U+XXXX）・UTF-8バイト数・文字種カテゴリ（ASCII英字/数字/記号・CJK・絵文字・空白）を色分け表示。文字列全体の総文字数・バイト数・ユニーク文字数を統計として表示。絵文字のサロゲートペア・複合文字も正しく1グリフとして処理します。エンコーディング問題のデバッグやグリフ調査に。',
-    tags: ['文字列', 'Unicode', 'エンコーディング', '開発者向け'],
+    tags: ['テキスト', 'Unicode', 'エンコード', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8564632',
     hasWebVersion: true,
     releasedAt: '2026-06-30',
@@ -1529,7 +1529,7 @@ export const tools: Tool[] = [
     tagline: '日付の差分計算・日数加算・営業日カウントが1画面で',
     description:
       '2つの日付の差分を日・週・月・年で一覧表示する「差分計算」、N日後・N日前を計算する「日数加算」、土日を除いた営業日を数える「営業日カウント」の3モードを搭載。「今日」ボタンで素早く基準日をセットできます。',
-    tags: ['日付', '時間', '計算'],
+    tags: ['時刻', '計算'],
     boothUrl: 'https://knkk.booth.pm/items/8575814',
     hasWebVersion: true,
     releasedAt: '2026-07-03',
@@ -1591,7 +1591,7 @@ export const tools: Tool[] = [
     tagline: '.env をペーストして key/value を表形式で確認・変換',
     description:
       '.env ファイルの内容をペーストするだけで key と value を表形式で一覧表示。値のマスク表示・JSON 変換コピー・.env 形式コピーに対応。コメント行・空行・クォート付き値も正しく解析します。',
-    tags: ['Web開発', 'テキスト処理'],
+    tags: ['Web開発', 'テキスト'],
     boothUrl: 'https://knkk.booth.pm/items/8577544',
     hasWebVersion: true,
     releasedAt: '2026-07-04',
@@ -2074,7 +2074,7 @@ export const tools: Tool[] = [
     tagline: 'テスト用ダミーデータを一括生成 — JSON / CSV / TSV で出力',
     description:
       '名前・メール・電話番号・日付・UUID・ランダム数値・Lorem文の7種フィールドを選択し、最大100件のダミーデータを生成。JSON・CSV・TSV形式で出力してコピーまたはファイルダウンロードできます。DBテストやモックデータの準備に。',
-    tags: ['開発者向け', 'テスト', 'データ'],
+    tags: ['開発者向け', 'テスト'],
     boothUrl: 'https://knkk.booth.pm/items/8594691',
     hasWebVersion: true,
     releasedAt: '2026-07-08',
