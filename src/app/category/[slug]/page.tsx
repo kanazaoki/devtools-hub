@@ -87,7 +87,7 @@ export default function CategoryPage({ params }: Props) {
       {catGuides.length > 0 && (
         <section className="mt-14 border-t border-border pt-8">
           <h2 className="mb-4 font-mono text-xs font-semibold uppercase tracking-widest text-muted">
-            使い方ガイド
+            関連ガイド
           </h2>
           <div className="flex flex-col gap-3">
             {catGuides.map((g) => (

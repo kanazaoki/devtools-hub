@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: '使い方ガイド',
+  title: 'このサイトの使い方',
   description:
-    'devtools-hub の使い方ガイド。キーワード検索・カテゴリフィルタ・お気に入り機能・New バッジ・デスクトップ版について説明します。',
+    'devtools-hub の使い方。キーワード検索・カテゴリフィルタ・お気に入り機能・New バッジ・デスクトップ版について説明します。',
   alternates: {
     canonical: 'https://devtools-hub.dev/guide',
   },
@@ -57,8 +57,8 @@ const sections = [
 export default function GuidePage() {
   return (
     <main className="py-12 max-w-2xl">
-      <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal mb-4">Guide</p>
-      <h1 className="font-mono text-2xl font-bold text-bright mb-2">使い方ガイド</h1>
+      <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal mb-4">How to use</p>
+      <h1 className="font-mono text-2xl font-bold text-bright mb-2">このサイトの使い方</h1>
       <p className="text-sm text-dim leading-relaxed mb-10">
         devtools-hub の主要機能の使い方をまとめています。
       </p>

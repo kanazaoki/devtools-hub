@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { articles } from '@/data/articles'
 
 export const metadata: Metadata = {
-  title: '記事一覧 | devtools-hub',
-  description: 'JSON・CSS・HTTP・正規表現・JWT・画像最適化など、Web開発に役立つ実践的な技術記事を公開しています。',
+  title: 'ガイド一覧 | devtools-hub',
+  description: 'JSON・CSS・HTTP・正規表現・JWT・画像最適化など、Web開発の定番作業を手順で解説するガイドを公開しています。各ステップで使うツールに直接たどれます。',
   alternates: {
     canonical: 'https://devtools-hub.dev/articles',
   },
@@ -17,10 +17,10 @@ export default function ArticlesPage() {
 
   return (
     <main className="py-12 max-w-2xl">
-      <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal mb-4">Articles</p>
-      <h1 className="font-mono text-2xl font-bold text-bright mb-2">技術記事</h1>
+      <p className="font-mono text-xs uppercase tracking-[0.2em] text-teal mb-4">Guides</p>
+      <h1 className="font-mono text-2xl font-bold text-bright mb-2">ガイド</h1>
       <p className="text-sm text-dim leading-relaxed mb-10">
-        Web 開発で役立つ実践的な技術記事を公開しています。
+        Web 開発の定番作業を、手順ごとにたどれるガイドとして公開しています。各ステップで使うツールにそのまま進めます。
       </p>
 
       <div className="space-y-0 divide-y divide-border">

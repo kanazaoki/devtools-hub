@@ -28,7 +28,7 @@ export function Header() {
             href="/articles"
             className="text-xs sm:text-sm text-dim hover:text-primary transition-colors whitespace-nowrap"
           >
-            記事
+            ガイド
           </Link>
           <Link
             href="/guide"

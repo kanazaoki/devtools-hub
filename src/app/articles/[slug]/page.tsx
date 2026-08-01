@@ -83,7 +83,7 @@ export default async function ArticlePage({ params }: Props) {
       <nav className="mb-8 flex items-center gap-2 font-mono text-xs text-muted">
         <Link href="/" className="hover:text-primary transition-colors">Home</Link>
         <span>/</span>
-        <Link href="/articles" className="hover:text-primary transition-colors">Articles</Link>
+        <Link href="/articles" className="hover:text-primary transition-colors">ガイド</Link>
         <span>/</span>
         <span className="text-primary truncate">{article.title}</span>
       </nav>
@@ -198,7 +198,7 @@ export default async function ArticlePage({ params }: Props) {
           href="/articles"
           className="text-xs text-muted hover:text-primary transition-colors font-mono uppercase tracking-widest"
         >
-          ← 記事一覧
+          ← ガイド一覧
         </Link>
         <Link
           href="/"

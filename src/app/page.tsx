@@ -103,11 +103,11 @@ export default function Home({ searchParams }: { searchParams: { cat?: string; q
         </div>
       </section>
 
-      {/* 使い方ガイド */}
+      {/* ガイド */}
       {guideArticles.length > 0 && (
         <section className="mb-10">
           <div className="mb-4 flex items-center justify-between">
-            <p className="font-mono text-[11px] uppercase tracking-widest text-muted">使い方ガイド</p>
+            <p className="font-mono text-[11px] uppercase tracking-widest text-muted">ガイド</p>
             <Link href="/articles" className="font-mono text-[11px] text-muted transition-colors hover:text-teal">
               すべて見る →
             </Link>
