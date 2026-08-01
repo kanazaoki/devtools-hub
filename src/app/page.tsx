@@ -13,7 +13,7 @@ const desktopCount = tools.filter((t) => t.boothUrl).length
 export const metadata: Metadata = {
   title: 'devtools-hub — 開発者・クリエイター向け無料 Web ツール集',
   description:
-    '個人開発者が作った開発・デザイン向けツールを無料公開。カラーコード変換、グラデーションエディタ、画像変換、テキストレイアウト確認など。デスクトップ版は BOOTH で販売中。',
+    'Web開発の定番作業を「手順ガイド付き」でブラウザだけで完結できる無料ツール集。JSONの型生成・API・正規表現・CSS・カラー・画像最適化など125以上のツールと、各ステップで使うツールに直接たどれる手順ガイドを公開。登録不要・データは外部送信なし。',
   alternates: {
     canonical: 'https://devtools-hub.dev',
   },
