@@ -131,23 +131,24 @@ export default function Image() {
           {/* サブタイトル */}
           <div
             style={{
-              color: '#6b6b80',
-              fontSize: 24,
+              color: '#a0a0b8',
+              fontSize: 26,
               marginBottom: 48,
               lineHeight: 1.4,
             }}
           >
-            開発者・クリエイター向け 無料ツール集
+            手順ガイド付き・ブラウザで完結する無料開発ツール集
           </div>
 
           {/* タグピル群 */}
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
             {[
-              { label: 'カラー変換', color: '#a855f7' },
-              { label: 'WebP変換', color: '#10b981' },
-              { label: 'グラデーション', color: '#ec4899' },
-              { label: '画像リサイズ', color: '#84cc16' },
-              { label: 'テキスト UI', color: '#f59e0b' },
+              { label: 'JSON / 型生成', color: '#38bdf8' },
+              { label: 'HTTP / API', color: '#10b981' },
+              { label: '正規表現', color: '#a855f7' },
+              { label: 'CSS', color: '#3b82f6' },
+              { label: 'カラー', color: '#ec4899' },
+              { label: '画像最適化', color: '#84cc16' },
             ].map(({ label, color }) => (
               <div
                 key={label}
