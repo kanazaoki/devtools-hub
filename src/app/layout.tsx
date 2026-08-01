@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: '%s | devtools-hub',
   },
   description:
-    'Web開発の定番作業を「手順ガイド付き」でブラウザだけで完結できる無料ツール集。JSONの型生成・API・正規表現・CSS・カラー・画像最適化など125以上のツールと、各ステップで使うツールに直接たどれる手順ガイドを公開。登録不要・データは外部送信なし。',
+    'Web開発の定番作業を「手順ガイド付き」でブラウザだけで進められる無料ツール集。JSONの型生成・API・正規表現・CSS・カラー・画像最適化など125以上のツールと、各ステップで使うツールに直接たどれる手順ガイドを公開。登録不要。入力したファイル・テキストは外部に送信しません。',
   metadataBase: new URL('https://devtools-hub.dev'),
   other: {
     'google-adsense-account': ADSENSE_CLIENT,
