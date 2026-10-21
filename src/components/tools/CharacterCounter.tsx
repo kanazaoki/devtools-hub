@@ -3,9 +3,23 @@
 import { useState, useMemo, useCallback } from 'react'
 import type { ReactNode } from 'react'
 
-// ── Full-width detection ──────────────────────────────────────────────────────
+// ── Width detection ───────────────────────────────────────────────────────────
+
+// 絵文字は全角幅で表示されるが、コードポイントの範囲で列挙すると漏れる。
+// Emoji_Presentation（既定で絵文字として表示される文字）で判定する。
+const EMOJI_PRESENTATION = /\p{Emoji_Presentation}/u
+
+// 幅を持たない文字。ゼロ幅接合子・異体字セレクタ・結合用の記号など。
+// これらを半角に数えると、見た目の幅と合わなくなる。
+const ZERO_WIDTH = /[​-‍⁠﻿︀-️]|\p{Mn}/u
+
+function isZeroWidth(char: string): boolean {
+  return ZERO_WIDTH.test(char)
+}
 
 function isFullWidth(char: string): boolean {
+  if (isZeroWidth(char)) return false
+  if (EMOJI_PRESENTATION.test(char)) return true
   const code = char.codePointAt(0) ?? 0
   return (
     (code >= 0x1100 && code <= 0x115F) ||  // Hangul Jamo
@@ -21,13 +35,38 @@ function isFullWidth(char: string): boolean {
   )
 }
 
+// ── Grapheme counting ─────────────────────────────────────────────────────────
+// 「見た目の1文字」は書記素クラスタ単位。絵文字の連結や結合用の濁点があると
+// コードポイント数とは一致しないため、Intl.Segmenter で数える。
+// 未対応の環境ではコードポイント数に落とす。
+
+let segmenter: Intl.Segmenter | null | undefined
+
+function countGraphemes(text: string, codePoints: number): number {
+  if (text === '') return 0
+  if (segmenter === undefined) {
+    try {
+      segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ja', { granularity: 'grapheme' }) : null
+    } catch {
+      segmenter = null
+    }
+  }
+  if (!segmenter) return codePoints
+  let n = 0
+  for (const _ of segmenter.segment(text)) n++
+  return n
+}
+
 // ── Stats computation ─────────────────────────────────────────────────────────
 
 interface Stats {
   totalChars: number
+  graphemeCount: number
+  codeUnitCount: number
   charsNoSpace: number
   fullWidthChars: number
   halfWidthChars: number
+  zeroWidthChars: number
   wordCount: number
   lineCount: number
   paragraphCount: number
@@ -41,7 +80,8 @@ function computeStats(text: string): Stats {
   const totalChars = chars.length
   const charsNoSpace = chars.filter(c => !/\s/.test(c)).length
   const fullWidthChars = chars.filter(c => isFullWidth(c)).length
-  const halfWidthChars = totalChars - fullWidthChars
+  const zeroWidthChars = chars.filter(c => isZeroWidth(c)).length
+  const halfWidthChars = totalChars - fullWidthChars - zeroWidthChars
 
   const wordCount =
     text.trim() === '' ? 0 : text.trim().split(/\s+/).filter(w => w.length > 0).length
@@ -57,9 +97,12 @@ function computeStats(text: string): Stats {
 
   return {
     totalChars,
+    graphemeCount: countGraphemes(text, totalChars),
+    codeUnitCount: text.length,
     charsNoSpace,
     fullWidthChars,
     halfWidthChars,
+    zeroWidthChars,
     wordCount,
     lineCount,
     paragraphCount,
@@ -156,6 +199,13 @@ export function CharacterCounter() {
             <StatRow label="スペース除外" value={stats.charsNoSpace} unit="字" testid="chars-no-space" />
             <StatRow label="全角" value={stats.fullWidthChars} unit="字" testid="full-width" />
             <StatRow label="半角" value={stats.halfWidthChars} unit="字" testid="half-width" />
+            <StatRow label="ゼロ幅" value={stats.zeroWidthChars} unit="字" testid="zero-width" />
+          </StatGroup>
+
+          <StatGroup label="数え方">
+            <StatRow label="書記素" value={stats.graphemeCount} unit="字" testid="grapheme-count" />
+            <StatRow label="コードポイント" value={stats.totalChars} unit="個" testid="code-point-count" />
+            <StatRow label="コードユニット" value={stats.codeUnitCount} unit="個" testid="code-unit-count" />
           </StatGroup>
 
           <StatGroup label="構造">
