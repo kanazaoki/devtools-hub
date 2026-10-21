@@ -38,6 +38,7 @@ next-env.d.ts
 .vercel
 
 # local tools / claude
+.claude/
 .company/
 .playwright-mcp/
 docs/

@@ -1,0 +1,31 @@
+# 改行コードはリポジトリ側で決める。
+# 各自の core.autocrlf に任せると、環境ごとに既定値が違うため
+# 「中身を変えていないのに差分が全行になる」が繰り返し起きる。
+# このファイルはリポジトリに入るので、関わる全員に同じ規則が適用される。
+
+# 既定：テキストと判定したファイルはリポジトリ内で LF に正規化する。
+# 作業ディレクトリ側は各OSの慣習に合わせて取り出される。
+* text=auto
+
+# 改行コードが固定されていないと壊れるもの。
+# 先頭行に復帰文字が入るとインタプリタ名の一部として解釈され、
+# 「見つからない」というエラーで止まる。
+*.sh    text eol=lf
+*.mjs   text eol=lf
+
+# Windows でしか使わないものは逆に CRLF で固定する。
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# バイナリは触らせない（text=auto の自動判定に任せず明示する）。
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.woff  binary
+*.woff2 binary
+*.pdf   binary
+*.zip   binary
