@@ -10,7 +10,7 @@ import { ToolBreadcrumb } from '@/components/ToolBreadcrumb'
 import { SeoArticle } from '@/components/SeoArticle'
 
 type Props = {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export function generateStaticParams() {
@@ -18,25 +18,27 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const tool = getToolBySlug(params.slug)
+  const { slug } = await params
+  const tool = getToolBySlug(slug)
   if (!tool) return { title: 'ツールが見つかりません' }
 
   return {
     title: `${tool.name} — ${tool.tagline}`,
     description: tool.description.substring(0, 150),
     alternates: {
-      canonical: `https://devtools-hub.dev/tools/${params.slug}`,
+      canonical: `https://devtools-hub.dev/tools/${slug}`,
     },
     openGraph: {
       title: `${tool.name} | devtools-hub`,
       description: tool.description.substring(0, 150),
-      images: [{ url: `/tools/${params.slug}/opengraph-image`, width: 1200, height: 630 }],
+      images: [{ url: `/tools/${slug}/opengraph-image`, width: 1200, height: 630 }],
     },
   }
 }
 
-export default function ToolPage({ params }: Props) {
-  const tool = getToolBySlug(params.slug)
+export default async function ToolPage({ params }: Props) {
+  const { slug } = await params
+  const tool = getToolBySlug(slug)
   if (!tool) notFound()
 
   const relatedTools = tools
@@ -180,7 +182,7 @@ export default function ToolPage({ params }: Props) {
         <BoothCTA boothUrl={tool.boothUrl} toolName={tool.name} desktopFeatures={tool.desktopFeatures} />
       </div>
 
-      <SeoArticle slug={params.slug} />
+      <SeoArticle slug={slug} />
 
       {/* AdSense — CTA直後 */}
       <AdSense slot="6712222897" format="rectangle" className="mb-12" />

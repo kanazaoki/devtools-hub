@@ -86,7 +86,7 @@ export function DiffViewer() {
         for (let j = Math.max(0, i - CONTEXT); j <= Math.min(ops.length - 1, i + CONTEXT); j++) visible.add(j)
       }
     }
-    const lines: JSX.Element[] = []
+    const lines: React.JSX.Element[] = []
     let leftN = 1, rightN = 1, lastVis = true
     for (let i = 0; i < ops.length; i++) {
       const op = ops[i]

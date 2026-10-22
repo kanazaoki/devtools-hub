@@ -8,15 +8,16 @@ import { ToolCard } from '@/components/ToolCard'
 import { AdSense } from '@/components/AdSense'
 
 interface Props {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }))
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const cat = getCategoryBySlug(params.slug)
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const cat = getCategoryBySlug(slug)
   if (!cat) return {}
   const count = tools.filter((t) => t.tags.includes(cat.tag)).length
   return {
@@ -32,8 +33,9 @@ export function generateMetadata({ params }: Props): Metadata {
   }
 }
 
-export default function CategoryPage({ params }: Props) {
-  const cat = getCategoryBySlug(params.slug)
+export default async function CategoryPage({ params }: Props) {
+  const { slug } = await params
+  const cat = getCategoryBySlug(slug)
   if (!cat) notFound()
 
   const catTools = tools

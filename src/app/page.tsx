@@ -19,9 +19,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Home({ searchParams }: { searchParams: { cat?: string; q?: string } }) {
-  const initialCategory = searchParams.cat ? (getCategoryBySlug(searchParams.cat)?.tag ?? null) : null
-  const initialQuery = searchParams.q ?? ''
+export default async function Home({ searchParams }: { searchParams: Promise<{ cat?: string; q?: string }> }) {
+  const { cat, q } = await searchParams
+  const initialCategory = cat ? (getCategoryBySlug(cat)?.tag ?? null) : null
+  const initialQuery = q ?? ''
   const newestTools = [...tools]
     .sort((a, b) => b.releasedAt.localeCompare(a.releasedAt))
     .slice(0, 3)
