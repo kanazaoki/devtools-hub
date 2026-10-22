@@ -14,6 +14,11 @@ const securityHeaders = [
 ]
 
 const nextConfig = {
+  // 画像最適化API（/_next/image）は使っていない（next/image の利用は0件）。
+  // Next.js 14 系にはこのAPIに関する未修正の脆弱性が残っている
+  // （AVIF処理のRCE・DoS・ディスクキャッシュの肥大化。修正は15.5.24以降）。
+  // 使わない入口は閉じておく。
+  images: { unoptimized: true },
   async headers() {
     return [
       {
