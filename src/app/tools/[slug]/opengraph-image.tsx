@@ -133,7 +133,7 @@ export default async function Image({ params }: Props) {
               border: '1px solid #00C89630',
               borderRadius: 8,
               padding: '10px 20px',
-              width: 'fit-content',
+              alignSelf: 'flex-start',
             }}
           >
             <div style={{ color: '#00C896', fontSize: 14 }}>
