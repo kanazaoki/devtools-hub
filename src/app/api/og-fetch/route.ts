@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { normalizeUrl, assertPublicHost } from '@/lib/urlGuard'
 import { rateLimit, clientIp } from '@/lib/rateLimit'
+import { safeFetch } from '@/lib/safeFetch'
 
 const MAX_BYTES = 1 * 1024 * 1024 // 1 MB
 
@@ -87,57 +88,37 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 10000)
-
-    const res = await fetch(norm.url, {
-      signal: controller.signal,
-      redirect: 'error',
+    // 接続の直前に接続先IPを確かめる取得関数（DNSリバインディング対策）
+    const res = await safeFetch(norm.url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; OGTagPreview/1.0)',
         Accept: 'text/html,application/xhtml+xml',
       },
+      timeoutMs: 10000,
+      maxBytes: MAX_BYTES,
     })
-    clearTimeout(timeout)
 
-    if (!res.ok) {
+    if (res.status < 200 || res.status >= 300) {
       return NextResponse.json(
         { error: `フェッチに失敗しました（HTTP ${res.status}）` },
         { status: 502 }
       )
     }
 
-    const declared = Number(res.headers.get('content-length') ?? 0)
-    if (declared > MAX_BYTES) {
-      return NextResponse.json({ error: 'ページサイズが大きすぎます' }, { status: 413 })
-    }
-
-    // Stream with a hard cap so a missing/spoofed content-length can't buffer
-    // an unbounded response into memory.
-    const reader = res.body?.getReader()
-    if (!reader) {
-      return NextResponse.json({ error: 'OG タグの取得に失敗しました' }, { status: 502 })
-    }
-    const chunks: Uint8Array[] = []
-    let total = 0
-    for (;;) {
-      const { done, value } = await reader.read()
-      if (done) break
-      total += value.byteLength
-      if (total > MAX_BYTES) {
-        await reader.cancel()
-        return NextResponse.json({ error: 'ページサイズが大きすぎます' }, { status: 413 })
-      }
-      chunks.push(value)
-    }
-
-    const html = new TextDecoder('utf-8').decode(Buffer.concat(chunks))
+    const html = new TextDecoder('utf-8').decode(res.body)
     const data = extractMeta(html, norm.url)
 
     return NextResponse.json({ data })
   } catch (err: unknown) {
-    if (err instanceof Error && err.name === 'AbortError') {
+    const name = err instanceof Error ? err.name : ''
+    if (name === 'TimeoutError') {
       return NextResponse.json({ error: 'タイムアウト（10秒）しました' }, { status: 504 })
+    }
+    if (name === 'TooLargeError') {
+      return NextResponse.json({ error: 'ページサイズが大きすぎます' }, { status: 413 })
+    }
+    if (name === 'BlockedHostError') {
+      return NextResponse.json({ error: '有効なURLを入力してください' }, { status: 400 })
     }
     return NextResponse.json({ error: 'OG タグの取得に失敗しました' }, { status: 502 })
   }
