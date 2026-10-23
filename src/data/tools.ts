@@ -13,6 +13,26 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
+    slug: 'lockfile-diff',
+    name: 'Lockfile Diff',
+    tagline: 'package-lock.json の更新前後を比較 — 版の動きをメジャー／マイナー／パッチで分類',
+    description:
+      '更新前と更新後の package-lock.json を入れると、版が動いたパッケージを「メジャー・マイナー・パッチ」に分けて一覧にします。本番の依存と開発の依存を切り替えて表示でき、追加・削除されたパッケージや package.json の指定の変化も出します。ロックファイルをそのまま差分にすると、版が1つ動くたびに取得元とハッシュも変わって読めなくなるため、ハッシュの変化は件数だけにまとめます。npm audit fix や npm update のあとに、何がどこまで動いたかを確かめる用途に。',
+    tags: ['npm', 'バージョン管理', '開発者向け'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-10-23',
+    desktopFeatures: [],
+    features: [
+      '版の動きをメジャー／マイナー／パッチ／下がったもの に分類',
+      '0.x のマイナー更新は破壊的変更として扱い、メジャーと同じ並びに出す',
+      '本番の依存・開発の依存を切り替えて表示',
+      '追加・削除されたパッケージと、入れ子になった依存のパスを表示',
+      'package.json の範囲指定の変化（^14.2.0 → ^15.5.28 など）も表示',
+      'lockfileVersion 1・2・3 に対応。ファイルはブラウザ内で読み、送信しない',
+    ],
+  },
+  {
     slug: 'line-ending-inspector',
     name: 'Line Ending Inspector',
     tagline: '改行コードを検査 — CRLF / LF / CR の内訳と混在、BOMの有無',
