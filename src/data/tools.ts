@@ -13,6 +13,26 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
+    slug: 'image-metadata-remover',
+    name: 'Image Metadata Remover',
+    tagline: '写真の位置情報・撮影情報を、画質を落とさずに取り除く — JPEG / PNG',
+    description:
+      'JPEG・PNG をドロップすると、中に入っているメタデータの塊（EXIF・XMP・IPTC・コメント・画像の後ろに付いたデータ）を一覧にし、位置情報を含むものを示します。取り除くときは画素を作り直さずに塊だけを抜くので、画質は変わりません。縦に撮った写真が横倒しにならないよう向き（Orientation）だけは残し、色のプロファイルも既定で残します。取り除いた後のファイルを読み直して、位置情報が0になったことまで表示します。',
+    tags: ['画像', 'メタデータ', 'プライバシー'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-10-23',
+    desktopFeatures: [],
+    features: [
+      'EXIF だけでなく XMP・IPTC・コメント・画像の後ろに付いたデータまで一覧にする',
+      '位置情報を含む塊に印を付け、座標・撮影日時・機種・製造番号を表示',
+      '画素を作り直さないので画質が変わらない（再圧縮しない）',
+      '向き（Orientation）だけを残す最小の EXIF を入れ直し、横倒しを防ぐ',
+      '色のプロファイル（ICC）と、色の解釈に要る塊は既定で残す',
+      '取り除いた後のファイルを読み直し、残っている塊を表示する',
+    ],
+  },
+  {
     slug: 'lockfile-diff',
     name: 'Lockfile Diff',
     tagline: 'package-lock.json の更新前後を比較 — 版の動きをメジャー／マイナー／パッチで分類',
@@ -2139,10 +2159,10 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-07-08',
     features: [
-      'ドラッグ＆ドロップまたはファイル選択でJPEG読み込み',
+      'ドラッグ＆ドロップまたはファイル選択で JPEG / PNG 読み込み',
       '撮影日時・カメラメーカー・機種・ISO・絞り・SS・焦点距離・解像度を表示',
       'GPS座標をGoogle Mapsリンクに変換',
-      'EXIFなし画像（PNG等）は「EXIFデータなし」と表示',
+      'XMP・PNG の eXIf・画像の後ろに付いたデータなど、EXIF の表の外にあるメタデータも警告',
       '完全ローカル処理 — 画像はサーバーに送信されない',
     ],
     desktopFeatures: ['複数ファイルを一括読み込みしてサイドリストで切り替え', '全ファイルのEXIFをCSVファイルにエクスポート'],
