@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useCallback, useRef } from 'react'
+import Link from 'next/link'
+import { inspect, type MetaBlock, type ExifSummary } from '@/lib/imageMeta'
 
 // ── EXIF tag IDs we care about ────────────────────────────────────
 const TAGS: Record<number, string> = {
@@ -184,9 +186,26 @@ export function ExifViewer() {
   const [gps, setGps]             = useState<{ lat?: number; lng?: number } | null>(null)
   const [noExif, setNoExif]       = useState(false)
   const [dragging, setDragging]   = useState(false)
+  // EXIF の表の外にあるメタデータ（XMP・PNG の eXIf・末尾の別画像など）。
+  // ⚠ ここを見ないと、XMP に位置情報が残っていても「EXIFデータなし」とだけ出る
+  const [others, setOthers]       = useState<MetaBlock[]>([])
+  const [pngExif, setPngExif]     = useState<ExifSummary | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const processFile = useCallback((file: File) => {
+    setOthers([]); setPngExif(null)
+    if (file.type === 'image/png') {
+      setNoExif(true); setExif(null); setGps(null)
+      setPreview(URL.createObjectURL(file))
+      void file.arrayBuffer().then((buf) => {
+        try {
+          const info = inspect(new Uint8Array(buf))
+          setPngExif(info.exif)
+          setOthers(info.blocks.filter((b) => b.removable))
+        } catch { /* PNG として読めないものは何も出さない */ }
+      })
+      return
+    }
     if (!file.type.includes('jpeg') && !file.type.includes('jpg') && !file.type.includes('tiff')) {
       setNoExif(true); setExif(null); setGps(null)
       const reader = new FileReader()
@@ -199,6 +218,10 @@ export function ExifViewer() {
       const buf = e.target?.result as ArrayBuffer
       setPreview(URL.createObjectURL(file))
       const result = parseExif(buf)
+      try {
+        const info = inspect(new Uint8Array(buf))
+        setOthers(info.blocks.filter((b) => b.removable && b.kind !== 'exif' && (b.gps || b.kind === 'xmp' || b.kind === 'trailer' || b.kind === 'iptc')))
+      } catch { /* JPEG の構造を読めないときは表だけ出す */ }
       if (!result || Object.keys(result.data).length === 0) {
         setNoExif(true); setExif(null); setGps(null)
       } else {
@@ -233,8 +256,8 @@ export function ExifViewer() {
         className={`flex min-h-36 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed transition-colors ${dragging ? 'border-teal bg-teal/5' : 'border-border hover:border-teal/60'}`}
       >
         <p className="text-2xl">🖼️</p>
-        <p className="text-sm text-dim">JPEGをドロップ、またはクリックして選択</p>
-        <input ref={inputRef} type="file" accept="image/jpeg,image/jpg,image/tiff" className="hidden" onChange={onFileChange} />
+        <p className="text-sm text-dim">JPEG / PNG をドロップ、またはクリックして選択</p>
+        <input ref={inputRef} type="file" accept="image/jpeg,image/jpg,image/tiff,image/png" className="hidden" onChange={onFileChange} />
       </div>
 
       {/* Preview */}
@@ -243,7 +266,7 @@ export function ExifViewer() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={preview} alt="preview" className="h-32 w-auto rounded border border-border object-contain" />
 
-          {noExif ? (
+          {noExif && pngExif ? null : noExif ? (
             <div className="flex items-center">
               <p className="rounded-lg border border-yellow-600/30 bg-yellow-600/10 px-4 py-3 text-sm text-yellow-400">
                 EXIFデータが見つかりませんでした
@@ -276,6 +299,33 @@ export function ExifViewer() {
               </table>
             </div>
           ) : null}
+        </div>
+      )}
+
+      {preview && (pngExif || others.length > 0) && (
+        <div className="rounded-lg border border-red-400/30 bg-red-400/5 px-4 py-3 text-xs text-red-200">
+          {pngExif && (
+            <p className="mb-1 font-semibold text-red-300">
+              PNG の中に EXIF（eXIf チャンク）があります
+              {pngExif.gps ? `。位置 ${pngExif.gps.lat.toFixed(6)}, ${pngExif.gps.lng.toFixed(6)}` : ''}
+              {pngExif.make || pngExif.model ? `。機種 ${[pngExif.make, pngExif.model].filter(Boolean).join(' ')}` : ''}
+            </p>
+          )}
+          {others.filter((b) => b.kind !== 'exif').length > 0 && (
+            <>
+              <p className="font-semibold text-red-300">EXIF の表とは別に、次のメタデータが入っています</p>
+              <ul className="mt-1 space-y-0.5 font-mono text-[11px]">
+                {others.filter((b) => b.kind !== 'exif').map((b, i) => (
+                  <li key={i}>
+                    ・{b.label}{b.gps ? '　位置情報あり' : ''}{b.detail ? `　${b.detail}` : ''}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          <p className="mt-2 text-[11px] text-red-200/80">
+            まとめて取り除くには <Link href="/tools/image-metadata-remover" className="text-teal hover:underline">Image Metadata Remover</Link> を使ってください。
+          </p>
         </div>
       )}
     </div>
