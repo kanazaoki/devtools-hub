@@ -1208,6 +1208,7 @@ export const tools: Tool[] = [
     releasedAt: '2026-06-30',
     desktopFeatures: ['生成したmeta HTMLをファイルに保存（ダイアログで保存先選択）'],
     features: [
+      'og:image が相対パスなら警告（多くのSNSは絶対URLしか読まない）',
       '基本 / OGP / Twitter Card の3タブでフォームを整理',
       'title（60字）/ description（160字）の文字数カウンター、超過で警告色',
       'Google 検索風プレビューでタイトル・URL・説明をリアルタイム確認',
@@ -1580,7 +1581,7 @@ export const tools: Tool[] = [
     name: 'Favicon Generator',
     tagline: '絵文字・テキストから favicon PNG を即生成・ダウンロード',
     description:
-      '絵文字またはテキスト（1〜2文字）を入力するだけで 16px / 32px / 64px の favicon PNG を生成できます。背景色・文字色をカラーピッカーで調整でき、背景透過にも対応。ブラウザタブのイメージをその場でプレビューできます。',
+      '絵文字またはテキスト（1〜2文字）を入力するだけで 16・32・48・96・180px の favicon PNG を生成できます（48・96 は Google の検索結果用、180 は iOS のホーム画面用）。背景色・文字色をカラーピッカーで調整でき、背景透過にも対応。ブラウザタブのイメージをその場でプレビューできます。',
     tags: ['favicon', '画像', 'Web開発'],
     boothUrl: 'https://knkk.booth.pm/items/8575764',
     hasWebVersion: true,
@@ -1588,7 +1589,7 @@ export const tools: Tool[] = [
     desktopFeatures: [],
     features: [
       '絵文字・テキスト（1〜2文字）を入力してリアルタイムプレビュー',
-      '16px / 32px / 64px の3サイズで PNG ダウンロード',
+      '16・32・48・96・180px の5サイズで PNG ダウンロード',
       '背景色・文字色をカラーピッカーで自由に設定',
       '背景透過モード対応',
       'ブラウザタブのプレビュー表示',
@@ -2582,6 +2583,7 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-07-04',
     features: [
+      'Disallow と noindex の誤解（Disallow しても検索結果から消えない）と、Google が Crawl-delay を無視する点を警告',
       'User-agent ルールを複数追加（* または個別ボット名）',
       'Allow / Disallow パスを各 User-agent に複数追加・削除',
       'Crawl-delay を User-agent ごとに設定',
