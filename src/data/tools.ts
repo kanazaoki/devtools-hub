@@ -1853,6 +1853,7 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-07-04',
     features: [
+      '配列の全要素を合わせて1つの z.object にまとめ、一部にしか無いキーは .optional()、null が混ざれば .nullable()',
       'JSON 入力から Zod スキーマをリアルタイム生成',
       'string / number / boolean / null / 配列 / オブジェクト / ネスト対応',
       '配列内の複数型を z.union([...]) で表現',
@@ -2599,6 +2600,7 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-07-30',
     features: [
+      '配列の全要素を入れ子まで合わせて型を決める（整数と小数が混ざれば float64、null が混ざればポインタ）',
       'JSONからGoのstruct定義をリアルタイム生成',
       'json:"field" タグを自動付与・omitempty トグル対応',
       'ネストオブジェクトを無名 struct にインライン展開',
