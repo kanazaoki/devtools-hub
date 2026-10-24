@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { b64urlToText, verifyJwt, type VerifyResult } from '@/lib/jwtVerify'
 
 interface JwtParts {
   header: Record<string, unknown>
@@ -18,11 +19,8 @@ const CLAIM_LABELS: Record<string, string> = {
   jti: 'jti (JWT ID)',
 }
 
-function b64urlDecode(str: string): string {
-  str = str.replace(/-/g, '+').replace(/_/g, '/')
-  while (str.length % 4) str += '='
-  return atob(str)
-}
+// ⚠ atob だけで読むと UTF-8 が1バイトずつの文字になり、日本語のクレームが文字化けしていた
+const b64urlDecode = b64urlToText
 
 function formatDate(ts: number): string {
   return new Date(ts * 1000).toLocaleString('ja-JP', { timeZoneName: 'short' })
@@ -75,11 +73,25 @@ function CopyButton({ text }: { text: string }) {
 
 export function JwtDecoder() {
   const [token, setToken] = useState('')
+  const [key, setKey] = useState('')
+  const [verify, setVerify] = useState<VerifyResult | null>(null)
 
   const result = useMemo(() => {
     if (!token.trim()) return null
     return decode(token.trim())
   }, [token])
+
+  useEffect(() => {
+    let alive = true
+    if (!result?.parts || !key.trim()) {
+      setVerify(null)
+      return
+    }
+    void verifyJwt(token, key).then((r) => alive && setVerify(r))
+    return () => {
+      alive = false
+    }
+  }, [result, token, key])
 
   const segments = token.trim().split('.')
 
@@ -125,9 +137,32 @@ export function JwtDecoder() {
       )}
 
       {result?.parts && (
-        <p className="font-mono text-[10px] text-muted/40">
-          ※ 署名の検証は行っていません。改ざん検知には秘密鍵・公開鍵が必要です。
-        </p>
+        <div className="space-y-1.5 rounded-lg border border-border bg-surface-hi p-3">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">署名の検証（任意）</p>
+          <textarea
+            value={key}
+            onChange={e => setKey(e.target.value)}
+            placeholder={'HS256 などは共通鍵（文字列）、RS256 / ES256 / PS256 などは公開鍵（-----BEGIN PUBLIC KEY----- か JWK）を貼り付け'}
+            spellCheck={false}
+            rows={3}
+            className="w-full resize-y rounded border border-border bg-[#111827] p-3 font-mono text-[11px] text-primary outline-none focus:border-violet-500/40"
+          />
+          {!key.trim() ? (
+            <p className="font-mono text-[10px] text-muted/60">
+              鍵を入れない限り、署名は確かめていません。デコードできることと、正しいトークンであることは別です。
+              本番の秘密鍵は入れないでください（処理はブラウザ内ですが、テスト用の鍵で確かめるのが安全です）。
+            </p>
+          ) : verify === null ? (
+            <p className="font-mono text-[11px] text-muted">検証中…</p>
+          ) : verify.ok ? (
+            <p className="font-mono text-xs text-teal">✓ 署名は正しい（{verify.alg}）</p>
+          ) : (
+            <p className="font-mono text-xs text-red-400">✕ {verify.alg}：{verify.reason}</p>
+          )}
+          {String(result.parts.header.alg ?? '').toLowerCase() === 'none' && !key.trim() && (
+            <p className="font-mono text-xs text-red-400">✕ alg が none（署名なし）のトークンです。受け入れてはいけません</p>
+          )}
+        </div>
       )}
 
       {result?.parts && (() => {

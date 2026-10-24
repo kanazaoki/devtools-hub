@@ -10,8 +10,10 @@ const ALG_TO_HASH: Record<Algorithm, string> = {
   HS512: 'SHA-512',
 }
 
+// ⚠ btoa は Latin-1 しか受け付けず、日本語を含むクレームだと例外で生成できなかった。
+// UTF-8 のバイト列にしてから Base64URL にする
 function b64url(input: string): string {
-  return btoa(input).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  return b64urlBytes(new TextEncoder().encode(input))
 }
 
 function b64urlBytes(bytes: Uint8Array): string {
