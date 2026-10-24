@@ -1,6 +1,18 @@
 'use client'
 
 import { useState, useMemo, useCallback } from 'react'
+import { locateJsonError } from '@/lib/jsonErrorLocate'
+
+// エラー位置の前後を切り出す。1行に圧縮された JSON でも見える幅に収める
+function errorSnippet(text: string, offset: number) {
+  const lineStart = text.lastIndexOf('\n', offset - 1) + 1
+  const lineEndRaw = text.indexOf('\n', offset)
+  const lineEnd = lineEndRaw < 0 ? text.length : lineEndRaw
+  const from = Math.max(lineStart, offset - 40)
+  const to = Math.min(lineEnd, offset + 40)
+  const head = (from > lineStart ? '…' : '') + text.slice(from, offset)
+  return { head, mark: text[offset] ?? ' ', tail: text.slice(offset + 1, to) + (to < lineEnd ? '…' : '') }
+}
 
 type IndentMode = '2' | '4' | 'tab'
 
@@ -66,6 +78,9 @@ export function JsonStudio() {
     [input, indent, sortKeys]
   )
 
+  const location = useMemo(() => (error ? locateJsonError(input) : null), [error, input])
+  const snippet = location ? errorSnippet(input, location.offset) : null
+
   const handleMinify = () => {
     if (!input.trim()) return
     try {
@@ -128,7 +143,25 @@ export function JsonStudio() {
       {error && input.trim() && (
         <div className="flex items-start gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5">
           <span className="shrink-0 font-mono text-xs text-red-400">✕</span>
-          <p className="font-mono text-xs text-red-400">{error}</p>
+          <div className="min-w-0 flex-1">
+            {location ? (
+              <>
+                <p className="font-mono text-xs text-red-300">
+                  {location.line} 行目 {location.column} 列目 — {location.reason}
+                </p>
+                {snippet && (
+                  <pre className="mt-1.5 overflow-x-auto whitespace-pre font-mono text-[11px] text-red-200/80">
+                    {snippet.head}
+                    <span className="rounded-sm bg-red-500/40 text-white">{snippet.mark === '\n' ? '↵' : snippet.mark}</span>
+                    {snippet.tail}
+                  </pre>
+                )}
+                <p className="mt-1 font-mono text-[10px] text-red-400/60">ブラウザの表示: {error}</p>
+              </>
+            ) : (
+              <p className="font-mono text-xs text-red-400">{error}</p>
+            )}
+          </div>
         </div>
       )}
 
