@@ -1099,6 +1099,7 @@ export const tools: Tool[] = [
       '編集後の変数定義をCSSファイルとして保存',
     ],
     features: [
+      'テーマの点検：ダーク側の上書き漏れ・@media の手動切替の除外漏れ・色の直書き・未定義の変数参照を一覧表示',
       'CSSコードから --変数名: 値; を全抽出',
       ':root・任意セレクタースコープに対応',
       'カラー値 → カラーピッカー自動表示',
@@ -1193,7 +1194,7 @@ export const tools: Tool[] = [
     name: 'Color Shade Generator',
     tagline: 'ベースカラーから Tints / Shades / Tones を自動生成・CSS変数/Tailwind出力',
     description:
-      'HEXカラーピッカーでベースカラーを選択し、白混じり（Tints）・黒混じり（Shades）・グレー混じり（Tones）の3系統でカラーパレットを生成。ステップ数を5〜10段階でスライダー調整できます。Tailwind の数値キー形式（50〜900）と CSS カスタムプロパティ形式の両方で出力・コピー可能。',
+      'HEXカラーピッカーでベースカラーを選択し、入力した色を500に置いた50（明）〜900（暗）の10段階のスケールを生成。白混じり（Tints）・黒混じり（Shades）・グレー混じり（Tones）の段階も作れます。名前を付けて --color-名前-500 のような CSS カスタムプロパティと Tailwind の形式で出力・コピー可能。',
     tags: ['カラー', 'デザイン', 'CSS'],
     boothUrl: 'https://knkk.booth.pm/items/8563373',
     hasWebVersion: true,
@@ -1201,10 +1202,11 @@ export const tools: Tool[] = [
     desktopFeatures: ['生成したCSSカスタムプロパティをファイルに保存（ダイアログで保存先選択）'],
     features: [
       'HEXピッカー + テキスト入力でベースカラーを設定',
-      'Tints（白混じり）/ Shades（黒混じり）/ Tones（グレー混じり）の3タブを切り替え',
+      'Scale タブで入力色を500に置いた 50〜900 のスケールを生成（50が最も明るい）',
+      'Tints（白混じり）/ Shades（黒混じり）/ Tones（グレー混じり）の段階も切り替えて生成',
       'ステップ数スライダー（5〜10）でパレットのカラー数をリアルタイムに変更',
       'スウォッチをクリックしてHEXをクリップボードにコピー',
-      'CSS変数（--color-50〜900）/ Tailwindカラー形式で全色まとめてコピー',
+      '名前を付けて CSS変数（--color-blue-50〜900）/ Tailwindカラー形式で全色まとめてコピー',
     ],
   },
   {
