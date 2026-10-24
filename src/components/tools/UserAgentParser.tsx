@@ -13,6 +13,7 @@ interface ParsedUA {
   device: 'Desktop' | 'Mobile' | 'Tablet' | 'Bot'
   isBot: boolean
   botName: string
+  notes: string[]
 }
 
 function parseUA(ua: string): ParsedUA {
@@ -30,16 +31,22 @@ function parseUA(ua: string): ParsedUA {
     [/Twitterbot\/([\d.]+)/i, 'Twitterbot'],
     [/LinkedInBot\/([\d.]+)/i, 'LinkedInBot'],
     [/Applebot\/([\d.]+)/i, 'Applebot'],
-    [/\bbot\b/i, 'Bot'],
-    [/\bcrawler\b/i, 'Crawler'],
-    [/\bspider\b/i, 'Spider'],
+    [/GPTBot/i, 'GPTBot（OpenAI）'],
+    [/ClaudeBot|Claude-Web/i, 'ClaudeBot（Anthropic）'],
+    [/PerplexityBot/i, 'PerplexityBot'],
+    [/Bytespider/i, 'Bytespider（ByteDance）'],
   ]
   for (const [re, name] of botPatterns) {
     if (re.test(s)) {
       return {
-        browser: name, browserVersion: '', engine: '', os: 'N/A', osVersion: '', device: 'Bot', isBot: true, botName: name,
+        browser: name, browserVersion: '', engine: '', os: 'N/A', osVersion: '', device: 'Bot', isBot: true, botName: name, notes: [],
       }
     }
+  }
+  // ⚠ 以前は \bbot\b だったので AhrefsBot・SemrushBot のように語の途中に bot があるものを普通のブラウザとして扱っていた
+  const generic = /([A-Za-z][\w-]*(?:bot|crawler|spider))\b/i.exec(s) ?? (/\b(bot|crawler|spider|crawl)\b/i.exec(s))
+  if (generic) {
+    return { browser: generic[1], browserVersion: '', engine: '', os: 'N/A', osVersion: '', device: 'Bot', isBot: true, botName: generic[1], notes: [] }
   }
 
   // Browser
@@ -106,7 +113,13 @@ function parseUA(ua: string): ParsedUA {
   if (/iPad/i.test(s) || (/Tablet/i.test(s) && !/Mobile/i.test(s))) device = 'Tablet'
   else if (/Mobile|iPhone|iPod|Android.*Mobile|Windows Phone/i.test(s)) device = 'Mobile'
 
-  return { browser, browserVersion, engine, os, osVersion, device, isBot: false, botName: '' }
+  // UA に書かれている版は、プライバシーのため固定されているものが多い
+  const notes: string[] = []
+  if (os === 'macOS' && osVersion === '10.15.7') notes.push('macOS の版は、ブラウザが UA では 10.15.7 に固定しています。実際の macOS の版（11 以降）は UA からは分かりません。')
+  if (os === 'Windows' && osVersion === '10/11') notes.push('Windows 10 と 11 はどちらも「Windows NT 10.0」と送るため、UA では区別できません（Client Hints の Sec-CH-UA-Platform-Version で分かります）。')
+  if (/^(Chrome|Microsoft Edge|Opera)$/.test(browser) && /^\d+\.0\.0\.0$/.test(browserVersion)) notes.push('Chromium 系のブラウザは、版の後ろ3つの数字を 0 に固定して送ります（メジャー版だけが本物）。')
+  if (os === 'macOS' && browser === 'Safari' && device === 'Desktop') notes.push('iPadOS 13 以降の Safari も、この形（Mac の UA）で送ります。iPad かどうかは UA だけでは判断できません。')
+  return { browser, browserVersion, engine, os, osVersion, device, isBot: false, botName: '', notes }
 }
 
 // ─── Presets ─────────────────────────────────────────────────────────────────
@@ -173,6 +186,11 @@ function ResultCard({ ua, index }: { ua: string; index: number }) {
         <Row label="デバイス" value={p.device} />
         {p.isBot && <Row label="Bot 名" value={p.botName} highlight />}
       </dl>
+      {p.notes.length > 0 && (
+        <ul className="mt-3 space-y-1">
+          {p.notes.map((n) => <li key={n} className="text-xs text-amber-300">※ {n}</li>)}
+        </ul>
+      )}
     </div>
   )
 }

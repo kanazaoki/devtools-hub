@@ -11,11 +11,16 @@ function nextId() { return String(++uid) }
 
 type Row = { id: string; cells: string[] }
 
+// ⚠ 以前はセルの中の | と改行をそのまま出していたので、列がずれたり表が途中で切れたりしていた
+function cell(s: string): string {
+  return s.replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\r?\n/g, '<br>').trim()
+}
+
 function buildMarkdown(headers: string[], alignments: Alignment[], rows: Row[]): string {
   const sep = alignments.map((a) => ALIGN_SYMBOLS[a])
-  const hRow = `| ${headers.join(' | ')} |`
+  const hRow = `| ${headers.map(cell).join(' | ')} |`
   const sRow = `| ${sep.join(' | ')} |`
-  const dRows = rows.map((r) => `| ${r.cells.join(' | ')} |`)
+  const dRows = rows.map((r) => `| ${r.cells.map(cell).join(' | ')} |`)
   return [hRow, sRow, ...dRows].join('\n')
 }
 
