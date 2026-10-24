@@ -208,6 +208,13 @@ export function UrlEncoder() {
               </p>
             </div>
           )}
+          {transformMode === 'decode' && input.includes('+') && !output?.error && (
+            <p className="mt-2 font-mono text-[11px] leading-relaxed text-amber-300/90">
+              ⚠ decodeURIComponent は「+」をそのまま残します。フォームの送信や URLSearchParams の形式
+              （application/x-www-form-urlencoded）では「+」は空白を表すので、そこから来た値なら「+」を空白に読み替えてください。
+              {queryParams && '下のクエリパラメータの一覧は URLSearchParams で読んでいるため、「+」が空白になっています。'}
+            </p>
+          )}
         </div>
       )}
 
