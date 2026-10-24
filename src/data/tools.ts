@@ -1575,7 +1575,9 @@ export const tools: Tool[] = [
     ],
     features: [
       'cURL → fetch / axios / Python requests / HTTPie の4形式に変換',
-      '-H（ヘッダー）・-d（ボディ）・-u（Basic認証）・-b（クッキー）などに対応',
+      '-H・-d（複数は & でつなぐ）・--data-raw・--data-urlencode・--json・-F（フォーム）・-G・-I・-u・-b・-A・-k に対応',
+      'bash の引用符（シングル・ダブル・$ で始まる形）と Windows のコマンドプロンプト用（^）の「Copy as cURL」をそのまま読める',
+      '出力するコードの文字列は正しく逃がす（改行や引用符を含む本文でも壊れない）',
       '4タブで出力を切り替え、ワンクリックコピー',
       '無効な入力はエラーメッセージで案内',
     ],

@@ -14,7 +14,8 @@ function encodeEntities(text: string, encodeNonAscii: boolean): string {
     .replace(/'/g, '&#39;')
 
   if (encodeNonAscii) {
-    result = result.replace(/[^\x00-\x7F]/g, (ch) => `&#${ch.charCodeAt(0)};`)
+    // ⚠ 以前は1文字ずつ charCodeAt で変換していたので、絵文字が &#55357;&#56832; のような壊れた参照2つになっていた
+    result = result.replace(/[^\x00-\x7F]/gu, (ch) => `&#${ch.codePointAt(0)};`)
   }
 
   return result

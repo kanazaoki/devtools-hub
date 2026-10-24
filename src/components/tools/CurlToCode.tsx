@@ -1,161 +1,122 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { basicAuth, parseCurl, type ParsedCurl } from '@/lib/curlParse'
 
-interface ParsedCurl {
-  method: string
-  url: string
-  headers: Record<string, string>
-  body: string | null
-  user: string | null
-  cookies: Record<string, string>
-  insecure: boolean
+// ⚠ 以前は値を '...' にそのまま埋め込んでいたので、改行を含む JSON の本文や ' を含む値でコードが壊れていた。
+// JavaScript と Python の文字列は JSON.stringify で作る（どちらの言語でも正しい文字列リテラルになる）
+const js = (s: string) => JSON.stringify(s)
+const py = (s: string) => JSON.stringify(s)
+const sh = (s: string) => `'${s.replace(/'/g, `'\\''`)}'`
+
+function allHeaders(p: ParsedCurl): [string, string][] {
+  const h = [...p.headers]
+  if (p.user) h.push(['Authorization', `Basic ${basicAuth(p.user)}`])
+  if (p.cookies) h.push(['Cookie', p.cookies])
+  // フォームのときは Content-Type をライブラリに任せる（境界の文字列が必要なため）
+  return p.form.length ? h.filter(([k]) => k.toLowerCase() !== 'content-type') : h
 }
 
-function parseCurl(input: string): ParsedCurl | null {
-  const trimmed = input.trim()
-  if (!trimmed.startsWith('curl ') && !trimmed.startsWith("curl\n")) return null
-
-  const joined = trimmed.replace(/\\\n\s*/g, ' ')
-
-  const tokens: string[] = []
-  const re = /(?:[^\s"']+|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')+/g
-  let m: RegExpExecArray | null
-  while ((m = re.exec(joined)) !== null) tokens.push(m[0])
-
-  const strip = (s: string) => s.replace(/^['"]|['"]$/g, '')
-
-  const result: ParsedCurl = {
-    method: 'GET',
-    url: '',
-    headers: {},
-    body: null,
-    user: null,
-    cookies: {},
-    insecure: false,
-  }
-
-  let i = 1
-  while (i < tokens.length) {
-    const t = tokens[i]
-    if (t === '-X' || t === '--request') {
-      result.method = strip(tokens[++i] ?? 'GET').toUpperCase()
-    } else if (t === '-H' || t === '--header') {
-      const raw = strip(tokens[++i] ?? '')
-      const colon = raw.indexOf(':')
-      if (colon > -1) {
-        result.headers[raw.slice(0, colon).trim()] = raw.slice(colon + 1).trim()
-      }
-    } else if (t === '-d' || t === '--data' || t === '--data-raw' || t === '--data-ascii') {
-      result.body = strip(tokens[++i] ?? '')
-      if (result.method === 'GET') result.method = 'POST'
-    } else if (t === '--data-urlencode') {
-      const raw = strip(tokens[++i] ?? '')
-      result.body = result.body ? result.body + '&' + raw : raw
-      if (result.method === 'GET') result.method = 'POST'
-    } else if (t === '-u' || t === '--user') {
-      result.user = strip(tokens[++i] ?? '')
-    } else if (t === '-b' || t === '--cookie') {
-      const raw = strip(tokens[++i] ?? '')
-      raw.split(';').forEach((pair) => {
-        const [k, v = ''] = pair.trim().split('=')
-        if (k) result.cookies[k.trim()] = v.trim()
-      })
-    } else if (t === '-k' || t === '--insecure') {
-      result.insecure = true
-    } else if (t === '--compressed' || t === '-s' || t === '--silent' || t === '-L' || t === '--location') {
-      // no-op
-    } else if (!t.startsWith('-')) {
-      if (!result.url) result.url = strip(t)
-    }
-    i++
-  }
-
-  if (!result.url) return null
-  return result
-}
+const isJson = (p: ParsedCurl) => p.headers.some(([k, v]) => k.toLowerCase() === 'content-type' && /json/i.test(v))
+const wantsJson = (p: ParsedCurl) => isJson(p) || p.headers.some(([k, v]) => k.toLowerCase() === 'accept' && /json/i.test(v))
 
 function toFetch(p: ParsedCurl): string {
-  const headers: Record<string, string> = { ...p.headers }
-  if (p.user) headers['Authorization'] = `Basic ${btoa(p.user)}`
-  if (Object.keys(p.cookies).length) {
-    headers['Cookie'] = Object.entries(p.cookies).map(([k, v]) => `${k}=${v}`).join('; ')
+  const lines: string[] = []
+  if (p.form.length) {
+    lines.push('const form = new FormData()')
+    for (const [k, v] of p.form) {
+      lines.push(v.startsWith('@')
+        ? `form.append(${js(k)}, fileInput.files[0]) // ${v.slice(1)} を選ばせる <input type="file"> から`
+        : `form.append(${js(k)}, ${js(v)})`)
+    }
+    lines.push('')
   }
-  const lines: string[] = [`fetch('${p.url}', {`]
-  if (p.method !== 'GET') lines.push(`  method: '${p.method}',`)
-  if (Object.keys(headers).length) {
+  lines.push(`fetch(${js(p.url)}, {`)
+  if (p.method !== 'GET') lines.push(`  method: ${js(p.method)},`)
+  const h = allHeaders(p)
+  if (h.length) {
     lines.push('  headers: {')
-    Object.entries(headers).forEach(([k, v]) => lines.push(`    '${k}': '${v}',`))
+    h.forEach(([k, v]) => lines.push(`    ${js(k)}: ${js(v)},`))
     lines.push('  },')
   }
-  if (p.body !== null) lines.push(`  body: '${p.body.replace(/'/g, "\\'")}',`)
+  if (p.form.length) lines.push('  body: form,')
+  else if (p.body !== null) lines.push(`  body: ${js(p.body)},`)
   lines.push('})')
-  lines.push("  .then(res => res.json())")
-  lines.push("  .then(data => console.log(data))")
-  lines.push("  .catch(err => console.error(err))")
+  lines.push(wantsJson(p) ? '  .then((res) => res.json())' : '  .then((res) => res.text())')
+  lines.push('  .then((data) => console.log(data))')
+  lines.push('  .catch((err) => console.error(err))')
+  if (p.insecure) lines.push('// ⚠ -k（証明書の検証をしない）はブラウザの fetch では指定できません')
   return lines.join('\n')
 }
 
 function toAxios(p: ParsedCurl): string {
-  const headers: Record<string, string> = { ...p.headers }
-  if (p.user) headers['Authorization'] = `Basic ${btoa(p.user)}`
-  if (Object.keys(p.cookies).length) {
-    headers['Cookie'] = Object.entries(p.cookies).map(([k, v]) => `${k}=${v}`).join('; ')
+  const lines: string[] = []
+  if (p.form.length) {
+    lines.push('const form = new FormData()')
+    for (const [k, v] of p.form) lines.push(v.startsWith('@') ? `form.append(${js(k)}, fileInput.files[0]) // ${v.slice(1)}` : `form.append(${js(k)}, ${js(v)})`)
+    lines.push('')
   }
-  const lines: string[] = ['axios({']
-  lines.push(`  method: '${p.method.toLowerCase()}',`)
-  lines.push(`  url: '${p.url}',`)
-  if (Object.keys(headers).length) {
+  lines.push('axios({')
+  lines.push(`  method: ${js(p.method.toLowerCase())},`)
+  lines.push(`  url: ${js(p.url)},`)
+  const h = allHeaders(p)
+  if (h.length) {
     lines.push('  headers: {')
-    Object.entries(headers).forEach(([k, v]) => lines.push(`    '${k}': '${v}',`))
+    h.forEach(([k, v]) => lines.push(`    ${js(k)}: ${js(v)},`))
     lines.push('  },')
   }
-  if (p.body !== null) lines.push(`  data: '${p.body.replace(/'/g, "\\'")}',`)
+  if (p.form.length) lines.push('  data: form,')
+  else if (p.body !== null) lines.push(`  data: ${js(p.body)},`)
   lines.push('})')
-  lines.push("  .then(res => console.log(res.data))")
-  lines.push("  .catch(err => console.error(err))")
+  lines.push('  .then((res) => console.log(res.data))')
+  lines.push('  .catch((err) => console.error(err))')
   return lines.join('\n')
 }
 
 function toPython(p: ParsedCurl): string {
-  const headers: Record<string, string> = { ...p.headers }
-  if (p.user) headers['Authorization'] = `Basic ${btoa(p.user)}`
   const lines: string[] = ['import requests', '']
-  if (Object.keys(headers).length) {
+  const h = allHeaders(p).filter(([k]) => k !== 'Authorization' || !p.user)
+  if (h.length) {
     lines.push('headers = {')
-    Object.entries(headers).forEach(([k, v]) => lines.push(`    '${k}': '${v}',`))
-    lines.push('}')
-    lines.push('')
+    h.forEach(([k, v]) => lines.push(`    ${py(k)}: ${py(v)},`))
+    lines.push('}', '')
   }
-  if (Object.keys(p.cookies).length) {
-    lines.push('cookies = {')
-    Object.entries(p.cookies).forEach(([k, v]) => lines.push(`    '${k}': '${v}',`))
-    lines.push('}')
-    lines.push('')
+  const args: string[] = [py(p.url)]
+  if (h.length) args.push('headers=headers')
+  if (p.user) {
+    const i = p.user.indexOf(':')
+    args.push(`auth=(${py(i < 0 ? p.user : p.user.slice(0, i))}, ${py(i < 0 ? '' : p.user.slice(i + 1))})`)
   }
-  const method = p.method.toLowerCase()
-  const args: string[] = [`'${p.url}'`]
-  if (Object.keys(headers).length) args.push('headers=headers')
-  if (Object.keys(p.cookies).length) args.push('cookies=cookies')
-  if (p.body !== null) args.push(`data='${p.body.replace(/'/g, "\\'")}'`)
+  if (p.form.length) {
+    const files = p.form.filter(([, v]) => v.startsWith('@'))
+    const fields = p.form.filter(([, v]) => !v.startsWith('@'))
+    if (fields.length) args.push(`data={${fields.map(([k, v]) => `${py(k)}: ${py(v)}`).join(', ')}}`)
+    if (files.length) args.push(`files={${files.map(([k, v]) => `${py(k)}: open(${py(v.slice(1))}, "rb")`).join(', ')}}`)
+  } else if (p.body !== null) {
+    // 本文はバイト列のまま送る（data= に文字列を渡すと、そのまま本文になる）
+    args.push(`data=${py(p.body)}.encode("utf-8")`)
+  }
   if (p.insecure) args.push('verify=False')
-  lines.push(`response = requests.${method}(`)
+  lines.push(`response = requests.request(`)
+  lines.push(`    ${py(p.method)},`)
   args.forEach((a, idx) => lines.push(`    ${a}${idx < args.length - 1 ? ',' : ''}`))
   lines.push(')')
-  lines.push('print(response.json())')
+  lines.push(wantsJson(p) ? 'print(response.json())' : 'print(response.text)')
   return lines.join('\n')
 }
 
 function toHttpie(p: ParsedCurl): string {
   const parts: string[] = ['http']
   if (p.insecure) parts.push('--verify=no')
-  if (p.method !== 'GET') parts.push(p.method)
-  parts.push(`'${p.url}'`)
-  if (p.user) parts.push(`--auth '${p.user}'`)
-  Object.entries(p.headers).forEach(([k, v]) => parts.push(`'${k}:${v}'`))
-  Object.entries(p.cookies).forEach(([k, v]) => parts.push(`Cookie:'${k}=${v}'`))
-  if (p.body !== null) parts.push(`<<<'${p.body.replace(/'/g, "\\'")}'`)
-  return parts.join(' \\\n  ')
+  if (p.form.length) parts.push('--multipart')
+  parts.push(p.method, sh(p.url))
+  if (p.user) parts.push(`--auth ${sh(p.user)}`)
+  p.headers.forEach(([k, v]) => parts.push(sh(`${k}:${v}`)))
+  if (p.cookies) parts.push(sh(`Cookie:${p.cookies}`))
+  p.form.forEach(([k, v]) => parts.push(sh(v.startsWith('@') ? `${k}@${v.slice(1)}` : `${k}=${v}`)))
+  let cmd = parts.join(' \\\n  ')
+  if (!p.form.length && p.body !== null) cmd = `printf '%s' ${sh(p.body)} | ${cmd}`
+  return cmd
 }
 
 const SAMPLE = `curl 'https://api.example.com/users' \\
@@ -207,6 +168,12 @@ export function CurlToCode() {
             有効な cURL コマンドを入力してください（<span className="text-[var(--dim)]">curl</span> で始まり URL を含む）
           </p>
         )}
+        {parsed && parsed.ignored.length > 0 && (
+          <p className="font-mono text-xs text-amber-300">⚠ 変換に反映していないオプション：{parsed.ignored.join('、')}</p>
+        )}
+        <p className="font-mono text-[10px] text-[var(--muted)]">
+          bash の引用符（'…'・"…"・$'…'）と、Windows のコマンドプロンプト用（^ で続ける形）の両方を読めます。ブラウザの開発者ツールの「Copy as cURL」をそのまま貼り付けられます。
+        </p>
       </div>
 
       {/* Output */}
