@@ -30,10 +30,20 @@ function headerList(raw: string): string {
   return raw.trim() === '*' ? '*' : parseList(raw).join(', ')
 }
 
+// ⚠ Access-Control-Allow-Origin には1つのオリジンしか書けない。複数を許可するときは、
+// リクエストの Origin が許可リストにあればその値を返し、Vary: Origin を付ける。
+// 以前は複数入れても1つ目だけを黙って出力していた
+const isMulti = (c: Config) => c.origins.trim() !== '*' && parseList(c.origins).length > 1
+
 function buildHeaders(c: Config): string {
   const lines: string[] = []
   const origin = originValue(c)
-  if (origin) lines.push(`Access-Control-Allow-Origin: ${origin}`)
+  if (isMulti(c)) {
+    lines.push(`# 許可するオリジン: ${parseList(c.origins).join(', ')}`)
+    lines.push(`# リクエストの Origin がこの中にあるときだけ、その値をそのまま返す`)
+    lines.push(`Access-Control-Allow-Origin: <一致した Origin>`)
+    lines.push('Vary: Origin')
+  } else if (origin) lines.push(`Access-Control-Allow-Origin: ${origin}`)
   if (c.methods.length) lines.push(`Access-Control-Allow-Methods: ${c.methods.join(', ')}`)
   if (c.allowHeaders.trim()) lines.push(`Access-Control-Allow-Headers: ${headerList(c.allowHeaders)}`)
   if (c.exposeHeaders.trim()) lines.push(`Access-Control-Expose-Headers: ${headerList(c.exposeHeaders)}`)
@@ -45,14 +55,20 @@ function buildHeaders(c: Config): string {
 function buildNginx(c: Config): string {
   const origin = originValue(c)
   const l: string[] = []
-  if (origin) l.push(`add_header 'Access-Control-Allow-Origin' '${origin}' always;`)
+  let mapBlock = ''
+  if (isMulti(c)) {
+    const entries = parseList(c.origins).map((o) => `    "${o}" "${o}";`).join('\n')
+    mapBlock = `# http { } の中に置く：許可リストにある Origin だけを返す\nmap $http_origin $cors_origin {\n    default "";\n${entries}\n}\n\n`
+    l.push(`add_header 'Access-Control-Allow-Origin' $cors_origin always;`)
+    l.push(`add_header 'Vary' 'Origin' always;`)
+  } else if (origin) l.push(`add_header 'Access-Control-Allow-Origin' '${origin}' always;`)
   if (c.methods.length) l.push(`add_header 'Access-Control-Allow-Methods' '${c.methods.join(', ')}' always;`)
   if (c.allowHeaders.trim()) l.push(`add_header 'Access-Control-Allow-Headers' '${headerList(c.allowHeaders)}' always;`)
   if (c.exposeHeaders.trim()) l.push(`add_header 'Access-Control-Expose-Headers' '${headerList(c.exposeHeaders)}' always;`)
   if (c.credentials) l.push(`add_header 'Access-Control-Allow-Credentials' 'true' always;`)
   if (c.maxAge.trim()) l.push(`add_header 'Access-Control-Max-Age' '${c.maxAge.trim()}' always;`)
   const body = l.map((x) => '    ' + x).join('\n')
-  return `location / {\n${body}\n\n    # プリフライト（OPTIONS）は即 204 を返す\n    if ($request_method = 'OPTIONS') {\n        return 204;\n    }\n}`
+  return `${mapBlock}location / {\n${body}\n\n    # プリフライト（OPTIONS）は即 204 を返す\n    if ($request_method = 'OPTIONS') {\n        return 204;\n    }\n}`
 }
 
 function buildExpress(c: Config): string {
@@ -77,6 +93,17 @@ function buildExpress(c: Config): string {
 }
 
 function buildNextjs(c: Config): string {
+  if (isMulti(c)) {
+    // next.config.js の headers() は固定値しか返せないので、複数オリジンは middleware で返す
+    const allow = parseList(c.origins).map((o) => `'${o}'`).join(', ')
+    const extra: string[] = []
+    if (c.methods.length) extra.push(`  res.headers.set('Access-Control-Allow-Methods', '${c.methods.join(', ')}')`)
+    if (c.allowHeaders.trim()) extra.push(`  res.headers.set('Access-Control-Allow-Headers', '${headerList(c.allowHeaders)}')`)
+    if (c.exposeHeaders.trim()) extra.push(`  res.headers.set('Access-Control-Expose-Headers', '${headerList(c.exposeHeaders)}')`)
+    if (c.credentials) extra.push(`  res.headers.set('Access-Control-Allow-Credentials', 'true')`)
+    if (c.maxAge.trim()) extra.push(`  res.headers.set('Access-Control-Max-Age', '${c.maxAge.trim()}')`)
+    return `// middleware.ts（複数オリジンは next.config.js の headers() では書けない）\nimport { NextResponse, type NextRequest } from 'next/server'\n\nconst ALLOWED = [${allow}]\n\nexport function middleware(req: NextRequest) {\n  const origin = req.headers.get('origin') ?? ''\n  const res = req.method === 'OPTIONS' ? new NextResponse(null, { status: 204 }) : NextResponse.next()\n  res.headers.set('Vary', 'Origin')\n  if (!ALLOWED.includes(origin)) return res\n  res.headers.set('Access-Control-Allow-Origin', origin)\n${extra.join('\n')}\n  return res\n}\n\nexport const config = { matcher: '/api/:path*' }`
+  }
   const origin = originValue(c)
   const entries: string[] = []
   if (origin) entries.push(`{ key: 'Access-Control-Allow-Origin', value: '${origin}' }`)
@@ -116,10 +143,10 @@ function getWarnings(c: Config): string[] {
     w.push('credentials:true のとき Access-Control-Expose-Headers に * は使えません。')
   }
   if (multi && !isWildcard) {
-    w.push('Access-Control-Allow-Origin は単一値か * のみ有効です。複数オリジンを許可するには、リクエストの Origin を許可リストと照合して動的に返す必要があります（Express の設定はこの形で生成しています）。')
+    w.push('Access-Control-Allow-Origin は単一値か * のみ有効です。複数オリジンは、リクエストの Origin を許可リストと照合して一致した値だけを返し、Vary: Origin を付ける形で出力しています（Vary が無いと、CDN が別オリジン向けの応答を使い回すことがあります）。')
   }
-  if (c.methods.length && !c.methods.includes('OPTIONS')) {
-    w.push('プリフライト対応のため、許可メソッドに OPTIONS を含めることを推奨します。')
+  if (c.origins.trim().toLowerCase() === 'null' || parseList(c.origins).includes('null')) {
+    w.push('Origin: null を許可すると、サンドボックス化した iframe やファイルから開いたページなど、どこからでも null を名乗れるので、事実上すべてを許可するのと同じになります。')
   }
   return w
 }
