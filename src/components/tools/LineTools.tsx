@@ -62,8 +62,11 @@ const OPS: { group: string; items: { id: Op; label: string }[] }[] = [
 ]
 
 // 数値順ソート用：行頭の数値を取り出す（数値でなければ末尾に送る）
+// ⚠ 以前は item-10 の「-」もマイナスとして読み、item-10 が item-2 より前に来ていた。
+// マイナスは語の途中（英数字の直後）では数えない。1,200 のような桁区切りのカンマは外して読む
 function leadingNumber(s: string) {
-  const m = s.trim().match(/-?\d+(\.\d+)?/)
+  const t = s.trim().replace(/(\d),(?=\d{3}(?!\d))/g, '$1')
+  const m = t.match(/(?<![\w.])-?\d+(?:\.\d+)?|\d+(?:\.\d+)?/)
   return m ? Number(m[0]) : Number.POSITIVE_INFINITY
 }
 
