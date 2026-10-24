@@ -15,13 +15,24 @@ function toBase64(input: string, urlSafe: boolean): string {
   return urlSafe ? b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '') : b64
 }
 
-function fromBase64(input: string): string {
-  let normalized = input.replace(/-/g, '+').replace(/_/g, '/')
+// ⚠ 以前は空白を残したまま = を足していたので、76文字ごとに改行されたメールや PEM の Base64 が
+// 「Invalid character」で読めなかった。先に空白と改行を取り除く
+function base64ToBytes(input: string): Uint8Array {
+  let normalized = input.replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/')
   while (normalized.length % 4) normalized += '='
   const binary = atob(normalized)
   const bytes = new Uint8Array(binary.length)
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
-  return new TextDecoder().decode(bytes)
+  return bytes
+}
+
+// 先頭のバイトから画像の形式を当てる（data: が付いていない Base64 でも画像として表示するため）
+function imageMimeOf(b: Uint8Array): string | null {
+  if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return 'image/png'
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg'
+  if (b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46) return 'image/gif'
+  if (b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45) return 'image/webp'
+  return null
 }
 
 function stripDataPrefix(s: string): string {
@@ -33,6 +44,7 @@ type DecodeResult =
   | { type: 'empty' }
   | { type: 'text'; text: string }
   | { type: 'image'; src: string }
+  | { type: 'binary'; size: number; hex: string }
   | { type: 'error'; message: string }
 
 export function Base64Studio() {
@@ -76,7 +88,16 @@ export function Base64Studio() {
     if (!raw) return { type: 'empty' }
     if (raw.startsWith('data:image/')) return { type: 'image', src: raw }
     try {
-      return { type: 'text', text: fromBase64(stripDataPrefix(raw)) }
+      const bytes = base64ToBytes(stripDataPrefix(raw))
+      const mime = imageMimeOf(bytes)
+      if (mime) return { type: 'image', src: `data:${mime};base64,${raw.replace(/\s+/g, '')}` }
+      // ⚠ 以前はバイナリでも文字として読み、文字化けした文字列を黙って表示していた
+      try {
+        return { type: 'text', text: new TextDecoder('utf-8', { fatal: true }).decode(bytes) }
+      } catch {
+        const hex = Array.from(bytes.slice(0, 64), (x) => x.toString(16).padStart(2, '0')).join(' ')
+        return { type: 'binary', size: bytes.length, hex }
+      }
     } catch (e) {
       return { type: 'error', message: (e as Error).message }
     }
@@ -301,6 +322,15 @@ export function Base64Studio() {
             {decodeResult.type === 'image' && (
               <div className="flex h-64 items-center justify-center rounded-lg border border-border bg-[#111827] p-3">
                 <img src={decodeResult.src} alt="decoded" className="max-h-full max-w-full rounded object-contain" />
+              </div>
+            )}
+            {decodeResult.type === 'binary' && (
+              <div className="flex h-64 flex-col gap-2 overflow-auto rounded-lg border border-amber-400/30 bg-amber-400/5 p-4">
+                <span className="font-mono text-xs text-amber-300">
+                  UTF-8 のテキストではないデータです（{decodeResult.size.toLocaleString()} バイト）
+                </span>
+                <p className="font-mono text-[11px] text-muted">先頭 64 バイト（16進）</p>
+                <pre className="whitespace-pre-wrap break-all font-mono text-xs text-dim">{decodeResult.hex}</pre>
               </div>
             )}
             {decodeResult.type === 'error' && (

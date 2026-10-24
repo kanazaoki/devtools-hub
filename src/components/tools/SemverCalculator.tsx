@@ -1,91 +1,41 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { compare, inc, parse, satisfies, type RangeResult, type SemVer } from '@/lib/semver'
+
+// ⚠ 以前の自前実装は、プレリリースを文字列のまま比べて alpha.10 < alpha.2 としていた。
+// また ^1.2.0 が 1.3.0-beta に当たる、1.2.3-beta の patch が 1.2.4 になる、
+// 「>=1.2.0 <2.0.0」「||」「1.x」「1.2.3 - 2.0.0」が読めない、といった点が npm と違っていた。
+// いまは src/lib/semver.ts（node-semver と照合済み）で計算する
 
 interface SemverParts {
+  v: SemVer | null
   major: number
   minor: number
   patch: number
   prerelease: string
   build: string
   valid: boolean
-  raw: string
 }
 
 function parseSemver(raw: string): SemverParts {
-  const s = raw.trim().replace(/^v/, '')
-  const re = /^(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z0-9._-]+))?(?:\+([a-zA-Z0-9._-]+))?$/
-  const m = re.exec(s)
-  if (!m) return { major: 0, minor: 0, patch: 0, prerelease: '', build: '', valid: false, raw }
-  return {
-    major: parseInt(m[1], 10),
-    minor: parseInt(m[2], 10),
-    patch: parseInt(m[3], 10),
-    prerelease: m[4] ?? '',
-    build: m[5] ?? '',
-    valid: true,
-    raw,
-  }
+  const v = parse(raw)
+  if (!v) return { v: null, major: 0, minor: 0, patch: 0, prerelease: '', build: '', valid: false }
+  return { v, major: v.major, minor: v.minor, patch: v.patch, prerelease: v.prerelease.join('.'), build: v.build.join('.'), valid: true }
 }
 
-function bump(v: SemverParts, type: 'major' | 'minor' | 'patch'): string {
-  if (!v.valid) return ''
-  if (type === 'major') return `${v.major + 1}.0.0`
-  if (type === 'minor') return `${v.major}.${v.minor + 1}.0`
-  return `${v.major}.${v.minor}.${v.patch + 1}`
+function bump(p: SemverParts, type: 'major' | 'minor' | 'patch'): string {
+  return p.v ? inc(p.v, type) : ''
 }
 
 function compareSemver(a: SemverParts, b: SemverParts): number {
-  if (a.major !== b.major) return a.major - b.major
-  if (a.minor !== b.minor) return a.minor - b.minor
-  if (a.patch !== b.patch) return a.patch - b.patch
-  // prerelease: no prerelease > prerelease
-  if (!a.prerelease && b.prerelease) return 1
-  if (a.prerelease && !b.prerelease) return -1
-  if (a.prerelease && b.prerelease) return a.prerelease.localeCompare(b.prerelease)
-  return 0
+  return a.v && b.v ? compare(a.v, b.v) : 0
 }
 
-// Simple range checker supporting: ^, ~, >=, <=, >, <, =, *
-function satisfiesRange(range: string, version: SemverParts): boolean | null {
-  if (!version.valid) return null
-  const r = range.trim()
-  if (r === '*' || r === '') return true
-
-  const ops = [['>=', (a: SemverParts, b: SemverParts) => compareSemver(a, b) >= 0],
-    ['<=', (a: SemverParts, b: SemverParts) => compareSemver(a, b) <= 0],
-    ['>', (a: SemverParts, b: SemverParts) => compareSemver(a, b) > 0],
-    ['<', (a: SemverParts, b: SemverParts) => compareSemver(a, b) < 0],
-    ['=', (a: SemverParts, b: SemverParts) => compareSemver(a, b) === 0],
-  ] as const
-
-  for (const [op, fn] of ops) {
-    if (r.startsWith(op)) {
-      const target = parseSemver(r.slice(op.length))
-      if (!target.valid) return null
-      return fn(version, target)
-    }
-  }
-
-  if (r.startsWith('^')) {
-    const target = parseSemver(r.slice(1))
-    if (!target.valid) return null
-    const inRange = compareSemver(version, target) >= 0
-    if (target.major > 0) return inRange && version.major === target.major
-    if (target.minor > 0) return inRange && version.major === target.major && version.minor === target.minor
-    return inRange && version.major === 0 && version.minor === 0 && version.patch === target.patch
-  }
-
-  if (r.startsWith('~')) {
-    const target = parseSemver(r.slice(1))
-    if (!target.valid) return null
-    return compareSemver(version, target) >= 0 && version.major === target.major && version.minor === target.minor
-  }
-
-  // bare version
-  const target = parseSemver(r)
-  if (!target.valid) return null
-  return compareSemver(version, target) === 0
+function satisfiesRange(range: string, p: SemverParts): RangeResult | null {
+  if (!p.v) return null
+  const r = satisfies(range, p.v)
+  return r.valid ? r : null
 }
 
 export function SemverCalculator() {
@@ -222,12 +172,12 @@ export function SemverCalculator() {
             value={rangeInput}
             onChange={e => setRangeInput(e.target.value)}
             placeholder="^1.2.0"
-            className="w-40 rounded border border-border bg-bg px-3 py-2 font-mono text-sm text-primary focus:border-teal/50 focus:outline-none"
+            className="w-56rounded border border-border bg-bg px-3 py-2 font-mono text-sm text-primary focus:border-teal/50 focus:outline-none"
           />
           <span className="text-sm text-muted">の範囲内か</span>
         </div>
         <div className="mt-2 flex flex-wrap gap-1.5">
-          {['*', '^1.2.0', '~1.2.0', '>=1.0.0', '>1.0.0', '<2.0.0'].map(preset => (
+          {['^1.2.0', '~1.2.0', '>=1.2.0 <2.0.0', '1.x', '1.2.3 - 2.0.0', '^1.0.0 || ^2.0.0', '*'].map(preset => (
             <button key={preset} onClick={() => setRangeInput(preset)}
               className={`rounded border px-2 py-0.5 font-mono text-xs transition-colors ${
                 rangeInput === preset
@@ -239,17 +189,27 @@ export function SemverCalculator() {
           ))}
         </div>
         {rangeResult !== null && (
-          <div className={`mt-3 flex items-center gap-2 rounded border px-4 py-3 ${
-            rangeResult
-              ? 'border-teal/40 bg-teal/10 text-teal'
-              : 'border-red-800/50 bg-red-950/30 text-red-400'
-          }`}>
-            <span className="text-lg">{rangeResult ? '✓' : '✗'}</span>
-            <span className="font-mono text-sm">
-              {rangeVersion} は <strong>{rangeInput}</strong> の範囲に
-              {rangeResult ? '含まれます' : '含まれません'}
-            </span>
-          </div>
+          <>
+            <div className={`mt-3 flex items-center gap-2 rounded border px-4 py-3 ${
+              rangeResult.satisfies
+                ? 'border-teal/40 bg-teal/10 text-teal'
+                : 'border-red-800/50 bg-red-950/30 text-red-400'
+            }`}>
+              <span className="text-lg">{rangeResult.satisfies ? '✓' : '✗'}</span>
+              <span className="font-mono text-sm">
+                {rangeVersion} は <strong>{rangeInput || '*'}</strong> の範囲に
+                {rangeResult.satisfies ? '含まれます' : '含まれません'}
+              </span>
+            </div>
+            <p className="mt-2 font-mono text-xs text-muted">
+              読み替え：<span className="text-primary">{rangeResult.normalized}</span>
+            </p>
+            {rangeResult.excludedPrerelease && (
+              <p className="mt-1 text-xs text-amber-300">
+                数値の上では範囲内ですが、プレリリース版です。npm の範囲指定は、同じ major.minor.patch のプレリリースが範囲に書かれているときだけプレリリース版に当てはまります（例：^1.2.3-beta.0 なら 1.2.3-beta.2 は含まれる）。
+              </p>
+            )}
+          </>
         )}
         {rangeResult === null && rangeVersion && (
           <p className="mt-2 text-xs text-red-400">⚠ 無効なバージョンまたは範囲指定です</p>

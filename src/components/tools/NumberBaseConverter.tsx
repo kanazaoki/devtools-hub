@@ -24,11 +24,22 @@ function stripPrefix(val: string, base: Base): string {
   return val.replace(/\s/g, '').trim()
 }
 
-function formatBin(n: number): string {
-  return n.toString(2).replace(/(.{4})/g, '$1 ').trim()
+// ⚠ 以前は Number（parseInt）で計算していたため、2^53 を超える値は黙って下の桁が変わっていた
+// （12345678901234567890 → HEX が …0800 になる。正しくは …0AD2）。BigInt で桁数の制限なく扱う
+function parseBig(stripped: string, base: Base): bigint {
+  if (base === 'dec') return BigInt(stripped)
+  const prefix = base === 'bin' ? '0b' : base === 'oct' ? '0o' : '0x'
+  return BigInt(prefix + stripped)
 }
 
-function toBase(n: number, base: Base): string {
+function formatBin(n: bigint): string {
+  const sign = n < 0n ? '-' : ''
+  const digits = (n < 0n ? -n : n).toString(2)
+  // 右から4桁ずつ区切る
+  return sign + digits.replace(/(?=(?:[01]{4})+$)/g, ' ').trim()
+}
+
+function toBase(n: bigint, base: Base): string {
   if (base === 'bin') return formatBin(n)
   if (base === 'oct') return n.toString(8)
   if (base === 'dec') return n.toString(10)
@@ -52,7 +63,7 @@ function CopyButton({ text }: { text: string }) {
 export function NumberBaseConverter() {
   const [values, setValues] = useState<Record<Base, string>>({ bin: '', oct: '', dec: '', hex: '' })
   const [error, setError] = useState('')
-  const [currentN, setCurrentN] = useState<number | null>(null)
+  const [currentN, setCurrentN] = useState<bigint | null>(null)
 
   const convert = useCallback((source: Base, raw: string) => {
     setError('')
@@ -73,8 +84,8 @@ export function NumberBaseConverter() {
     }
 
     const stripped = stripPrefix(raw, source)
-    const n = parseInt(stripped, BASE_CONFIG[source].radix)
-    if (isNaN(n)) { setError('変換に失敗しました'); return }
+    let n: bigint
+    try { n = parseBig(stripped, source) } catch { setError('変換に失敗しました'); return }
 
     for (const b of ['bin', 'oct', 'dec', 'hex'] as Base[]) {
       next[b] = b === source ? raw : toBase(n, b)
@@ -84,20 +95,28 @@ export function NumberBaseConverter() {
   }, [])
 
   const toggleBit = (bitPos: number) => {
-    const cur = currentN ?? 0
-    const toggled = cur ^ (1 << bitPos)
-    convert('dec', String(toggled))
+    const cur = currentN ?? 0n
+    // ⚠ 以前は 1 << bitPos で、31 ビット目以上を反転すると桁あふれしていた
+    const mask = 1n << BigInt(bitPos)
+    let toggled = cur ^ mask
+    // 負の数は2の補数（表示しているビット幅）で反転し、符号付きとして読み直す
+    if (cur < 0n) toggled = BigInt.asIntN(bitWidth, BigInt.asUintN(bitWidth, cur) ^ mask)
+    convert('dec', toggled.toString())
   }
 
-  // Bit view
-  const bitWidth = currentN !== null && currentN > 0
-    ? Math.max(8, Math.ceil(Math.floor(Math.log2(currentN) + 1) / 4) * 4)
-    : 8
-  const padded = (currentN ?? 0).toString(2).padStart(bitWidth, '0')
+  // Bit view（負の数は2の補数で表示する）
+  const absBits = currentN === null ? 1 : (currentN < 0n ? -currentN - 1n : currentN).toString(2).length
+  const bitWidth = currentN !== null && currentN < 0n
+    ? Math.max(8, Math.ceil((absBits + 1) / 8) * 8)
+    : Math.max(8, Math.ceil(absBits / 4) * 4)
+  const padded = currentN === null
+    ? '0'.repeat(bitWidth)
+    : BigInt.asUintN(bitWidth, currentN).toString(2).padStart(bitWidth, '0')
 
-  const bitLen   = currentN !== null ? (currentN === 0 ? 1 : Math.floor(Math.log2(currentN)) + 1) : null
+  const bitLen   = currentN !== null ? (currentN < 0n ? bitWidth : absBits) : null
   const byteLen  = bitLen !== null ? Math.ceil(bitLen / 8) : null
-  const signed32 = currentN !== null ? (currentN | 0) : null
+  const signed32 = currentN !== null ? BigInt.asIntN(32, currentN) : null
+  const over32 = currentN !== null && (currentN >= 1n << 32n || currentN < -(1n << 31n))
 
   return (
     <div className="space-y-3">
@@ -131,7 +150,7 @@ export function NumberBaseConverter() {
           {[
             { key: 'Bit length',      val: String(bitLen) },
             { key: 'Byte length',     val: String(byteLen) },
-            { key: 'Signed (32-bit)', val: String(signed32), warn: (signed32 ?? 0) < 0 },
+            { key: over32 ? 'Signed (下位32-bit)' : 'Signed (32-bit)', val: String(signed32), warn: (signed32 ?? 0n) < 0n },
           ].map(({ key, val, warn }) => (
             <div key={key} className="rounded-lg border border-border bg-surface-hi px-3 py-2">
               <p className="font-mono text-[9px] uppercase tracking-wider text-muted">{key}</p>
