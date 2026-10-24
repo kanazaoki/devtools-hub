@@ -1304,21 +1304,21 @@ export const articles: Article[] = [
       {
         heading: '主な使用場面',
         tool: 'base64-studio',
-        body: 'Data URIは画像・フォント・SVGをBase64でエンコードしHTMLやCSSに直接埋め込む技術で、`<img src="data:image/png;base64,iVBORw...">` の形式です。小さなアイコン画像をHTTPリクエストなしで表示でき、ページのリクエスト数を削減できます。HTTP Basic認証では `Authorization: Basic dXNlcjpwYXNz` のように、ユーザー名とパスワードを `:` で連結してBase64エンコードします。これは暗号化ではないため、必ずHTTPS上で使う必要があります。JWTのヘッダーとペイロードはBase64URLエンコード（+を-に、/を_に置換しパディングを省略したURL安全な変形）されており、JWT Decoderでデコードすると中身を確認できます。',
+        body: 'Data URIは画像・フォント・SVGをBase64でエンコードしHTMLやCSSに直接埋め込む技術で、`<img src="data:image/png;base64,iVBORw...">` の形式です。小さなアイコン画像をHTTPリクエストなしで表示でき、ページのリクエスト数を削減できます。ただしサイズは約33%増え、画像だけを別にキャッシュすることもできなくなるので、複数のページで使う画像や大きな画像には向きません。HTTP/2 以降は1本の接続でまとめて取得できるため、リクエスト数を減らす効果も以前ほど大きくありません。HTTP Basic認証では `Authorization: Basic dXNlcjpwYXNz` のように、ユーザー名とパスワードを `:` で連結してBase64エンコードします。これは暗号化ではないため、必ずHTTPS上で使う必要があります。JWTのヘッダーとペイロードはBase64URLエンコード（+を-に、/を_に置換しパディングを省略したURL安全な変形）されており、JWT Decoderでデコードすると中身を確認できます。',
       },
       {
         heading: 'Base64は暗号化ではない',
-        tool: 'hash-studio',
-        body: 'Base64はエンコード（変換）であり、暗号化（秘匿）ではありません。誰でもデコードできるため、Base64でエンコードしただけでは情報の秘匿にはなりません。「パスワードをBase64でエンコードして保存する」という実装は完全に誤りで、すぐにデコードされてしまいます。機密データの保護にはAES等の暗号化、またはパスワードのような不可逆変換が必要なデータにはbcryptやArgon2などのハッシュ関数を使います。Base64はあくまで「テキストとして安全に運ぶ」ための形式変換であり、セキュリティ対策としての役割はありません。',
+        tool: 'base64-studio',
+        body: 'Base64はエンコード（変換）であり、暗号化（秘匿）ではありません。誰でもデコードできるため、Base64でエンコードしただけでは情報の秘匿にはなりません。Base64 Studio に `dXNlcjpwYXNz` を貼ってデコードすると、鍵も何もなしに user:pass がそのまま出てきます。「パスワードをBase64でエンコードして保存する」という実装は完全に誤りです。機密データの保護にはAES等の暗号化、パスワードのように元に戻す必要がないデータには bcrypt や Argon2 のような、わざと計算に時間がかかるよう作られたハッシュ関数を使います。MD5 や SHA-256 も元には戻せませんが、計算が速すぎて総当たりで割り出されやすいため、パスワードの保存には向きません。Base64はあくまで「テキストとして安全に運ぶ」ための形式変換であり、セキュリティ対策としての役割はありません。',
       },
       {
         heading: 'Base64のデコードとエンコードの実装',
         tool: 'base64-studio',
-        body: 'JavaScriptではブラウザ・Node.js双方で `btoa()`（エンコード）と `atob()`（デコード）が使えます。ただし `btoa()` はLatin-1（ISO-8859-1）の範囲外の文字（日本語など）を直接扱えないため、日本語をBase64にエンコードする場合は `btoa(unescape(encodeURIComponent(str)))` のように一度URIエンコードを挟む必要があります。Node.jsでは `Buffer.from(str).toString(\'base64\')` と `Buffer.from(b64, \'base64\').toString(\'utf-8\')` でシンプルに扱えます。Base64 Studioを使うと、テキスト・バイナリファイル・画像のBase64変換をブラウザ上で即座に確認でき、実装前の動作確認やデバッグに活用できます。',
+        body: 'JavaScriptではブラウザ・Node.js双方で `btoa()`（エンコード）と `atob()`（デコード）が使えます。ただし `btoa()` はLatin-1（ISO-8859-1）の範囲外の文字（日本語など）を渡すと例外になり、`atob()` は結果を1バイトずつの文字として返すため、日本語を含むBase64をそのままデコードすると「æ¥æ¬èª」のように文字化けします。日本語を扱うときは、`TextEncoder` でUTF-8のバイト列にしてから `btoa()` に渡し、デコードでは `atob()` の結果をバイト列に戻して `TextDecoder` で読みます。古い記事でよく見る `btoa(unescape(encodeURIComponent(str)))` も動きますが、`unescape` は非推奨の関数です。実際にこのサイトの JWT のツールでも、`atob()` だけで読んでいたために日本語のクレームが文字化けしていたことがありました。Node.jsでは `Buffer.from(str).toString(\'base64\')` と `Buffer.from(b64, \'base64\').toString(\'utf-8\')` でシンプルに扱えます。Base64 Studioを使うと、テキスト・バイナリファイル・画像のBase64変換をブラウザ上で即座に確認でき、実装前の動作確認やデバッグに活用できます。',
       },
     ],
     conclusion: 'Base64は「テキストプロトコルでバイナリを安全に扱うための変換」という明確な役割を持ちます。Data URI・HTTP認証ヘッダー・JWTペイロードなど、現代のWeb開発の随所に登場しますが、暗号化との混同だけは避けることが重要です。仕組みを理解した上で適切な場面で使うことで、デバッグや実装の品質が向上します。',
-    relatedTools: ['base64-studio', 'jwt-decoder', 'url-encoder', 'hash-studio'],
+    relatedTools: ['base64-studio', 'jwt-decoder', 'url-encoder'],
   },
   {
     slug: 'css-grid-vs-flexbox',
