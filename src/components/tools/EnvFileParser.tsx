@@ -7,6 +7,8 @@ import { useState } from 'react'
 interface ParsedEntry {
   key: string
   value: string
+  line: number
+  note?: string
 }
 
 interface Warning {
@@ -19,13 +21,26 @@ interface ParseResult {
   warnings: Warning[]
 }
 
-function unquote(val: string): string {
-  if (val.length >= 2) {
-    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
-      return val.slice(1, -1)
+// 値の読み方は dotenv（Node.js で最も使われる読み込み方）に合わせる。
+// ⚠ 以前はクォートを外すだけで、「KEY=abc # メモ」のメモまで値に入れ、「export KEY=」のキーを
+// 「export KEY」と読み、同じキーが2回あっても何も言わなかった
+function readValue(raw: string): { value: string; note?: string } {
+  const v = raw.trim()
+  const q = v[0]
+  if (q === '"' || q === "'" || q === '`') {
+    const end = v.indexOf(q, 1)
+    if (end > 0) {
+      let inner = v.slice(1, end)
+      // ダブルクォートの中だけ \n を改行として読む
+      if (q === '"') inner = inner.replace(/\\n/g, '\n').replace(/\\r/g, '\r')
+      return { value: inner, note: q === '"' ? 'ダブルクォート（\\n は改行になる）' : 'シングルクォート（書いたとおり）' }
     }
+    return { value: v, note: '閉じるクォートが見つからないため、そのまま読みました' }
   }
-  return val
+  // クォート無しは # からがコメント（dotenv は直前に空白が無くても # で切る。abc#def は abc）
+  const m = v.indexOf('#')
+  if (m >= 0) return { value: v.slice(0, m).trim(), note: `「${v.slice(m).trim()}」はコメントとして外しました（# を値に含めるならクォートで囲む）` }
+  return { value: v }
 }
 
 function parseEnv(text: string): ParseResult {
@@ -34,11 +49,8 @@ function parseEnv(text: string): ParseResult {
   const warnings: Warning[] = []
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
-    const trimmed = line.trim()
-
-    if (!trimmed) continue
-    if (trimmed.startsWith('#')) continue
+    const trimmed = lines[i].trim()
+    if (!trimmed || trimmed.startsWith('#')) continue
 
     const eqIdx = trimmed.indexOf('=')
     if (eqIdx === -1) {
@@ -46,14 +58,19 @@ function parseEnv(text: string): ParseResult {
       continue
     }
 
-    const key = trimmed.slice(0, eqIdx).trim()
-    const rawVal = trimmed.slice(eqIdx + 1)
-    const value = unquote(rawVal)
-
-    entries.push({ key, value })
+    const key = trimmed.slice(0, eqIdx).trim().replace(/^export\s+/, '')
+    const { value, note } = readValue(trimmed.slice(eqIdx + 1))
+    entries.push({ key, value, line: i + 1, note })
   }
 
   return { entries, warnings }
+}
+
+/** 同じキーが2回以上あるもの（dotenv では後の行が使われる） */
+function duplicatesOf(entries: ParsedEntry[]) {
+  const map = new Map<string, number[]>()
+  for (const e of entries) map.set(e.key, [...(map.get(e.key) ?? []), e.line])
+  return [...map].filter(([, l]) => l.length > 1)
 }
 
 // ─── Sample ──────────────────────────────────────────────────────────────────
@@ -144,10 +161,24 @@ function MaskedValue({ value }: { value: string }) {
 export function EnvFileParser() {
   const [raw, setRaw] = useState(SAMPLE)
   const [masked, setMasked] = useState(false)
+  const [other, setOther] = useState('')
 
   const isElectron = typeof window !== 'undefined' && !!(window as any).electronAPI?.isElectron
 
   const { entries, warnings } = parseEnv(raw)
+  const dups = duplicatesOf(entries)
+  // もう1つの .env（本番用など）と比べる
+  const cmp = (() => {
+    if (!other.trim()) return null
+    const a = new Map(entries.map((e) => [e.key, e.value]))
+    const b = new Map(parseEnv(other).entries.map((e) => [e.key, e.value]))
+    return {
+      onlyA: [...a.keys()].filter((k) => !b.has(k)),
+      onlyB: [...b.keys()].filter((k) => !a.has(k)),
+      emptyA: [...a].filter(([k, v]) => v === '' && b.has(k)).map(([k]) => k),
+      emptyB: [...b].filter(([k, v]) => v === '' && a.has(k)).map(([k]) => k),
+    }
+  })()
 
   const jsonOutput = JSON.stringify(
     Object.fromEntries(entries.map((e) => [e.key, e.value])),
@@ -203,6 +234,29 @@ export function EnvFileParser() {
             placeholder="KEY=value をペーストしてください"
             className="w-full resize-y rounded-lg border border-border bg-surface-hi px-4 py-3 font-mono text-xs leading-relaxed text-primary outline-none transition-colors focus:border-teal/40 placeholder:text-muted/30"
           />
+          <label className="block pt-2 font-mono text-[10px] uppercase tracking-widest text-muted">比べる .env（本番用など・任意）</label>
+          <textarea
+            value={other}
+            onChange={(e) => setOther(e.target.value)}
+            rows={6}
+            spellCheck={false}
+            placeholder="もう1つの .env を貼ると、片方にしか無いキーと空のキーを出します"
+            className="w-full resize-y rounded-lg border border-border bg-surface-hi px-4 py-3 font-mono text-xs leading-relaxed text-primary outline-none transition-colors focus:border-teal/40 placeholder:text-muted/30"
+          />
+          {cmp && (
+            <div className="space-y-1 rounded-lg border border-border bg-surface-hi/40 px-3 py-2 font-mono text-[11px]">
+              {cmp.onlyA.length + cmp.onlyB.length + cmp.emptyA.length + cmp.emptyB.length === 0 ? (
+                <p className="text-teal">キーはそろっていて、空の値もありません</p>
+              ) : (
+                <>
+                  {cmp.onlyA.length > 0 && <p className="text-yellow-400/80">上にだけある：{cmp.onlyA.join(', ')}</p>}
+                  {cmp.onlyB.length > 0 && <p className="text-yellow-400/80">下にだけある：{cmp.onlyB.join(', ')}</p>}
+                  {cmp.emptyA.length > 0 && <p className="text-yellow-400/80">上で空：{cmp.emptyA.join(', ')}</p>}
+                  {cmp.emptyB.length > 0 && <p className="text-yellow-400/80">下で空：{cmp.emptyB.join(', ')}</p>}
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Results */}
@@ -218,6 +272,17 @@ export function EnvFileParser() {
                   <span className="text-yellow-400/30">L{w.lineNumber}</span>
                   {' '}
                   <span className="text-yellow-400/60">{w.raw}</span>
+                </p>
+              ))}
+            </div>
+          )}
+
+          {dups.length > 0 && (
+            <div className="rounded-lg border border-yellow-500/25 bg-yellow-500/5 px-4 py-3 space-y-1">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-yellow-400/70">同じキーが複数あります</p>
+              {dups.map(([k, l]) => (
+                <p key={k} className="font-mono text-[11px] text-yellow-400/70">
+                  {k}：L{l.join('・L')}（dotenv では最後の L{l[l.length - 1]} の値が使われます）
                 </p>
               ))}
             </div>
@@ -249,6 +314,7 @@ export function EnvFileParser() {
                       ) : (
                         entry.value
                       )}
+                      {entry.note && <span className="block font-mono text-[10px] text-muted/60">{entry.note}</span>}
                     </span>
                   </div>
                 ))}
