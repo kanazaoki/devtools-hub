@@ -1349,8 +1349,9 @@ export const tools: Tool[] = [
     desktopFeatures: [],
     features: [
       'SQLキーワードを自動大文字化・改行・インデント整形',
-      'MySQL / PostgreSQL / BigQuery 方言切り替え',
-      'Beautify（整形）/ Minify（1行圧縮）モード切り替え',
+      'MySQL / PostgreSQL / BigQuery 方言切り替え（MySQL だけ \\ を文字列のエスケープとして読む。PostgreSQL の $$ … $$ はそのまま）',
+      'Beautify（整形）/ Minify（1行圧縮）モード切り替え。Minify では -- コメントを /* */ に直して、後ろのコードを飲み込まない',
+      '文字列・コメントの中身は変えない（\'it\'\'s\' の重ねた引用符も1つの文字列として扱う）',
       '整形済みSQLをワンクリックコピー',
       'SELECT / INSERT / UPDATE / DELETE / CREATE / JOIN 等の主要構文に対応',
     ],
