@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
 type ContainerType = 'size' | 'inline-size'
 type ConditionProp = 'min-width' | 'max-width' | 'min-height' | 'max-height'
-type Unit = 'px' | 'em' | 'rem' | '%'
+// ⚠ 以前は % も選べたが、コンテナクエリの条件に % は使えない（無効な指定として無視される）
+type Unit = 'px' | 'em' | 'rem'
 
 interface CssProperty {
   id: number
@@ -24,18 +25,20 @@ let nextId = 1
 const uid = () => nextId++
 
 const PROP_OPTIONS: ConditionProp[] = ['min-width', 'max-width', 'min-height', 'max-height']
-const UNIT_OPTIONS: Unit[] = ['px', 'em', 'rem', '%']
+const UNIT_OPTIONS: Unit[] = ['px', 'em', 'rem']
 
+// scope はプレビュー用に、ページのほかの要素へ当たらないよう先頭に付ける親セレクタ
 function generateCss(
   containerName: string,
   containerType: ContainerType,
-  conditions: Condition[]
+  conditions: Condition[],
+  scope = ''
 ): string {
   const name = containerName || 'card'
   const lines: string[] = []
 
   // コンテナ定義
-  lines.push(`.${name}-wrapper {`)
+  lines.push(`${scope}.${name}-wrapper {`)
   lines.push(`  container-type: ${containerType};`)
   lines.push(`  container-name: ${name};`)
   lines.push(`}`)
@@ -46,7 +49,7 @@ function generateCss(
     const query = `(${cond.prop}: ${cond.value}${cond.unit})`
     lines.push(``)
     lines.push(`@container ${name} ${query} {`)
-    lines.push(`  .${name} {`)
+    lines.push(`  ${scope}.${name} {`)
     for (const p of cond.properties) {
       if (p.property && p.value) {
         lines.push(`    ${p.property}: ${p.value};`)
@@ -74,6 +77,21 @@ export function ContainerQueryBuilder() {
   const [copied, setCopied] = useState(false)
 
   const css = generateCss(containerName, containerType, conditions)
+  const previewCss = generateCss(containerName, containerType, conditions, '#cq-preview ')
+  const name = containerName || 'card'
+  const heightOnInline =
+    containerType === 'inline-size' && conditions.some((c) => c.value && (c.prop === 'min-height' || c.prop === 'max-height'))
+
+  // プレビューの枠の幅を表示する
+  const boxRef = useRef<HTMLDivElement>(null)
+  const [boxWidth, setBoxWidth] = useState(0)
+  useEffect(() => {
+    const el = boxRef.current
+    if (!el) return
+    const ro = new ResizeObserver(([e]) => setBoxWidth(Math.round(e.contentRect.width)))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   // 条件の操作
   const addCondition = () => {
@@ -161,9 +179,22 @@ export function ContainerQueryBuilder() {
                   </button>
                 ))}
               </div>
+              <p className="font-mono text-[10px] leading-relaxed text-muted/70">
+                {containerType === 'inline-size'
+                  ? '幅だけを基準にします。通常はこちら。高さの条件（min-height など）は当たりません。'
+                  : '幅と高さを基準にします。⚠ 高さが中身から決まらなくなる（何も指定しないと高さ 0 になる）ため、height を必ず指定してください。'}
+              </p>
             </div>
           </div>
         </div>
+
+        {heightOnInline && (
+          <div className="rounded-lg border border-amber-400/30 bg-amber-400/5 px-4 py-3">
+            <p className="font-mono text-[11px] leading-relaxed text-amber-200/90">
+              ⚠ container-type: inline-size のコンテナでは、min-height・max-height の条件は一度も当たりません。高さで切り替えるなら size にしてください。
+            </p>
+          </div>
+        )}
 
         {/* 条件一覧 */}
         <div className="flex flex-col gap-3">
@@ -280,6 +311,25 @@ export function ContainerQueryBuilder() {
         <pre className="min-h-64 rounded-lg border border-border bg-bg p-4 font-mono text-sm text-primary whitespace-pre overflow-auto">
           {css}
         </pre>
+
+        {/* プレビュー：枠の右下をドラッグして幅を変えると、条件の切り替わりを確かめられる */}
+        <div className="flex items-center justify-between">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Preview</span>
+          <span className="font-mono text-[10px] text-muted">コンテナの幅 {boxWidth}px ／ 右下をドラッグして幅を変更</span>
+        </div>
+        <style>{previewCss}</style>
+        <div id="cq-preview">
+          <div
+            ref={boxRef}
+            className={`${name}-wrapper overflow-hidden rounded-lg border border-dashed border-teal/40 bg-bg p-3`}
+            style={{ resize: 'horizontal', width: '100%', minWidth: 120, maxWidth: '100%', height: containerType === 'size' ? 180 : undefined }}
+          >
+            <div className={`${name} rounded border border-border bg-surface p-3 text-sm text-primary`}>
+              <p className="font-semibold text-bright">カードの見出し</p>
+              <p className="mt-1 text-xs text-dim">幅が条件を満たすと、上の CSS のプロパティがこの部品に当たります。</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

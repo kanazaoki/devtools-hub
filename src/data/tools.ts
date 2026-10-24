@@ -2346,7 +2346,7 @@ export const tools: Tool[] = [
     name: 'CSS Container Query Builder',
     tagline: '@container クエリをGUIで組み立てて CSS を即生成',
     description:
-      'コンテナ名・コンテナタイプ（size / inline-size）を設定し、@container の条件（min-width / max-width 等）とその中に適用するCSSプロパティをGUIで追加するだけでコードを生成。Flexbox / Grid と組み合わせてコンポーネントベースのレスポンシブデザインを実現する最新CSS機能のビルダーです。',
+      'コンテナ名・コンテナタイプ（size / inline-size）を設定し、@container の条件（min-width / max-width 等）とその中に適用するCSSプロパティをGUIで追加するだけでコードを生成。幅をドラッグで変えられるプレビューで、条件が切り替わる幅をその場で確かめられます。Flexbox / Grid と組み合わせてコンポーネントベースのレスポンシブデザインを実現する最新CSS機能のビルダーです。',
     tags: ['CSS', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8597422',
     hasWebVersion: true,
@@ -2355,9 +2355,10 @@ export const tools: Tool[] = [
       'コンテナ名・container-type（size / inline-size）をGUIで設定',
       '条件を複数追加（min-width / max-width / min-height / max-height）',
       '条件ごとにCSSプロパティをフリーテキストで追加・削除',
-      '値の単位を px / em / rem / % から選択',
+      '値の単位を px / em / rem から選択（コンテナクエリでは % は使えない）',
       'コンテナ定義CSS（.wrapper）と @container CSS を同時出力',
-      'リアルタイム CSS プレビューとワンクリックコピー',
+      '幅をドラッグで変えられるプレビューで、条件の切り替わりをその場で確認',
+      'inline-size に高さの条件を付けたとき（一度も当たらない）に警告',
     ],
     desktopFeatures: [
       '生成した CSS を .css ファイルとして保存',

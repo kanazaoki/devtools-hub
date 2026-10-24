@@ -188,6 +188,10 @@ export function CssUnitConverter() {
           <span className="font-mono text-[10px] text-muted/40">px</span>
         </label>
       </div>
+      <p className="-mt-2 font-mono text-[10px] leading-relaxed text-muted/60">
+        rem はルート（html）の文字サイズ、em は親要素の文字サイズが基準です。ここでは親の文字サイズも base と同じとして計算します。
+        100vw は縦スクロールバーの幅も含むため、width: 100vw の要素はスクロールバーの分だけ横にはみ出します。
+      </p>
 
       {/* ── Results grid ── */}
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
