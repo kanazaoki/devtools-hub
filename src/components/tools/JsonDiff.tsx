@@ -12,40 +12,43 @@ interface DiffLine {
   path: string
 }
 
+// 配列は位置ごとに、オブジェクトはキーごとに中まで比べる。
+// ⚠ 以前は配列を JSON.stringify で丸ごと比べていたため、要素が1つ変わっただけでも、
+// 中のオブジェクトのキーの順序が違うだけでも「配列全体が変更」と出ていた。
+const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+
+function joinPath(path: string, key: string | number) {
+  if (typeof key === 'number') return `${path}[${key}]`
+  return path ? `${path}.${key}` : key
+}
+
 function diffObjects(before: unknown, after: unknown, path = ''): DiffLine[] {
   const lines: DiffLine[] = []
 
-  if (typeof before !== 'object' || before === null || typeof after !== 'object' || after === null) {
-    if (before !== after) {
-      lines.push({ type: 'changed', key: path, before, after, path })
+  if (Array.isArray(before) && Array.isArray(after)) {
+    const n = Math.max(before.length, after.length)
+    for (let i = 0; i < n; i++) {
+      const p = joinPath(path, i)
+      if (i >= before.length) lines.push({ type: 'added', key: String(i), after: after[i], path: p })
+      else if (i >= after.length) lines.push({ type: 'removed', key: String(i), before: before[i], path: p })
+      else lines.push(...diffObjects(before[i], after[i], p))
     }
     return lines
   }
 
-  const beforeObj = before as Record<string, unknown>
-  const afterObj = after as Record<string, unknown>
-  const allKeys = new Set([...Object.keys(beforeObj), ...Object.keys(afterObj)])
-
-  for (const key of allKeys) {
-    const fullPath = path ? `${path}.${key}` : key
-    const hasInBefore = key in beforeObj
-    const hasInAfter = key in afterObj
-
-    if (!hasInBefore) {
-      lines.push({ type: 'added', key, after: afterObj[key], path: fullPath })
-    } else if (!hasInAfter) {
-      lines.push({ type: 'removed', key, before: beforeObj[key], path: fullPath })
-    } else {
-      const bVal = beforeObj[key]
-      const aVal = afterObj[key]
-      if (typeof bVal === 'object' && bVal !== null && typeof aVal === 'object' && aVal !== null && !Array.isArray(bVal) && !Array.isArray(aVal)) {
-        lines.push(...diffObjects(bVal, aVal, fullPath))
-      } else if (JSON.stringify(bVal) !== JSON.stringify(aVal)) {
-        lines.push({ type: 'changed', key, before: bVal, after: aVal, path: fullPath })
-      }
+  if (isObj(before) && isObj(after)) {
+    const allKeys = new Set([...Object.keys(before), ...Object.keys(after)])
+    for (const key of allKeys) {
+      const p = joinPath(path, key)
+      if (!(key in before)) lines.push({ type: 'added', key, after: after[key], path: p })
+      else if (!(key in after)) lines.push({ type: 'removed', key, before: before[key], path: p })
+      else lines.push(...diffObjects(before[key], after[key], p))
     }
+    return lines
   }
 
+  // 値どうし、または型が違う（配列とオブジェクト、文字列と数値など）
+  if (before !== after) lines.push({ type: 'changed', key: path, before, after, path: path || '(ルート)' })
   return lines
 }
 
