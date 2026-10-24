@@ -72,7 +72,27 @@ const ITEM_COLORS = [
   'bg-red-500/20 border-red-500/50 text-red-400',
 ]
 
-function generateCSS(config: GridConfig): string {
+type OutputMode = 'lines' | 'areas'
+
+// grid-template-areas で出す。各アイテムの長方形をエリア名で塗り、空いたセルは「.」
+function generateAreasCSS(config: GridConfig): string {
+  const { columns, rows, columnGap, rowGap, items } = config
+  const cells: string[][] = Array.from({ length: rows }, () => Array(columns).fill('.'))
+  for (const it of items) {
+    for (let r = it.rowStart; r < it.rowStart + it.rowSpan && r <= rows; r++)
+      for (let c = it.colStart; c < it.colStart + it.colSpan && c <= columns; c++) cells[r - 1][c - 1] = it.label || `item${it.id}`
+  }
+  const width = Math.max(1, ...cells.flat().map((s) => s.length))
+  const areaRows = cells.map((row) => `    "${row.map((s) => s.padEnd(width)).join(' ').trimEnd()}"`).join('\n')
+  let css = `.grid-container {\n  display: grid;\n  grid-template-columns: repeat(${columns}, 1fr);\n  grid-template-rows: repeat(${rows}, minmax(60px, auto));\n  grid-template-areas:\n${areaRows};\n  column-gap: ${columnGap}px;\n  row-gap: ${rowGap}px;\n}`
+  items.forEach((it) => {
+    css += `\n\n.${it.label} {\n  grid-area: ${it.label || `item${it.id}`};\n}`
+  })
+  return css
+}
+
+function generateCSS(config: GridConfig, mode: OutputMode = 'lines'): string {
+  if (mode === 'areas') return generateAreasCSS(config)
   const { columns, rows, columnGap, rowGap, items } = config
   const colTemplate = `repeat(${columns}, 1fr)`
   const rowTemplate = `repeat(${rows}, minmax(60px, auto))`
@@ -124,6 +144,7 @@ export function CssGridGenerator() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [nextId, setNextId] = useState(5)
   const [copiedCSS, setCopiedCSS] = useState(false)
+  const [mode, setMode] = useState<OutputMode>('lines')
   const [copiedHTML, setCopiedHTML] = useState(false)
   const [editingLabel, setEditingLabel] = useState<number | null>(null)
   const [labelInput, setLabelInput] = useState('')
@@ -188,7 +209,7 @@ export function CssGridGenerator() {
   }
 
   const copyCSS = async () => {
-    await navigator.clipboard.writeText(generateCSS(config))
+    await navigator.clipboard.writeText(generateCSS(config, mode))
     setCopiedCSS(true)
     setTimeout(() => setCopiedCSS(false), 1500)
   }
@@ -403,12 +424,108 @@ export function CssGridGenerator() {
 
           {/* CSS output */}
           <div>
-            <p className="mb-1 text-xs text-muted">生成CSS</p>
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <p className="text-xs text-muted">生成CSS</p>
+              <div className="flex rounded border border-border p-0.5">
+                {([
+                  ['lines', '線番号'],
+                  ['areas', 'エリア名'],
+                ] as [OutputMode, string][]).map(([m, label]) => (
+                  <button
+                    key={m}
+                    onClick={() => setMode(m)}
+                    className={`rounded px-2 py-0.5 text-[11px] ${mode === m ? 'bg-teal/20 text-teal' : 'text-dim hover:text-primary'}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <pre className="overflow-x-auto rounded border border-border bg-bg p-3 text-xs text-primary leading-relaxed whitespace-pre">
-              {generateCSS(config)}
+              {generateCSS(config, mode)}
             </pre>
           </div>
         </div>
+      </div>
+
+      <ResponsiveGrid />
+    </div>
+  )
+}
+
+// 列数を決めずに、コンテナの幅に合わせて列数が変わるグリッド
+function ResponsiveGrid() {
+  const [min, setMin] = useState(220)
+  const [fit, setFit] = useState<'auto-fill' | 'auto-fit'>('auto-fill')
+  const [count, setCount] = useState(3)
+  const [width, setWidth] = useState(720)
+  const [gap, setGap] = useState(16)
+  const [copied, setCopied] = useState(false)
+  const template = `repeat(${fit}, minmax(${min}px, 1fr))`
+  // 列の数はブラウザの計算と同じ式で出す（幅 + gap を、最小幅 + gap で割る）
+  const tracks = Math.max(1, Math.floor((width + gap) / (min + gap)))
+  const css = `.cards {\n  display: grid;\n  grid-template-columns: ${template};\n  gap: ${gap}px;\n}`
+
+  return (
+    <div className="mt-6 rounded border border-border bg-surface p-4">
+      <p className="text-xs font-semibold uppercase tracking-widest text-muted">レスポンシブなカード一覧（auto-fill / auto-fit）</p>
+      <p className="mt-1 text-xs text-dim">
+        列数を決めずに「1枚の最小幅」だけを決めると、コンテナの幅に合わせて列数が変わります。幅を動かして確かめてください。
+      </p>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {([
+          ['カードの最小幅', min, setMin, 120, 400, 'px'],
+          ['コンテナの幅（プレビュー）', width, setWidth, 240, 1000, 'px'],
+          ['カードの枚数', count, setCount, 1, 12, '枚'],
+          ['gap', gap, setGap, 0, 40, 'px'],
+        ] as [string, number, (n: number) => void, number, number, string][]).map(([label, v, set, lo, hi, unit]) => (
+          <label key={label} className="block text-xs text-muted">
+            {label}：<span className="font-mono text-bright">{v}{unit}</span>
+            <input type="range" min={lo} max={hi} value={v} onChange={(e) => set(Number(e.target.value))} className="mt-1 w-full accent-teal" />
+          </label>
+        ))}
+      </div>
+      <div className="mt-2 flex items-center gap-2">
+        {(['auto-fill', 'auto-fit'] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFit(f)}
+            className={`rounded border px-2 py-0.5 font-mono text-[11px] ${fit === f ? 'border-teal/50 bg-teal/10 text-teal' : 'border-border text-dim'}`}
+          >
+            {f}
+          </button>
+        ))}
+        <span className="text-[11px] text-dim">
+          この幅では {tracks} 列分の枠ができます
+          {count < tracks &&
+            (fit === 'auto-fill'
+              ? `（カードは ${count} 枚なので、残りの ${tracks - count} 列は空いたまま幅を取ります）`
+              : '（auto-fit なので空の列は潰れ、カードが横に広がります）')}
+        </span>
+      </div>
+      <div className="mt-3 overflow-x-auto">
+        <div className="inline-block rounded border border-dashed border-border p-2">
+          <div data-preview-grid style={{ width, display: 'grid', gridTemplateColumns: template, gap }}>
+            {Array.from({ length: count }, (_, i) => (
+              <div key={i} className="flex h-14 items-center justify-center rounded border border-teal/40 bg-teal/10 font-mono text-xs text-teal">
+                card {i + 1}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="mt-3 flex items-start gap-2">
+        <pre className="flex-1 overflow-x-auto rounded border border-border bg-bg p-3 text-xs leading-relaxed text-primary">{css}</pre>
+        <button
+          onClick={async () => {
+            await navigator.clipboard.writeText(css)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 1500)
+          }}
+          className="rounded border border-teal/40 px-3 py-2 text-xs text-teal hover:bg-teal/10"
+        >
+          {copied ? '✓' : 'コピー'}
+        </button>
       </div>
     </div>
   )
