@@ -28,6 +28,8 @@ interface ParsedEndpoint {
   parameters: ParsedParameter[]
   requestBody: string | null
   responses: ParsedResponse[]
+  /** 認証の方式（どれか1つを満たせばよい）。空なら仕様書に記載なし */
+  security: string[]
 }
 
 const METHOD_COLORS: Record<HttpMethod, string> = {
@@ -44,6 +46,8 @@ const SAMPLE_YAML = `openapi: "3.0.0"
 info:
   title: Sample API
   version: "1.0.0"
+security:
+  - bearerAuth: []
 paths:
   /users:
     get:
@@ -56,6 +60,12 @@ paths:
       responses:
         "200":
           description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
     post:
       summary: Create a user
       requestBody:
@@ -64,14 +74,20 @@ paths:
           application/json:
             schema:
               type: object
+              required: [name, email]
               properties:
                 name:
                   type: string
                 email:
                   type: string
+                role:
+                  type: string
+                  enum: [admin, member]
       responses:
         "201":
           description: User created
+        "422":
+          description: Validation error
   /users/{id}:
     get:
       summary: Get user by ID
@@ -84,6 +100,10 @@ paths:
       responses:
         "200":
           description: A single user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
         "404":
           description: Not found
     delete:
@@ -97,12 +117,37 @@ paths:
       responses:
         "204":
           description: Deleted
+  /health:
+    get:
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: OK
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        nickname:
+          type: string
+          nullable: true
 `
 
 function resolveRef(ref: string, root: any): any {
   if (!ref.startsWith('#/')) return {}
   const parts = ref.slice(2).split('/')
-    let current: any = root
+  let current: any = root
   for (const part of parts) {
     if (current == null) return {}
     current = current[decodeURIComponent(part.replace(/~1/g, '/').replace(/~0/g, '~'))]
@@ -110,20 +155,84 @@ function resolveRef(ref: string, root: any): any {
   return current ?? {}
 }
 
-function schemaToString(schema: any, root: any, depth = 0): string {
+// スキーマを1行の型の形にする。必須でない項目は「?」、列挙は 'a' | 'b'、null を許すものは | null を付ける。
+// ⚠ 以前は required・enum・allOf/oneOf を無視していたので、どの項目が必須かが読めなかった
+function schemaToString(schema: any, root: any, depth = 0, seen: string[] = []): string {
   if (!schema) return 'any'
-  if (schema.$ref) schema = resolveRef(schema.$ref, root)
-  if (schema.type === 'array') return `Array<${schemaToString(schema.items, root, depth)}>`
-  if (schema.type === 'object' || schema.properties) {
-    if (depth > 2) return 'object'
-    const props = schema.properties
-    if (!props) return 'object'
-    const entries = Object.entries(props)
-      .map(([k, v]) => `${k}: ${schemaToString(v as object, root, depth + 1)}`)
-      .join(', ')
-    return `{ ${entries} }`
+  if (schema.$ref) {
+    if (seen.includes(schema.$ref)) return schema.$ref.split('/').pop() // 自分を含む定義（木構造など）
+    const name = schema.$ref.split('/').pop()
+    const inner = resolveRef(schema.$ref, root)
+    if (depth > 3) return name
+    return schemaToString(inner, root, depth, [...seen, schema.$ref])
   }
-  return schema.type || schema.format || 'any'
+  const nullable = schema.nullable === true || (Array.isArray(schema.type) && schema.type.includes('null'))
+  const withNull = (s: string) => (nullable ? `${s} | null` : s)
+  if (Array.isArray(schema.enum)) return withNull(schema.enum.map((v: unknown) => JSON.stringify(v)).join(' | '))
+  if (Array.isArray(schema.allOf)) {
+    // allOf は全部を満たす＝項目を合わせた1つのオブジェクトとして見せる
+    const merged: any = { type: 'object', properties: {}, required: [] }
+    for (const part of schema.allOf) {
+      const p = part.$ref ? resolveRef(part.$ref, root) : part
+      Object.assign(merged.properties, p.properties || {})
+      merged.required.push(...(p.required || []))
+    }
+    return withNull(schemaToString(merged, root, depth, seen))
+  }
+  const union = schema.oneOf || schema.anyOf
+  if (Array.isArray(union)) return withNull(union.map((s: any) => schemaToString(s, root, depth + 1, seen)).join(' | '))
+  const type = Array.isArray(schema.type) ? schema.type.find((t: string) => t !== 'null') : schema.type
+  if (type === 'array') return withNull(`Array<${schemaToString(schema.items, root, depth + 1, seen)}>`)
+  if (type === 'object' || schema.properties) {
+    const props = schema.properties
+    if (!props) {
+      if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+        return withNull(`{ [key: string]: ${schemaToString(schema.additionalProperties, root, depth + 1, seen)} }`)
+      }
+      return withNull('object')
+    }
+    if (depth > 3) return withNull('object')
+    const required: string[] = schema.required || []
+    const entries = Object.entries(props)
+      .map(([k, v]) => `${k}${required.includes(k) ? '' : '?'}: ${schemaToString(v as object, root, depth + 1, seen)}`)
+      .join(', ')
+    return withNull(`{ ${entries} }`)
+  }
+  return withNull(schema.format ? `${type || 'string'}(${schema.format})` : type || 'any')
+}
+
+// 認証の方式を読み取る。security は配列の要素どうしが「どれか1つ」、要素の中の名前どうしが「全部」
+function describeScheme(name: string, s: any): string {
+  if (!s || typeof s !== 'object') return `${name}（定義が見つからない）`
+  const type = s.type
+  if (type === 'http' && /^bearer$/i.test(s.scheme)) return `Authorization: Bearer <${s.bearerFormat || 'トークン'}>`
+  if (type === 'http' && /^basic$/i.test(s.scheme)) return 'Authorization: Basic（ID とパスワード）'
+  if (type === 'http') return `Authorization: ${s.scheme}`
+  if (type === 'basic') return 'Authorization: Basic（ID とパスワード）'
+  if (type === 'apiKey') {
+    const where = s.in === 'header' ? 'ヘッダー' : s.in === 'query' ? 'クエリ' : s.in === 'cookie' ? 'Cookie' : s.in
+    return `API キー（${where} ${s.name}）`
+  }
+  if (type === 'oauth2') return 'OAuth 2.0'
+  if (type === 'openIdConnect') return 'OpenID Connect'
+  if (type === 'mutualTLS') return 'クライアント証明書（mTLS）'
+  return `${name}（${type}）`
+}
+
+function describeSecurity(requirements: any, spec: any): string[] {
+  if (!Array.isArray(requirements)) return []
+  if (requirements.length === 0) return ['認証なし']
+  const schemes = spec.components?.securitySchemes || spec.securityDefinitions || {}
+  return requirements.map((req: any) => {
+    const names = Object.keys(req || {})
+    if (names.length === 0) return '認証なしでも可'
+    return names
+      .map((n) => {
+        const scopes: string[] = Array.isArray(req[n]) ? req[n] : []
+        return describeScheme(n, schemes[n]) + (scopes.length ? `［スコープ: ${scopes.join(', ')}］` : '')
+      })
+      .join(' ＋ ')
+  })
 }
 
 function parseEndpoints(spec: any): ParsedEndpoint[] {
@@ -132,25 +241,31 @@ function parseEndpoints(spec: any): ParsedEndpoint[] {
   const isSwagger2 = !!spec.swagger
 
   for (const [path, pathItem] of Object.entries(paths)) {
-        const item = pathItem as any
+    const item = pathItem as any
     const methods: HttpMethod[] = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS']
     for (const method of methods) {
       const op = item[method.toLowerCase()]
       if (!op) continue
 
-      // Parameters
-      const allParams = [...(item.parameters || []), ...(op.parameters || [])]
-      const parameters: ParsedParameter[] = allParams.map((p: any) => {
+      // Parameters（同じ名前・場所のものは、操作側の定義でパス側の定義を上書きする）
+      const merged = new Map<string, any>()
+      for (const p of [...(item.parameters || []), ...(op.parameters || [])]) {
         const resolved = p.$ref ? resolveRef(p.$ref, spec) : p
-        const schema = resolved.schema || resolved
-        return {
-          name: resolved.name || '',
-          in: resolved.in || '',
-          required: !!resolved.required,
-          type: schemaToString(schema, spec),
-          description: resolved.description || '',
-        }
-      })
+        merged.set(`${resolved.in}:${resolved.name}`, resolved)
+      }
+      const allParams = [...merged.values()]
+      const parameters: ParsedParameter[] = allParams
+        .filter((p: any) => p.in !== 'body')
+        .map((resolved: any) => {
+          const schema = resolved.schema || resolved
+          return {
+            name: resolved.name || '',
+            in: resolved.in || '',
+            required: !!resolved.required,
+            type: schemaToString(schema, spec),
+            description: resolved.description || '',
+          }
+        })
 
       // Request body
       let requestBody: string | null = null
@@ -159,21 +274,18 @@ function parseEndpoints(spec: any): ParsedEndpoint[] {
         const content = rb.content || {}
         const firstKey = Object.keys(content)[0]
         if (firstKey && content[firstKey]?.schema) {
-          requestBody = schemaToString(content[firstKey].schema, spec)
+          requestBody = `${firstKey}${rb.required ? '' : '（省略可）'}  ${schemaToString(content[firstKey].schema, spec)}`
         } else {
           requestBody = firstKey || 'body'
         }
       } else if (isSwagger2) {
         const bodyParam = allParams.find((p: any) => p.in === 'body')
-        if (bodyParam) {
-          const resolved = bodyParam.$ref ? resolveRef(bodyParam.$ref, spec) : bodyParam
-          requestBody = schemaToString(resolved.schema, spec)
-        }
+        if (bodyParam) requestBody = schemaToString(bodyParam.schema, spec)
       }
 
       // Responses
       const responses: ParsedResponse[] = Object.entries(op.responses || {}).map(([code, res]) => {
-                const r = (res as any).$ref ? resolveRef((res as any).$ref, spec) : res as any
+        const r = (res as any).$ref ? resolveRef((res as any).$ref, spec) : res as any
         let schemaStr = ''
         if (!isSwagger2 && r.content) {
           const firstKey = Object.keys(r.content)[0]
@@ -199,6 +311,8 @@ function parseEndpoints(spec: any): ParsedEndpoint[] {
         parameters,
         requestBody,
         responses,
+        // 操作に security があればそれ、無ければ全体の security。どちらも無ければ「記載なし」
+        security: op.security !== undefined ? describeSecurity(op.security, spec) : spec.security !== undefined ? describeSecurity(spec.security, spec) : [],
       })
     }
   }
@@ -356,6 +470,23 @@ export function OpenApiViewer() {
                     <div className="border-t border-border bg-bg px-4 py-4 space-y-4">
                       {ep.summary && <p className="text-sm font-semibold text-primary">{ep.summary}</p>}
                       {ep.description && <p className="text-xs text-dim leading-relaxed">{ep.description}</p>}
+
+                      {/* Auth */}
+                      <div>
+                        <p className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-muted">Auth</p>
+                        {ep.security.length === 0 ? (
+                          <p className="font-mono text-xs text-muted">仕様書に記載なし（security が書かれていない）</p>
+                        ) : (
+                          <ul className="space-y-1">
+                            {ep.security.map((s, si) => (
+                              <li key={si} className="font-mono text-xs text-yellow-300/90">
+                                {ep.security.length > 1 && <span className="mr-1 text-muted">{si === 0 ? '' : 'または '}</span>}
+                                {s}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
 
                       {/* Parameters */}
                       {ep.parameters.length > 0 && (
