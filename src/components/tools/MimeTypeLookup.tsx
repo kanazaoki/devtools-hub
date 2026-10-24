@@ -104,9 +104,12 @@ const MIME_DATA: MimeEntry[] = [
   { ext: 'toml', mime: 'application/toml', category: 'application' },
   { ext: 'xml', mime: 'application/xml', category: 'application' },
   { ext: 'xhtml', mime: 'application/xhtml+xml', category: 'application' },
-  { ext: 'js', mime: 'application/javascript', category: 'application' },
-  { ext: 'mjs', mime: 'application/javascript', category: 'application' },
-  { ext: 'ts', mime: 'application/typescript', category: 'application' },
+  // ⚠ RFC 9239（2022年）で JavaScript の正式な型は text/javascript に決まり、application/javascript は廃止扱いになった
+  { ext: 'js', mime: 'text/javascript', category: 'text' },
+  { ext: 'mjs', mime: 'text/javascript', category: 'text' },
+  { ext: 'cjs', mime: 'text/javascript', category: 'text' },
+  // TypeScript には登録された型が無い（application/typescript も非公式）。.ts は既定で video/mp2t として配られることが多い
+  { ext: 'ts', mime: 'application/typescript（非公式）', category: 'application' },
   { ext: 'php', mime: 'application/x-httpd-php', category: 'application' },
   { ext: 'sh', mime: 'application/x-sh', category: 'application' },
   { ext: 'bat', mime: 'application/x-msdownload', category: 'application' },
