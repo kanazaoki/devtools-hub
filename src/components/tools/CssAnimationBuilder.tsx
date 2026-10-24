@@ -32,12 +32,26 @@ const ITERATIONS = ['1', '2', '3', '5', '10', 'infinite']
 const DIRECTIONS = ['normal', 'reverse', 'alternate', 'alternate-reverse']
 const FILL_MODES = ['none', 'forwards', 'backwards', 'both']
 
-function kfToBlock(kf: KF): string {
-  return [
-    `    transform: translateX(${kf.translateX}px) translateY(${kf.translateY}px) rotate(${kf.rotate}deg) scale(${kf.scale});`,
-    `    opacity: ${kf.opacity};`,
-    `    background-color: ${kf.bgColor};`,
-  ].join('\n')
+// キーフレームの間で値が変わるプロパティだけを書く。
+// ⚠ 以前は background-color を毎回書き出していたため、色を変えていなくても
+// 再描画の重いプロパティをアニメーションさせる CSS になっていた
+type Varying = { transform: boolean; opacity: boolean; bg: boolean }
+
+function varyingOf(kfs: KF[]): Varying {
+  const differs = (f: (k: KF) => string | number) => new Set(kfs.map(f)).size > 1
+  return {
+    transform: differs((k) => `${k.translateX},${k.translateY},${k.rotate},${k.scale}`),
+    opacity: differs((k) => k.opacity),
+    bg: differs((k) => k.bgColor),
+  }
+}
+
+function kfToBlock(kf: KF, v: Varying): string {
+  const lines: string[] = []
+  if (v.transform) lines.push(`    transform: translateX(${kf.translateX}px) translateY(${kf.translateY}px) rotate(${kf.rotate}deg) scale(${kf.scale});`)
+  if (v.opacity) lines.push(`    opacity: ${kf.opacity};`)
+  if (v.bg) lines.push(`    background-color: ${kf.bgColor};`)
+  return lines.join('\n')
 }
 
 function generateCSS(
@@ -49,12 +63,8 @@ function generateCSS(
   direction: string,
   fillMode: string,
 ): string {
-  const sorted = [...kfs].sort((a, b) => a.percent - b.percent)
-  const frames = sorted.map((kf) => `  ${kf.percent}% {\n${kfToBlock(kf)}\n  }`).join('\n')
   return [
-    `@keyframes ${ANIM_NAME} {`,
-    frames,
-    `}`,
+    generateKeyframesOnly(kfs),
     ``,
     `.animated-element {`,
     `  animation-name: ${ANIM_NAME};`,
@@ -65,13 +75,22 @@ function generateCSS(
     `  animation-direction: ${direction};`,
     `  animation-fill-mode: ${fillMode};`,
     `}`,
+    ``,
+    `/* 動きを減らす設定の人には止める */`,
+    `@media (prefers-reduced-motion: reduce) {`,
+    `  .animated-element {`,
+    `    animation: none;`,
+    `  }`,
+    `}`,
   ].join('\n')
 }
 
 function generateKeyframesOnly(kfs: KF[]): string {
   const sorted = [...kfs].sort((a, b) => a.percent - b.percent)
-  const frames = sorted.map((kf) => `  ${kf.percent}% {\n${kfToBlock(kf)}\n  }`).join('\n')
-  return `@keyframes ${ANIM_NAME} {\n${frames}\n}`
+  const v = varyingOf(kfs)
+  const frames = sorted.map((kf) => `  ${kf.percent}% {\n${kfToBlock(kf, v)}\n  }`).join('\n')
+  const note = v.bg ? '/* background-color は毎フレーム再描画が起きるため、transform・opacity より重い */\n' : ''
+  return `${note}@keyframes ${ANIM_NAME} {\n${frames}\n}`
 }
 
 export function CssAnimationBuilder() {
@@ -437,6 +456,8 @@ export function CssAnimationBuilder() {
                 animationFillMode: fillMode as CSSStyleDeclaration['animationFillMode'],
                 animationPlayState: isPlaying ? 'running' : 'paused',
                 boxShadow: `0 0 16px ${activeKf.bgColor}60`,
+                // 色を変えないときはキーフレームに background-color が無いので、ここで塗る
+                backgroundColor: kfs[0]?.bgColor,
               }}
             />
           </div>
