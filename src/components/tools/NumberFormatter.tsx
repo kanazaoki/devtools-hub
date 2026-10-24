@@ -11,13 +11,16 @@ const LOCALES = [
   { key: 'ko-KR', label: 'ko-KR', flag: '🇰🇷' },
 ]
 
+// ⚠ 以前は 999999 が「1.00e+3K」になっていた（丸めると 1000 になるのに単位を先に決めていた）。
+// 有効数字3桁に丸めてから単位を選び、SI の書き方どおり k は小文字にする
 function siUnit(n: number): string {
-  const abs = Math.abs(n)
-  if (abs >= 1e12) return (n / 1e12).toPrecision(3).replace(/\.?0+$/, '') + 'T'
-  if (abs >= 1e9)  return (n / 1e9).toPrecision(3).replace(/\.?0+$/, '') + 'G'
-  if (abs >= 1e6)  return (n / 1e6).toPrecision(3).replace(/\.?0+$/, '') + 'M'
-  if (abs >= 1e3)  return (n / 1e3).toPrecision(3).replace(/\.?0+$/, '') + 'K'
-  return String(n)
+  if (!isFinite(n)) return String(n)
+  const units = [[1e15, 'P'], [1e12, 'T'], [1e9, 'G'], [1e6, 'M'], [1e3, 'k']] as const
+  const rounded = Number(n.toPrecision(3))
+  for (const [v, u] of units) {
+    if (Math.abs(rounded) >= v) return `${Number((rounded / v).toPrecision(3))}${u}`
+  }
+  return String(rounded === n ? n : Number(n.toPrecision(6)))
 }
 
 interface FormatRow {
@@ -69,7 +72,8 @@ export function NumberFormatter() {
   const [locale, setLocale] = useState('ja-JP')
   const [copiedIdx, setCopiedIdx] = useState<string | null>(null)
 
-  const num    = Number(input)
+  // 1,234,567 や 1_000、全角数字のまま貼り付けても読めるようにする（⚠ 以前は NaN になっていた）
+  const num    = Number(input.normalize('NFKC').replace(/[,_\s]/g, ''))
   const isValid = input.trim() !== '' && !isNaN(num) && isFinite(num)
   const groups  = isValid ? buildGroups(num, locale) : []
 

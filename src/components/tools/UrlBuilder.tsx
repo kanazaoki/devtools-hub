@@ -32,7 +32,8 @@ function buildUrl(p: ParsedUrl): string {
     const portPart = p.port ? `:${p.port}` : ''
     const base = `${p.protocol}://${p.host}${portPart}${p.path || '/'}`
     const u = new URL(base)
-    p.params.filter((q) => q.key.trim()).forEach(({ key, value }) => u.searchParams.set(key, value))
+    // ⚠ 以前は set で入れていたので、tags=a&tags=b のように同じキーが並ぶと最後の1つしか残らなかった
+    p.params.filter((q) => q.key.trim()).forEach(({ key, value }) => u.searchParams.append(key, value))
     if (p.hash.trim()) u.hash = p.hash
     return u.toString()
   } catch {

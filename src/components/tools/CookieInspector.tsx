@@ -15,6 +15,7 @@ interface ParsedCookie {
   raw: string
   isExpired: boolean
   remainingMs?: number
+  warnings?: string[]
 }
 
 function parseSetCookie(raw: string): ParsedCookie {
@@ -43,10 +44,6 @@ function parseSetCookie(raw: string): ParsedCookie {
       }
     } else if (lower.startsWith('max-age=')) {
       cookie.maxAge = parseInt(p.slice('max-age='.length), 10)
-      if (!isNaN(cookie.maxAge)) {
-        cookie.remainingMs = cookie.maxAge * 1000
-        cookie.isExpired = cookie.maxAge <= 0
-      }
     } else if (lower.startsWith('path=')) {
       cookie.path = p.slice('path='.length)
     } else if (lower.startsWith('domain=')) {
@@ -55,7 +52,26 @@ function parseSetCookie(raw: string): ParsedCookie {
       cookie.sameSite = p.slice('samesite='.length)
     }
   }
-
+  // ⚠ Max-Age と Expires の両方があるときは Max-Age が優先される（RFC 6265）。以前は後に書いた方が勝っていた
+  if (cookie.maxAge !== undefined && !isNaN(cookie.maxAge)) {
+    cookie.remainingMs = cookie.maxAge * 1000
+    cookie.isExpired = cookie.maxAge <= 0
+  }
+  // ブラウザが受け取らない・意図と違う扱いになる設定
+  const w: string[] = []
+  const ss = cookie.sameSite?.toLowerCase()
+  if (ss === 'none' && !cookie.secure) w.push('SameSite=None なのに Secure がありません。主要ブラウザはこの Cookie を受け取りません。')
+  if (cookie.sameSite && !['strict', 'lax', 'none'].includes(ss!)) w.push(`SameSite=${cookie.sameSite} は無効な値です（Strict・Lax・None のどれか）。`)
+  if (!cookie.sameSite) w.push('SameSite がありません。Chrome などは Lax として扱います（別サイトからの POST には送られません）。')
+  if (cookie.name.startsWith('__Host-') && (!cookie.secure || cookie.path !== '/' || cookie.domain)) {
+    w.push('__Host- で始まる名前は、Secure・Path=/・Domain なしの3つがそろわないとブラウザが受け取りません。')
+  } else if (cookie.name.startsWith('__Secure-') && !cookie.secure) {
+    w.push('__Secure- で始まる名前は、Secure がないとブラウザが受け取りません。')
+  }
+  if (cookie.remainingMs !== undefined && cookie.remainingMs > 400 * 86400 * 1000) {
+    w.push('有効期限は最長 400 日です。Chrome はそれより長い期限を 400 日に縮めます。')
+  }
+  cookie.warnings = w
   return cookie
 }
 
@@ -296,6 +312,11 @@ function CookieCard({ cookie, mode }: { cookie: ParsedCookie; mode: string }) {
               </span>
             )}
           </div>
+        )}
+        {cookie.warnings && cookie.warnings.length > 0 && (
+          <ul className="mt-2 space-y-0.5">
+            {cookie.warnings.map((w) => <li key={w} className="font-mono text-[11px] text-amber-300">⚠ {w}</li>)}
+          </ul>
         )}
       </div>
     </div>
