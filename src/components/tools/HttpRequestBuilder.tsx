@@ -14,19 +14,25 @@ interface Header {
 
 let nextId = 1
 
+// シェルの単一引用符で囲む。中の ' は「'\''」（閉じる・エスケープした ' ・開く）にする。
+// ⚠ 以前は \' にしていたが、単一引用符の中ではバックスラッシュが効かず、
+// O'Brien のような値を含むとコマンドが壊れていた。ヘッダーの値は囲んでもいなかった
+const sq = (s: string) => `'${s.replace(/'/g, `'\\''`)}'`
+
 function generateCurl(method: Method, url: string, headers: Header[], body: string, bodyMode: BodyMode): string {
   if (!url) return ''
-  const parts = [`curl -X ${method}`]
+  const parts = [`curl -i -X ${method}`]
   for (const h of headers) {
-    if (h.key) parts.push(`  -H '${h.key}: ${h.value}'`)
+    if (h.key) parts.push(`  -H ${sq(`${h.key}: ${h.value}`)}`)
   }
-  if (bodyMode === 'json' && body) {
+  const hasBody = body && method !== 'GET' && method !== 'HEAD'
+  if (bodyMode === 'json' && hasBody) {
     parts.push(`  -H 'Content-Type: application/json'`)
-    parts.push(`  -d '${body.replace(/'/g, "\\'")}'`)
-  } else if (body && method !== 'GET' && method !== 'HEAD') {
-    parts.push(`  -d '${body.replace(/'/g, "\\'")}'`)
+    parts.push(`  -d ${sq(body)}`)
+  } else if (hasBody) {
+    parts.push(`  -d ${sq(body)}`)
   }
-  parts.push(`  '${url}'`)
+  parts.push(`  ${sq(url)}`)
   return parts.join(' \\\n')
 }
 
