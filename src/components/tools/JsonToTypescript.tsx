@@ -23,62 +23,60 @@ function isValidIdentifier(key: string): boolean {
   return /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key)
 }
 
-function inferElementType(
-  value: unknown,
+// ある位置で観測した値すべてから型を作る（配列の全要素、全オブジェクトの同じキー）。
+// ⚠ 以前は配列の1つ目のオブジェクトだけで interface を作っていたため、2つ目以降にしか
+// 無いキーが消え、一部にしか無いキーも省略可能（?）にならなかった。
+// null も「たぶん string」と決めつけて string | null にしていた。
+function typeOf(
+  values: unknown[],
   keyName: string,
-  interfaces: Map<string, Record<string, TypeInfo>>
+  interfaces: Map<string, Record<string, TypeInfo>>,
+  singular = false
 ): string {
-  if (value === null || value === undefined) return 'null'
-  if (typeof value === 'string') return 'string'
-  if (typeof value === 'number') return 'number'
-  if (typeof value === 'boolean') return 'boolean'
-  if (Array.isArray(value)) return inferType(value, keyName, interfaces).type
-  if (typeof value === 'object') {
-    const nestedName = singularize(toPascalCase(keyName))
-    processObject(value as Record<string, unknown>, nestedName, interfaces)
-    return nestedName
+  const parts = new Set<string>()
+  const objs: Record<string, unknown>[] = []
+  const arrs: unknown[][] = []
+  for (const v of values) {
+    if (v === null || v === undefined) parts.add('null')
+    else if (Array.isArray(v)) arrs.push(v)
+    else if (typeof v === 'object') objs.push(v as Record<string, unknown>)
+    else if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') parts.add(typeof v)
+    else parts.add('unknown')
   }
-  return 'unknown'
+  if (objs.length) {
+    const base = toPascalCase(keyName)
+    const name = singular ? singularize(base) : base
+    mergeObjects(objs, name, interfaces)
+    parts.add(name)
+  }
+  if (arrs.length) {
+    const items = arrs.flat()
+    const inner = items.length ? typeOf(items, keyName, interfaces, true) : 'unknown'
+    parts.add(inner.includes(' | ') ? `(${inner})[]` : `${inner}[]`)
+  }
+  return [...parts].join(' | ') || 'unknown'
 }
 
-function inferType(
-  value: unknown,
-  keyName: string,
-  interfaces: Map<string, Record<string, TypeInfo>>
-): TypeInfo {
-  if (value === null || value === undefined) {
-    return { type: 'string | null', optional: true }
-  }
-  if (typeof value === 'string') return { type: 'string', optional: false }
-  if (typeof value === 'number') return { type: 'number', optional: false }
-  if (typeof value === 'boolean') return { type: 'boolean', optional: false }
-  if (Array.isArray(value)) {
-    if (value.length === 0) return { type: 'unknown[]', optional: false }
-    const elementTypes = [...new Set(value.map(item => inferElementType(item, keyName, interfaces)))]
-    const elementType =
-      elementTypes.length === 1 ? elementTypes[0] : `(${elementTypes.join(' | ')})`
-    return { type: `${elementType}[]`, optional: false }
-  }
-  if (typeof value === 'object') {
-    const nestedName = toPascalCase(keyName)
-    processObject(value as Record<string, unknown>, nestedName, interfaces)
-    return { type: nestedName, optional: false }
-  }
-  return { type: 'unknown', optional: false }
-}
-
-function processObject(
-  obj: Record<string, unknown>,
+function mergeObjects(
+  objs: Record<string, unknown>[],
   name: string,
   interfaces: Map<string, Record<string, TypeInfo>>
 ) {
   if (interfaces.has(name)) return
   const props: Record<string, TypeInfo> = {}
   interfaces.set(name, props)
-  for (const [key, val] of Object.entries(obj)) {
-    props[key] = inferType(val, key, interfaces)
+  const keys: string[] = []
+  for (const o of objs) for (const k of Object.keys(o)) if (!keys.includes(k)) keys.push(k)
+  for (const key of keys) {
+    const present = objs.filter((o) => key in o)
+    props[key] = {
+      type: typeOf(present.map((o) => o[key]), key, interfaces),
+      // 一部のオブジェクトにしか無いキーは省略可能
+      optional: present.length < objs.length,
+    }
   }
 }
+
 
 function generateOutput(
   json: string,
@@ -99,7 +97,7 @@ function generateOutput(
 
   const name = rootName.trim() || 'Root'
   const interfaces = new Map<string, Record<string, TypeInfo>>()
-  processObject(parsed as Record<string, unknown>, name, interfaces)
+  mergeObjects([parsed as Record<string, unknown>], name, interfaces)
 
   const lines: string[] = []
   const entries = [...interfaces.entries()]
