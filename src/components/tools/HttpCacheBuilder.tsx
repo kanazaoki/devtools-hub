@@ -68,8 +68,19 @@ function explain(s: State): string[] {
   const lines: string[] = []
   if (s.directives.has('no-store')) {
     lines.push('⚠ no-store: レスポンスはいかなるキャッシュにも保存されません。')
+    if (s.maxAge || s.sMaxAge || s.directives.has('immutable'))
+      lines.push('⚠ no-store があるので、max-age・s-maxage・immutable は意味を持ちません。どちらの意図かを決めて片方にしてください。')
     return lines
   }
+  // 組み合わせとして効かない指定
+  if (s.directives.has('immutable') && !s.maxAge)
+    lines.push('⚠ immutable は max-age で決めた期限の間だけ効きます。max-age が無いと何も起きません。')
+  if (s.directives.has('immutable') && s.directives.has('no-cache'))
+    lines.push('⚠ no-cache（毎回確認する）と immutable（確認しない）は逆の指示です。')
+  if (Number(s.maxAge) >= 86400 * 30 && !s.directives.has('immutable'))
+    lines.push('⚠ 30日以上の max-age は、配った後に取り消せません。ファイル名にハッシュやバージョンが付いたファイルだけにしてください（その場合は immutable も付けます）。')
+  if (s.vary.includes('*'))
+    lines.push('⚠ Vary: * は事実上キャッシュを無効にします。')
   if (s.directives.has('public')) lines.push('✓ CDN・プロキシが応答をキャッシュできます。')
   if (s.directives.has('private')) lines.push('✓ ブラウザのみキャッシュ可（CDN・プロキシは保存不可）。')
   if (s.maxAge) lines.push(`✓ ${s.maxAge} 秒間はキャッシュが新鮮とみなされます（${Math.floor(Number(s.maxAge) / 3600)}時間${Math.floor((Number(s.maxAge) % 3600) / 60)}分）。`)
