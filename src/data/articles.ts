@@ -1494,26 +1494,25 @@ export const articles: Article[] = [
     sections: [
       {
         heading: '同一オリジンポリシーとCORSの関係',
-        tool: 'curl-to-code',
-        body: 'ブラウザには「同一オリジンポリシー（Same-Origin Policy）」というセキュリティ機能があり、スクリプトは自分と同じオリジン（スキーム＋ホスト＋ポートの組み合わせ）のリソースにしかアクセスできません。`https://app.example.com` のJavaScriptから `https://api.example.com` にfetchすると、ホストが異なるためブロックされます。CORS（Cross-Origin Resource Sharing）は、サーバーが「このオリジンからのアクセスは許可する」とブラウザに通知するための仕組みです。CORSはあくまでブラウザの制限であり、curlやPostmanなどのクライアントツールはCORSの影響を受けません。「curlでは動くのにブラウザで動かない」という状況はCORSが原因であることが多いです。',
+        body: 'ブラウザには「同一オリジンポリシー（Same-Origin Policy）」というセキュリティ機能があり、スクリプトは自分と違うオリジン（スキーム＋ホスト＋ポートの組み合わせ）から返ってきた内容を読めません。`https://app.example.com` のJavaScriptから `https://api.example.com` にfetchすると、ホストが異なるため、応答を読むことがブロックされます。CORS（Cross-Origin Resource Sharing）は、サーバーが「このオリジンには読ませてよい」とブラウザに伝えるための仕組みです。ここで誤解されやすいのが、ブロックされるのは「応答を読むこと」であって、リクエストが送られないわけではない点です。CORSのヘッダーを一切返さないサーバーに別オリジンのページから送って確かめたところ、JavaScriptはどの応答も読めませんでしたが、GET と、フォームと同じ形式（application/x-www-form-urlencoded）のPOSTは、サーバーにそのまま届いていました。JSONのPOSTだけは、次の節のプリフライトで止まり、本体は送られませんでした。CORSはあくまでブラウザの制限なので、curlやPostmanはその影響を受けず、「curlでは動くのにブラウザで動かない」という状況はCORSが原因であることが多いです。',
       },
       {
         heading: 'プリフライトリクエストとは何か',
         tool: 'http-request-builder',
-        body: 'CORSの「プリフライトリクエスト」は、実際のリクエストを送る前にブラウザが自動的に送信するOPTIONSリクエストです。非シンプルリクエスト（`PUT`・`DELETE`・`PATCH` メソッド、カスタムヘッダー付き、Content-Typeが `application/json` のPOSTなど）はプリフライトが発生します。ブラウザは `OPTIONS /api/users` と `Access-Control-Request-Method: POST` などを含むリクエストを先に送り、サーバーが `Access-Control-Allow-Origin` と `Access-Control-Allow-Methods` を含むレスポンスを返せば本リクエストを送信します。REST APIを実装する際、OPTIONSメソッドへのハンドリングを忘れるとプリフライトが失敗してCORSエラーになります。これが「GETは動くのにPOSTで失敗する」という現象の典型的な原因です。',
+        body: 'CORSの「プリフライトリクエスト」は、実際のリクエストを送る前にブラウザが自動的に送信するOPTIONSリクエストです。`PUT`・`DELETE`・`PATCH` メソッド、`Authorization` などのヘッダー付き、Content-Typeが `application/json` のPOSTなどはプリフライトが発生します。ブラウザは `Origin` と `Access-Control-Request-Method: POST` などを付けた OPTIONS を先に送り、サーバーが許可するヘッダーを返したときだけ本リクエストを送ります。サーバーで OPTIONS を処理していないとプリフライトが失敗し、「GETは動くのにPOSTで失敗する」という典型的な症状になります。サーバーがプリフライトに正しく応えているかは、ブラウザと同じ OPTIONS を自分で送ると確かめられます。HTTP Request Builder でメソッドを OPTIONS にし、ヘッダーに Origin と Access-Control-Request-Method を入れると、そのまま実行できる curl のコマンドが出てくるので、`-i` を付けて実行し、応答に Access-Control-Allow-Origin などが含まれているかを見ます。',
       },
       {
         heading: '正しいAccess-Controlヘッダーの設定',
         tool: 'cors-header-builder',
-        body: '`Access-Control-Allow-Origin` は許可するオリジンを指定します。`*`（ワイルドカード）は全オリジンを許可しますが、Cookieや認証ヘッダーを含むリクエスト（`credentials: "include"`）では `*` が使えず、具体的なオリジンを指定する必要があります。`Access-Control-Allow-Methods` は許可するHTTPメソッドをカンマ区切りで指定します。`Access-Control-Allow-Headers` はリクエストで使えるカスタムヘッダー（`Authorization`・`Content-Type` など）を指定します。`Access-Control-Max-Age` はプリフライトのキャッシュ時間（秒）で、設定することでプリフライトの発生頻度を減らせます。`Access-Control-Allow-Credentials: true` はCookieや認証情報の送信を許可します。この場合 `Allow-Origin` に `*` は指定できず、具体的なオリジンが必要です。',
+        body: '`Access-Control-Allow-Origin` は許可するオリジンを指定します。値に書けるのは1つのオリジンか `*` だけで、カンマで複数並べることはできません。複数のオリジンを許可したいときは、リクエストの Origin が許可リストに入っていればその値をそのまま返し、あわせて `Vary: Origin` を付けます。Vary が無いと、CDN やプロキシがあるオリジン向けの応答を別のオリジンにも使い回すことがあります。`*` は全オリジンを許可しますが、Cookieや認証情報を送るリクエスト（`credentials: "include"`）では使えません。`Access-Control-Allow-Methods` は許可するメソッド、`Access-Control-Allow-Headers` はリクエストで使えるヘッダー、`Access-Control-Max-Age` はプリフライトの結果をキャッシュしてよい秒数です。CORS Header Builder でオリジンやメソッドを選ぶと、ヘッダーのほか nginx・Express・Next.js の設定の形で出力でき、複数のオリジンを入れた場合は許可リストと Vary: Origin を使う形で出てきます。',
       },
       {
-        heading: 'よくある誤設定と「CORSエラーを安易に回避する」危険性',
-        tool: 'http-headers-reference',
-        body: '`Access-Control-Allow-Origin: *` と `Access-Control-Allow-Credentials: true` を同時に設定しても無効で、ブラウザはエラーにします。これはCSRF（クロスサイトリクエストフォージェリ）への対策として意図的な設計です。開発環境で「とりあえずCORSを全許可」にしてそのまま本番に出てしまうことは、CSRF脆弱性につながります。正しい対応は「フロントエンドのオリジンのみを明示的に許可する」ことです。Next.jsなどのBFF（Backend for Frontend）を挟む構成では、フロントエンドとAPIが同一オリジンになるためCORS設定が不要になり、より安全です。HTTP Headers Referenceで各Access-Controlヘッダーの詳細仕様を確認できます。',
+        heading: 'よくある誤設定と、本当の危険',
+        tool: 'cors-header-builder',
+        body: '`Access-Control-Allow-Origin: *` と `Access-Control-Allow-Credentials: true` を同時に返しても、ブラウザは応答を読ませません。どこのサイトからでもログイン中の利用者の情報を読めてしまうのを防ぐための決まりです。本当に危ないのは、これを避けようとして「リクエストの Origin をそのまま Allow-Origin に返し、Credentials も true にする」設定です。こうすると、利用者が悪意のあるサイトを開いただけで、そのサイトのJavaScriptが利用者のCookieつきでAPIを呼び、応答の中身（個人情報など）を読み取れてしまいます。`Origin: null` を許可するのも同じく危険で、サンドボックス化したiframeなど、どこからでも null を名乗れます。一方、CSRF（利用者になりすましてリクエストを送らせる攻撃）は、最初の節で見たとおりCORSでは防げません。リクエスト自体は届いてしまうので、CSRFにはSameSite属性つきのCookieやCSRFトークンで別に備えます。正しい対応は、フロントエンドのオリジンだけを許可リストに入れることです。Next.jsなどのBFF（Backend for Frontend）を挟んで、フロントエンドとAPIを同じオリジンにすれば、CORSの設定そのものが不要になります。',
       },
     ],
     conclusion: 'CORSは「セキュリティ上の制限」であり、バグではありません。正しい理解は「ブラウザが同一オリジンポリシーでアクセスをブロックしているのを、サーバー側のヘッダーで許可する」というものです。プリフライトリクエストへの対応・CredentialsとAllow-Originの組み合わせルール・本番での最小権限設定という3点を押さえることで、安全かつ正しいCORS設定が実装できます。',
-    relatedTools: ['cors-header-builder', 'http-headers-reference', 'http-request-builder', 'curl-to-code'],
+    relatedTools: ['cors-header-builder', 'http-request-builder', 'http-headers-reference'],
   },
 ]

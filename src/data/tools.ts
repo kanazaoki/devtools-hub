@@ -2654,6 +2654,8 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-07-31',
     features: [
+      '複数オリジンは許可リスト＋Vary: Origin の形で出力（nginx は map、Next.js は middleware）',
+      'credentials と * の併用、Origin: null の許可を警告',
       'オリジン・メソッド・ヘッダー・credentials・max-age をGUI指定',
       'Access-Control-* レスポンスヘッダーを生成',
       'nginx / Express(cors) / Next.js の設定スニペットを出力',
