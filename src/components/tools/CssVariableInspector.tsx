@@ -1,6 +1,62 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
+import { auditCss, parseRules, type AuditResult } from '@/lib/cssTokenAudit'
+
+function AuditPanel({ audit }: { audit: AuditResult }) {
+  const problems =
+    audit.themeGaps.length + (audit.unguardedMedia ? 1 : 0) + audit.rawColors.length + audit.undefinedRefs.length
+  const Item = ({ title, children }: { title: string; children: React.ReactNode }) => (
+    <div className="rounded border border-amber-400/30 bg-amber-400/5 px-3 py-2">
+      <p className="font-mono text-xs font-semibold text-amber-300">{title}</p>
+      <div className="mt-1 font-mono text-[11px] leading-relaxed text-amber-100/80">{children}</div>
+    </div>
+  )
+  return (
+    <div className="overflow-hidden rounded-lg border border-border">
+      <div className="border-b border-border bg-surface px-4 py-2.5">
+        <span className="font-mono text-[11px] uppercase tracking-widest text-muted">テーマの点検</span>
+        <span className="ml-3 font-mono text-[11px] text-dim">
+          変数 {audit.definedCount} 個 ／ テーマで上書きしている場所 {audit.themeScopes.length} か所
+        </span>
+      </div>
+      <div className="flex flex-col gap-2 p-4">
+        {problems === 0 && (
+          <p className="font-mono text-xs text-teal">
+            上書きの漏れ・手動切替の問題・色の直書き・未定義の参照は見つかりませんでした
+          </p>
+        )}
+        {audit.unguardedMedia && (
+          <Item title="OS がダークだと、手動でライトを選んでもダークのままになります">
+            @media (prefers-color-scheme: dark) の中の :root に :not([data-theme=&quot;light&quot;]) が付いていません。
+            [data-theme] で手動切替をしているなら、:root:not([data-theme=&quot;light&quot;]) と書きます。
+          </Item>
+        )}
+        {audit.themeGaps.map((g) => (
+          <Item key={g.scope} title={`上書きの漏れ：${g.scope}`}>
+            同じテーマを上書きしている別の場所にはあるのに、ここには無い変数：{g.missing.join(', ')}
+          </Item>
+        ))}
+        {audit.undefinedRefs.length > 0 && (
+          <Item title={`定義されていない変数の参照（${audit.undefinedRefs.length}）`}>
+            {audit.undefinedRefs.map((r) => `${r.selector} で var(${r.name})`).join(' ／ ')}
+            <span className="block text-amber-100/60">予備の値（var(--x, #fff) の2つ目）も無いので、この宣言は無効になります</span>
+          </Item>
+        )}
+        {audit.rawColors.length > 0 && (
+          <Item title={`色を直接書いている宣言（${audit.rawColors.length}）`}>
+            {audit.rawColors.slice(0, 20).map((c, i) => (
+              <span key={i} className="block">
+                {c.selector} {'{'} {c.prop}: {c.value} {'}'}
+              </span>
+            ))}
+            <span className="block text-amber-100/60">テーマを切り替えてもこの色は変わりません。意図した固定色でなければ変数に置き換えます</span>
+          </Item>
+        )}
+      </div>
+    </div>
+  )
+}
 
 // ── CSS Syntax Highlight ────────────────────────────────────────────────────
 
@@ -35,7 +91,10 @@ function CssSyntaxHighlight({ code }: { code: string }) {
 
 interface CssVar {
   id: string
+  /** 表示用（@ルールとセレクターを並べたもの） */
   scope: string
+  selector: string
+  atRules: string[]
   name: string
   value: string
   originalValue: string
@@ -45,41 +104,26 @@ function stripComments(css: string): string {
   return css.replace(/\/\*[\s\S]*?\*\//g, '')
 }
 
+// ⚠ 以前は一番外側のブロックしか見ていなかったため、@media の中の :root が
+// 「@media (...)」というスコープになり、出力CSSでは :root { } が抜けて無効な CSS になっていた。
+// 入れ子を読む parseRules を使い、@ルールとセレクターを分けて持つ。
 function parseCssVars(css: string): CssVar[] {
-  const clean = stripComments(css)
   const vars: CssVar[] = []
   let idCounter = 0
-
-  let i = 0
-  while (i < clean.length) {
-    const braceStart = clean.indexOf('{', i)
-    if (braceStart === -1) break
-
-    const selectorRaw = clean.slice(i, braceStart).trim()
-    const selector = selectorRaw.replace(/\s+/g, ' ').trim() || ':root'
-
-    let depth = 1
-    let j = braceStart + 1
-    while (j < clean.length && depth > 0) {
-      if (clean[j] === '{') depth++
-      else if (clean[j] === '}') depth--
-      j++
-    }
-    const blockContent = clean.slice(braceStart + 1, j - 1)
-
-    const varPattern = /(--[\w-]+)\s*:\s*([^;{]+?)\s*;/g
-    let match
-    while ((match = varPattern.exec(blockContent)) !== null) {
+  for (const r of parseRules(stripComments(css))) {
+    const selector = r.selector || ':root'
+    for (const d of r.decls) {
+      if (!d.prop.startsWith('--')) continue
       vars.push({
         id: `v${idCounter++}`,
-        scope: selector,
-        name: match[1],
-        value: match[2].trim(),
-        originalValue: match[2].trim(),
+        scope: [...r.atRules, selector].join(' '),
+        selector,
+        atRules: r.atRules,
+        name: d.prop,
+        value: d.value,
+        originalValue: d.value,
       })
     }
-
-    i = j
   }
 
   return vars
@@ -178,10 +222,14 @@ function buildOutputCss(vars: CssVar[]): string {
     byScope.get(v.scope)!.push(v)
   }
   const lines: string[] = []
-  for (const [scope, scopeVars] of byScope) {
-    lines.push(`${scope} {`)
-    for (const v of scopeVars) lines.push(`  ${v.name}: ${v.value};`)
-    lines.push('}')
+  for (const scopeVars of byScope.values()) {
+    const { atRules, selector } = scopeVars[0]
+    const pad = '  '.repeat(atRules.length)
+    atRules.forEach((a, k) => lines.push(`${'  '.repeat(k)}${a} {`))
+    lines.push(`${pad}${selector} {`)
+    for (const v of scopeVars) lines.push(`${pad}  ${v.name}: ${v.value};`)
+    lines.push(`${pad}}`)
+    atRules.forEach((_, k) => lines.push(`${'  '.repeat(atRules.length - 1 - k)}}`))
     lines.push('')
   }
   return lines.join('\n').trimEnd()
@@ -283,6 +331,7 @@ export function CssVariableInspector() {
   const [vars, setVars] = useState<CssVar[]>([])
   const [copied, setCopied] = useState(false)
   const [parsed, setParsed] = useState(false)
+  const audit = useMemo(() => (parsed && inputCss.trim() ? auditCss(inputCss) : null), [parsed, inputCss])
 
   const handleParse = useCallback((css: string) => {
     setVars(parseCssVars(css))
@@ -294,10 +343,14 @@ export function CssVariableInspector() {
     if (parsed) {
       const extracted = parseCssVars(css)
       setVars(prev => {
-        const editedMap = new Map(prev.map(v => [`${v.scope}::${v.name}`, v.value]))
+        // 手で編集した値だけを引き継ぐ。元の値が変わった変数（別のCSSを貼った等）は新しい値を使う。
+        // ⚠ 以前は名前が同じなら前の値で上書きしていたので、サンプルの値が新しいCSSに混ざっていた
+        const editedMap = new Map(
+          prev.filter(v => v.value !== v.originalValue).map(v => [`${v.scope}::${v.name}`, v]),
+        )
         return extracted.map(v => {
-          const key = `${v.scope}::${v.name}`
-          return editedMap.has(key) ? { ...v, value: editedMap.get(key)! } : v
+          const old = editedMap.get(`${v.scope}::${v.name}`)
+          return old && old.originalValue === v.originalValue ? { ...v, value: old.value } : v
         })
       })
     }
@@ -443,6 +496,8 @@ export function CssVariableInspector() {
           )}
         </div>
       )}
+
+      {audit && <AuditPanel audit={audit} />}
 
       {/* ── Output CSS ── */}
       {vars.length > 0 && (
