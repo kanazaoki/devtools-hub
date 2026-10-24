@@ -1785,7 +1785,8 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-07-04',
     features: [
-      'spacing（margin/padding）を Tailwind スペーシングクラスに変換',
+      'spacing（margin/padding/gap/top 等）を Tailwind スペーシングクラスに変換。目盛りに無い値は p-[13px] の形で値を変えずに残す',
+      '負の値（-m-2）・auto（mx-auto）・rem・calc() にも対応',
       'font-size・font-weight などタイポグラフィ系に対応',
       'display: flex / grid など flexbox・grid 系に対応',
       'border-radius・border-width・border-color に対応',

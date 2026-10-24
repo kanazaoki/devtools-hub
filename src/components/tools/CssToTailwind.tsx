@@ -43,10 +43,30 @@ const TAILWIND_COLORS: Record<string, string> = {
   '#ec4899': 'pink-500', '#06b6d4': 'cyan-500',
 }
 
-function nearestSpacing(px: number): string {
-  const keys = Object.keys(SPACING_MAP).map(Number)
-  let closest = keys.reduce((a, b) => Math.abs(b - px) < Math.abs(a - px) ? b : a)
-  return SPACING_MAP[closest]
+
+// ⚠ 以前は一番近い目盛りに黙って丸めていた（13px → p-3 = 12px）。負の値は 0 になり（-8px → m-0）、
+// rem や 0・auto は変換できなかった。目盛りにぴったり合うときだけ目盛りのクラスにし、それ以外は p-[13px] の形で値を残す
+function spClass(prefix: string, raw: string): string | null {
+  const v = raw.trim()
+  if (v === 'auto') return `${prefix}-auto`
+  const neg = v.startsWith('-')
+  const abs = neg ? v.slice(1) : v
+  let px: number | null = null
+  const m = /^([\d.]+)(px|rem)?$/.exec(abs)
+  if (m && (m[2] || m[1] === '0')) px = m[2] === 'rem' ? parseFloat(m[1]) * 16 : parseFloat(m[1])
+  if (px !== null && SPACING_MAP[px] !== undefined) return `${neg && px !== 0 ? '-' : ''}${prefix}-${SPACING_MAP[px]}`
+  if (/^-?[\d.]+(px|rem|em|%|vw|vh|dvh|svh|ch)$/.test(v) || /^(calc|min|max|clamp|var)\(/.test(v)) return `${prefix}-[${v.replace(/\s+/g, '_')}]`
+  return null
+}
+
+// margin / padding などの1〜4個の値を、辺ごとのクラスにする
+function boxClasses(base: string, val: string): string[] | null {
+  const parts = val.trim().split(/\s+/)
+  const sides = parts.length === 1 ? [parts[0]] : parts.length === 2 ? [parts[0], parts[1]] : parts.length === 3 ? [parts[0], parts[1], parts[2], parts[1]] : parts.length === 4 ? parts : null
+  if (!sides) return null
+  const names = sides.length === 1 ? [base] : sides.length === 2 ? [`${base}y`, `${base}x`] : [`${base}t`, `${base}r`, `${base}b`, `${base}l`]
+  const out = sides.map((s, i) => spClass(names[i], s))
+  return out.every((c) => c !== null) ? (out as string[]) : null
 }
 
 function parseColor(val: string): string | null {
@@ -92,67 +112,40 @@ function convertLine(line: string): LineResult {
       map[val] ? add(map[val]) : noMatch(); break
     }
     // Margin
-    case 'margin': {
-      if (parts.length === 1 && parsePx(parts[0]) !== null) {
-        add(`m-${nearestSpacing(parsePx(parts[0])!)}`)
-      } else if (parts.length === 2) {
-        const v = parsePx(parts[0]), h = parsePx(parts[1])
-        if (v !== null && h !== null) { add(`my-${nearestSpacing(v)}`); add(`mx-${nearestSpacing(h)}`) }
-        else noMatch()
-      } else if (parts.length === 4) {
-        const [t, r, b, l] = parts.map(parsePx)
-        if ([t, r, b, l].every(n => n !== null)) {
-          add(`mt-${nearestSpacing(t!)}`); add(`mr-${nearestSpacing(r!)}`)
-          add(`mb-${nearestSpacing(b!)}`); add(`ml-${nearestSpacing(l!)}`)
-        } else noMatch()
-      } else noMatch(); break
+    case 'margin': case 'padding': {
+      const c = boxClasses(prop === 'margin' ? 'm' : 'p', val)
+      c ? c.forEach(add) : noMatch(); break
     }
-    case 'margin-top': px !== null ? add(`mt-${nearestSpacing(px)}`) : noMatch(); break
-    case 'margin-right': px !== null ? add(`mr-${nearestSpacing(px)}`) : noMatch(); break
-    case 'margin-bottom': px !== null ? add(`mb-${nearestSpacing(px)}`) : noMatch(); break
-    case 'margin-left': px !== null ? add(`ml-${nearestSpacing(px)}`) : noMatch(); break
-    // Padding
-    case 'padding': {
-      if (parts.length === 1 && parsePx(parts[0]) !== null) {
-        add(`p-${nearestSpacing(parsePx(parts[0])!)}`)
-      } else if (parts.length === 2) {
-        const v = parsePx(parts[0]), h = parsePx(parts[1])
-        if (v !== null && h !== null) { add(`py-${nearestSpacing(v)}`); add(`px-${nearestSpacing(h)}`) }
-        else noMatch()
-      } else if (parts.length === 4) {
-        const [t, r, b, l] = parts.map(parsePx)
-        if ([t, r, b, l].every(n => n !== null)) {
-          add(`pt-${nearestSpacing(t!)}`); add(`pr-${nearestSpacing(r!)}`)
-          add(`pb-${nearestSpacing(b!)}`); add(`pl-${nearestSpacing(l!)}`)
-        } else noMatch()
-      } else noMatch(); break
+    case 'margin-top': case 'margin-right': case 'margin-bottom': case 'margin-left':
+    case 'padding-top': case 'padding-right': case 'padding-bottom': case 'padding-left': {
+      const c = spClass(`${prop[0]}${prop.split('-')[1][0]}`, val)
+      c ? add(c) : noMatch(); break
     }
-    case 'padding-top': px !== null ? add(`pt-${nearestSpacing(px)}`) : noMatch(); break
-    case 'padding-right': px !== null ? add(`pr-${nearestSpacing(px)}`) : noMatch(); break
-    case 'padding-bottom': px !== null ? add(`pb-${nearestSpacing(px)}`) : noMatch(); break
-    case 'padding-left': px !== null ? add(`pl-${nearestSpacing(px)}`) : noMatch(); break
     // Width / Height
     case 'width': {
       if (val === '100%') add('w-full')
       else if (val === '100vw') add('w-screen')
       else if (val === 'auto') add('w-auto')
-      else if (px !== null) add(`w-${nearestSpacing(px)}`)
+      else if (spClass('w', val)) add(spClass('w', val)!)
       else noMatch(); break
     }
     case 'height': {
       if (val === '100%') add('h-full')
       else if (val === '100vh') add('h-screen')
       else if (val === 'auto') add('h-auto')
-      else if (px !== null) add(`h-${nearestSpacing(px)}`)
+      else if (spClass('h', val)) add(spClass('h', val)!)
       else noMatch(); break
     }
     case 'max-width': {
-      const sm: Record<string, string> = { '640px': 'sm', '768px': 'md', '1024px': 'lg', '1280px': 'xl', '1536px': '2xl', '100%': 'full', 'none': 'none' }
+      // ⚠ 以前は 640px を max-w-sm にしていたが、Tailwind の max-w-sm は 24rem（384px）。コンテナの目盛りに合わせる
+      const sm: Record<string, string> = { '384px': 'sm', '24rem': 'sm', '448px': 'md', '28rem': 'md', '512px': 'lg', '32rem': 'lg', '576px': 'xl', '36rem': 'xl', '672px': '2xl', '42rem': '2xl', '768px': '3xl', '48rem': '3xl', '896px': '4xl', '1024px': '5xl', '1152px': '6xl', '1280px': '7xl', '100%': 'full', 'none': 'none' }
       sm[val] ? add(`max-w-${sm[val]}`) : (px !== null ? add(`max-w-[${val}]`) : noMatch()); break
     }
     // Font
     case 'font-size': {
-      if (px !== null && FONT_SIZE_MAP[px]) add(`text-${FONT_SIZE_MAP[px]}`)
+      const fpx = px ?? (/^[\d.]+rem$/.test(val) ? parseFloat(val) * 16 : null)
+      if (fpx !== null && FONT_SIZE_MAP[fpx]) add(`text-${FONT_SIZE_MAP[fpx]}`)
+      else if (/^[\d.]+(px|rem|em)$/.test(val)) add(`text-[${val}]`)
       else noMatch(); break
     }
     case 'font-weight': {
@@ -229,9 +222,9 @@ function convertLine(line: string): LineResult {
       const m: Record<string, string> = { 'flex-start': 'items-start', 'flex-end': 'items-end', center: 'items-center', baseline: 'items-baseline', stretch: 'items-stretch' }
       m[val] ? add(m[val]) : noMatch(); break
     }
-    case 'gap': px !== null ? add(`gap-${nearestSpacing(px)}`) : noMatch(); break
-    case 'gap-x': case 'column-gap': px !== null ? add(`gap-x-${nearestSpacing(px)}`) : noMatch(); break
-    case 'gap-y': case 'row-gap': px !== null ? add(`gap-y-${nearestSpacing(px)}`) : noMatch(); break
+    case 'gap': { const c = spClass('gap', val); c ? add(c) : noMatch(); break }
+    case 'gap-x': case 'column-gap': { const c = spClass('gap-x', val); c ? add(c) : noMatch(); break }
+    case 'gap-y': case 'row-gap': { const c = spClass('gap-y', val); c ? add(c) : noMatch(); break }
     case 'flex': {
       const m: Record<string, string> = { '1': 'flex-1', 'auto': 'flex-auto', none: 'flex-none', 'initial': 'flex-initial' }
       m[val] ? add(m[val]) : noMatch(); break
@@ -243,10 +236,7 @@ function convertLine(line: string): LineResult {
       const m: Record<string, string> = { static: 'static', relative: 'relative', absolute: 'absolute', fixed: 'fixed', sticky: 'sticky' }
       m[val] ? add(m[val]) : noMatch(); break
     }
-    case 'top': px !== null ? add(`top-${nearestSpacing(px)}`) : noMatch(); break
-    case 'right': px !== null ? add(`right-${nearestSpacing(px)}`) : noMatch(); break
-    case 'bottom': px !== null ? add(`bottom-${nearestSpacing(px)}`) : noMatch(); break
-    case 'left': px !== null ? add(`left-${nearestSpacing(px)}`) : noMatch(); break
+    case 'top': case 'right': case 'bottom': case 'left': { const c = spClass(prop, val); c ? add(c) : noMatch(); break }
     // Overflow
     case 'overflow': {
       const m: Record<string, string> = { hidden: 'overflow-hidden', auto: 'overflow-auto', scroll: 'overflow-scroll', visible: 'overflow-visible' }
