@@ -5,6 +5,30 @@ import { useState, useMemo } from 'react'
 interface ValidationResult {
   valid: boolean
   errors: { path: string; message: string }[]
+  /** このツールが検査しないキーワード。ここに何かあると「Valid」は保証にならない */
+  unchecked: string[]
+}
+
+// 検査するキーワード。これ以外がスキーマにあれば一覧で知らせる。
+// ⚠ 黙って読み飛ばすと、$ref や oneOf で書いた条件に違反していても「Valid」と出る
+const SUPPORTED = new Set([
+  'type', 'enum', 'const', 'minLength', 'maxLength', 'pattern', 'format',
+  'minimum', 'maximum', 'exclusiveMinimum', 'exclusiveMaximum', 'multipleOf',
+  'minItems', 'maxItems', 'items', 'required', 'properties', 'additionalProperties',
+  // 検査には使わない説明用のキーワード
+  '$schema', '$id', 'title', 'description', 'default', 'examples', '$comment',
+])
+
+const FORMATS: Record<string, (v: string) => boolean> = {
+  email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
+  uri: (v) => { try { return !!new URL(v).protocol } catch { return false } },
+  url: (v) => { try { return !!new URL(v).protocol } catch { return false } },
+  date: (v) => /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v + 'T00:00:00Z')),
+  'date-time': (v) => /^\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}:\d{2}(\.\d+)?([Zz]|[+-]\d{2}:\d{2})$/.test(v) && !Number.isNaN(Date.parse(v)),
+  time: (v) => /^\d{2}:\d{2}:\d{2}(\.\d+)?([Zz]|[+-]\d{2}:\d{2})?$/.test(v),
+  uuid: (v) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v),
+  ipv4: (v) => /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/.test(v),
+  hostname: (v) => /^(?=.{1,253}$)([a-z0-9](-?[a-z0-9])*)(\.[a-z0-9](-?[a-z0-9])*)*$/i.test(v),
 }
 
 function validate(schemaText: string, jsonText: string): ValidationResult | { parseError: string } {
@@ -23,13 +47,19 @@ function validate(schemaText: string, jsonText: string): ValidationResult | { pa
   }
 
   const errors: { path: string; message: string }[] = []
+  const unchecked = new Set<string>()
 
   function check(schema: Record<string, unknown>, value: unknown, path: string) {
+    for (const k of Object.keys(schema)) if (!SUPPORTED.has(k)) unchecked.add(k)
+    if (typeof schema.format === 'string' && !FORMATS[schema.format]) unchecked.add(`format: ${schema.format}`)
+
     if (schema.type !== undefined) {
       const types = Array.isArray(schema.type) ? schema.type : [schema.type]
       const actualType = value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value
-      if (!types.includes(actualType)) {
-        errors.push({ path, message: `型エラー: ${types.join(' | ')} が必要ですが ${actualType} です` })
+      // integer は「小数部のない number」。typeof では区別できないので別に見る
+      const ok = types.includes(actualType) || (actualType === 'number' && types.includes('integer') && Number.isInteger(value))
+      if (!ok) {
+        errors.push({ path, message: `型エラー: ${types.join(' | ')} が必要ですが ${actualType === 'number' && types.includes('integer') ? '小数を含む number' : actualType} です` })
         return
       }
     }
@@ -40,7 +70,14 @@ function validate(schemaText: string, jsonText: string): ValidationResult | { pa
       }
     }
 
+    if (schema.const !== undefined && JSON.stringify(schema.const) !== JSON.stringify(value)) {
+      errors.push({ path, message: `値が const (${JSON.stringify(schema.const)}) と一致しません` })
+    }
+
     if (typeof value === 'string') {
+      if (typeof schema.format === 'string' && FORMATS[schema.format] && !FORMATS[schema.format](value)) {
+        errors.push({ path, message: `format "${schema.format}" の形式ではありません` })
+      }
       if (typeof schema.minLength === 'number' && value.length < schema.minLength) {
         errors.push({ path, message: `文字数が minLength (${schema.minLength}) より少ない` })
       }
@@ -83,6 +120,7 @@ function validate(schemaText: string, jsonText: string): ValidationResult | { pa
       if (typeof schema.maxItems === 'number' && value.length > schema.maxItems) {
         errors.push({ path, message: `要素数が maxItems (${schema.maxItems}) を超えています` })
       }
+      if (Array.isArray(schema.items)) unchecked.add('items（配列で書いたタプル形式）')
       if (schema.items !== undefined && !Array.isArray(schema.items)) {
         value.forEach((item, idx) =>
           check(schema.items as Record<string, unknown>, item, `${path}[${idx}]`)
@@ -122,7 +160,7 @@ function validate(schemaText: string, jsonText: string): ValidationResult | { pa
   }
 
   check(schema as Record<string, unknown>, data, '')
-  return { valid: errors.length === 0, errors }
+  return { valid: errors.length === 0, errors, unchecked: [...unchecked] }
 }
 
 const PRESETS = [
@@ -257,6 +295,17 @@ export function JsonSchemaValidator() {
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+          {!('parseError' in result) && result.unchecked.length > 0 && (
+            <div className="mt-3 rounded border border-amber-400/30 bg-amber-400/5 p-3">
+              <p className="font-mono text-xs font-semibold text-amber-300">
+                このツールが検査しないキーワードがあります
+              </p>
+              <p className="mt-1 font-mono text-[11px] text-amber-200/80">
+                {result.unchecked.join(' ／ ')} — これらの条件は確かめていないので、
+                {result.valid ? '「Valid」でも違反が残っている可能性があります。' : '上のエラー以外にも違反がある可能性があります。'}
+              </p>
             </div>
           )}
         </div>
