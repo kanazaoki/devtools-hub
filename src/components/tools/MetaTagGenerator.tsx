@@ -165,7 +165,7 @@ export function MetaTagGenerator() {
               <textarea
                 value={basic.description}
                 onChange={(e) => setBasic({ ...basic, description: e.target.value })}
-                placeholder="ページの説明（推奨160字以内）"
+                placeholder="ページの説明（検索結果では表示幅で切られるので、要点を前半に）"
                 rows={3}
                 className={inputClass + ' resize-none'}
               />
@@ -182,6 +182,7 @@ export function MetaTagGenerator() {
                 placeholder="キーワード1, キーワード2"
                 className={inputClass}
               />
+              <p className="mt-1 text-[10px] text-muted">Google は meta keywords を検索順位に使っていません。空欄でも構いません</p>
             </div>
             <div>
               <label className={labelClass}>author</label>
@@ -227,6 +228,9 @@ export function MetaTagGenerator() {
                 placeholder="https://example.com/og.png"
                 className={inputClass}
               />
+              {ogp.ogImage.trim() && !/^https?:\/\//.test(ogp.ogImage.trim()) && (
+                <p className="mt-1 text-[10px] text-amber-300">⚠ og:image は https:// から始まる絶対URLで書きます。/og.png のような相対パスは多くのSNSで読まれません</p>
+              )}
             </div>
             <div>
               <label className={labelClass}>og:url</label>

@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 
-const SIZES = [16, 32, 64] as const
+// Google の検索結果に出るファビコンは 48px の倍数が必要（48・96…）。180 は iOS のホーム画面用（apple-touch-icon）
+const SIZES = [16, 32, 48, 96, 180] as const
 type Size = typeof SIZES[number]
 
 const SAMPLE_EMOJI = '⚡'
@@ -158,6 +159,13 @@ export function FaviconGenerator() {
               </button>
             ))}
           </div>
+          <p className="font-mono text-[10px] leading-relaxed text-muted">
+            {size === 16 || size === 32
+              ? 'ブラウザのタブ用。Google の検索結果には 48px の倍数が必要なので、48 か 96 も用意してください'
+              : size === 180
+                ? 'iOS のホーム画面用。<link rel="apple-touch-icon" href="…"> で指定します'
+                : 'Google の検索結果にも使える大きさ（48px の倍数）です'}
+          </p>
         </div>
 
         {/* Action buttons */}

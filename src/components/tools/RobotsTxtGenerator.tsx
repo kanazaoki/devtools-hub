@@ -219,6 +219,18 @@ export function RobotsTxtGenerator() {
         <pre className="flex-1 rounded-lg border border-border bg-bg p-3 font-mono text-xs text-primary overflow-auto whitespace-pre leading-relaxed" style={{ minHeight: '400px' }}>
           {output || <span className="text-dim">（出力なし）</span>}
         </pre>
+        {agents.some(a => a.rules.some(r => r.type === 'disallow' && r.path.trim() && r.path.trim() !== '/')) && (
+          <p className="mt-2 rounded border border-amber-400/30 bg-amber-400/5 p-2 font-mono text-[11px] leading-relaxed text-amber-200/90">
+            ⚠ Disallow は「クロールしないで」という指示で、検索結果から消す指示ではありません。他のページからリンクされていると、中身を読まれないまま URL だけが検索結果に出ることがあります。
+            検索結果に出したくないページは、Disallow にせずクロールさせたうえで、ページに noindex を付けてください（Disallow すると noindex も読まれません）。
+            また robots.txt は誰でも読めるので、管理画面などのパスを書くと場所を教えることになります。
+          </p>
+        )}
+        {agents.some(a => a.crawlDelay.trim()) && (
+          <p className="mt-2 rounded border border-amber-400/30 bg-amber-400/5 p-2 font-mono text-[11px] leading-relaxed text-amber-200/90">
+            ⚠ Crawl-delay は Google が無視します（Bing などは従います）。Google のクロールが負担なら、サーバーが 503 や 429 を返すと自動的に頻度が下がります。
+          </p>
+        )}
       </div>
     </div>
   )
