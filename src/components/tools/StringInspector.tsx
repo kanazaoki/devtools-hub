@@ -31,6 +31,46 @@ function utf8ByteCount(cp: number): number {
   return 4
 }
 
+// 画面に出ない・空白に見えるが別の文字。検索や一致判定が通らない原因になる
+const INVISIBLE: Record<number, string> = {
+  0x09: 'TAB',
+  0x0a: 'LF',
+  0x0d: 'CR',
+  0x00a0: 'NBSP（ノーブレークスペース）',
+  0x00ad: 'SHY（ソフトハイフン）',
+  0x180e: 'モンゴル語母音区切り',
+  0x200b: 'ZWSP（ゼロ幅スペース）',
+  0x200c: 'ZWNJ（ゼロ幅非接合子）',
+  0x200d: 'ZWJ（ゼロ幅接合子・絵文字の結合）',
+  0x200e: 'LRM（左から右マーク）',
+  0x200f: 'RLM（右から左マーク）',
+  0x202a: 'LRE', 0x202b: 'RLE', 0x202c: 'PDF', 0x202d: 'LRO', 0x202e: 'RLO（文字の向きを反転）',
+  0x2060: 'WJ（ワードジョイナー）',
+  0x2066: 'LRI', 0x2067: 'RLI', 0x2068: 'FSI', 0x2069: 'PDI',
+  0x3000: '全角スペース',
+  0xfe0e: 'VS15（テキスト表示の指定）',
+  0xfe0f: 'VS16（絵文字表示の指定）',
+  0xfeff: 'BOM / ZWNBSP',
+}
+
+function invisibleName(cp: number): string | null {
+  if (INVISIBLE[cp]) return INVISIBLE[cp]
+  if (cp < 0x20 || (cp >= 0x7f && cp < 0xa0)) return '制御文字'
+  if (cp >= 0x2000 && cp <= 0x200a) return '幅つきスペース（U+2000〜200A）'
+  if (cp >= 0xe0000 && cp <= 0xe007f) return 'タグ文字'
+  return null
+}
+
+// 見た目の1文字（書記素）の数。家族の絵文字や「か」＋結合濁点は、コードポイントでは複数でも1つと数える
+function graphemeCount(str: string): number {
+  if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
+    let n = 0
+    for (const _ of new Intl.Segmenter('ja', { granularity: 'grapheme' }).segment(str)) n++
+    return n
+  }
+  return [...str].length
+}
+
 function analyzeString(str: string): CharInfo[] {
   const result: CharInfo[] = []
   for (const char of str) {
@@ -71,7 +111,19 @@ export function StringInspector() {
     return counts
   }, [chars])
 
-  const isEmpty = input.trim() === '' && input.length === 0
+  const isEmpty = input.length === 0
+  const graphemes = useMemo(() => graphemeCount(input), [input])
+  const invisibles = useMemo(() => {
+    const m = new Map<number, number>()
+    for (const c of chars) {
+      if (c.codePoint === 0x20 || c.codePoint === 0x0a || !invisibleName(c.codePoint)) continue
+      m.set(c.codePoint, (m.get(c.codePoint) ?? 0) + 1)
+    }
+    return [...m.entries()]
+  }, [chars])
+  // 正規化で変わる＝見た目が同じでも別のコードポイント列になっている（結合濁点・全角英数・半角カナ・①など）
+  const nfc = useMemo(() => input.normalize('NFC'), [input])
+  const nfkc = useMemo(() => input.normalize('NFKC'), [input])
 
   return (
     <div className="flex flex-col gap-5">
@@ -97,18 +149,55 @@ export function StringInspector() {
       ) : (
         <>
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-3">
+          {/* ⚠ 以前は「総文字数」1つだけで、中身はコードポイントの数だった。数え方は使う場所で違うので並べて出す */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {[
-              { label: '総文字数', value: chars.length, color: 'text-teal', border: 'border-teal/20', glow: 'shadow-[0_0_20px_rgba(20,184,166,0.15)]' },
-              { label: 'UTF-8 バイト数', value: totalBytes, color: 'text-blue-400', border: 'border-blue-400/20', glow: 'shadow-[0_0_20px_rgba(96,165,250,0.1)]' },
-              { label: 'ユニーク文字数', value: uniqueChars, color: 'text-violet-400', border: 'border-violet-400/20', glow: 'shadow-[0_0_20px_rgba(167,139,250,0.1)]' },
-            ].map(({ label, value, color, border, glow }) => (
-              <div key={label} className={`rounded-lg border bg-[#070d1a] px-4 py-4 text-center ${border} ${glow}`}>
+              { label: '見た目の文字数', note: '書記素', value: graphemes, color: 'text-teal', border: 'border-teal/20' },
+              { label: 'コードポイント数', note: 'Python の len()', value: chars.length, color: 'text-violet-400', border: 'border-violet-400/20' },
+              { label: 'UTF-16 の長さ', note: 'JavaScript の length', value: input.length, color: 'text-amber-400', border: 'border-amber-400/20' },
+              { label: 'UTF-8 バイト数', note: 'MySQL の LENGTH()', value: totalBytes, color: 'text-blue-400', border: 'border-blue-400/20' },
+            ].map(({ label, note, value, color, border }) => (
+              <div key={label} className={`rounded-lg border bg-[#070d1a] px-4 py-4 text-center ${border}`}>
                 <p className={`font-mono text-3xl font-bold tabular-nums leading-none ${color}`}>{value}</p>
                 <p className="mt-1.5 font-mono text-[10px] uppercase tracking-widest text-muted">{label}</p>
+                <p className="mt-0.5 font-mono text-[9px] text-muted/60">{note}</p>
               </div>
             ))}
           </div>
+          <p className="-mt-2 font-mono text-[10px] text-muted/70">ユニーク文字数 {uniqueChars}（コードポイント単位）</p>
+
+          {invisibles.length > 0 && (
+            <div className="rounded-lg border border-amber-400/30 bg-amber-400/5 px-4 py-3">
+              <p className="font-mono text-[11px] font-semibold text-amber-300">見えない・空白に見える文字が含まれています</p>
+              <ul className="mt-1.5 flex flex-col gap-0.5">
+                {invisibles.map(([cp, n]) => (
+                  <li key={cp} className="font-mono text-[11px] text-amber-200/90">
+                    U+{cp.toString(16).toUpperCase().padStart(4, '0')} {invisibleName(cp)} × {n}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-1.5 font-mono text-[10px] text-muted">
+                下の文字グリッドでは赤い枠で示します。改行（LF）は数えていません。CR・CRLF は貼り付けると LF に変わるので、改行コードはファイルで調べてください。
+              </p>
+            </div>
+          )}
+
+          {(nfc !== input || nfkc !== input) && (
+            <div className="rounded-lg border border-blue-400/30 bg-blue-400/5 px-4 py-3">
+              <p className="font-mono text-[11px] font-semibold text-blue-300">正規化すると変わる文字があります（見た目が同じでも一致しない原因）</p>
+              {nfc !== input && (
+                <p className="mt-1.5 font-mono text-[11px] text-primary">
+                  NFC（結合文字をまとめる）：<span className="text-bright">{nfc}</span>
+                  <span className="ml-2 text-muted">{[...input].length} → {[...nfc].length} コードポイント</span>
+                </p>
+              )}
+              {nfkc !== input && (
+                <p className="mt-1 font-mono text-[11px] text-primary">
+                  NFKC（全角英数→半角・半角カナ→全角・① → 1 など）：<span className="text-bright">{nfkc}</span>
+                </p>
+              )}
+            </div>
+          )}
 
           {/* Category breakdown */}
           <div className="rounded-lg border border-border bg-[#070d1a] overflow-hidden">
@@ -143,12 +232,14 @@ export function StringInspector() {
               <div className="flex flex-wrap gap-1">
                 {chars.map((c, i) => {
                   const meta = CATEGORY_META[c.category]
-                  const display = c.codePoint === 0x20 ? '·' : c.codePoint < 0x20 ? '↵' : c.char
+                  const inv = c.codePoint === 0x20 ? null : invisibleName(c.codePoint)
+                  const display =
+                    c.codePoint === 0x20 ? '·' : c.codePoint === 0x0a ? '↵' : c.codePoint === 0x09 ? '⇥' : inv && c.codePoint !== 0x3000 ? '◌' : c.char
                   return (
                     <div
                       key={i}
-                      title={`U+${c.codePoint.toString(16).toUpperCase().padStart(4, '0')} | UTF-8: ${c.utf8Bytes}B | ${meta.label}`}
-                      className={`flex flex-col items-center rounded border px-2 py-1.5 min-w-[48px] transition-opacity hover:opacity-80 cursor-default ${meta.bg}`}
+                      title={`U+${c.codePoint.toString(16).toUpperCase().padStart(4, '0')} | UTF-8: ${c.utf8Bytes}B | ${inv ?? meta.label}`}
+                      className={`flex flex-col items-center rounded border px-2 py-1.5 min-w-[48px] transition-opacity hover:opacity-80 cursor-default ${inv && c.codePoint !== 0x0a ? 'border-red-400/70 bg-red-400/10' : meta.bg}`}
                     >
                       <span className={`font-mono text-sm leading-none font-semibold ${meta.color}`}>{display}</span>
                       <span className="mt-1 font-mono text-[8px] text-muted/70 leading-none tracking-tight">

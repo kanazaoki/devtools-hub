@@ -63,6 +63,17 @@ const KNOWN_NAMES: Record<number, string> = {
   0x0076:'LATIN SMALL LETTER V', 0x0077:'LATIN SMALL LETTER W', 0x0078:'LATIN SMALL LETTER X',
   0x0079:'LATIN SMALL LETTER Y', 0x007A:'LATIN SMALL LETTER Z',
   0x007B:'LEFT CURLY BRACKET', 0x007C:'VERTICAL LINE', 0x007D:'RIGHT CURLY BRACKET', 0x007E:'TILDE',
+  // 形が似ていて取り違えやすい文字（検索や一致判定が通らない原因になる）
+  0x00A0:'NO-BREAK SPACE', 0x00AD:'SOFT HYPHEN', 0x3000:'IDEOGRAPHIC SPACE',
+  0x200B:'ZERO WIDTH SPACE', 0x200C:'ZERO WIDTH NON-JOINER', 0x200D:'ZERO WIDTH JOINER', 0xFEFF:'ZERO WIDTH NO-BREAK SPACE (BOM)',
+  0x2010:'HYPHEN', 0x2011:'NON-BREAKING HYPHEN', 0x2012:'FIGURE DASH', 0x2013:'EN DASH', 0x2014:'EM DASH',
+  0x2015:'HORIZONTAL BAR', 0x2212:'MINUS SIGN', 0xFF0D:'FULLWIDTH HYPHEN-MINUS', 0x2500:'BOX DRAWINGS LIGHT HORIZONTAL',
+  0x30FC:'KATAKANA-HIRAGANA PROLONGED SOUND MARK', 0xFF70:'HALFWIDTH KATAKANA-HIRAGANA PROLONGED SOUND MARK',
+  0x301C:'WAVE DASH', 0xFF5E:'FULLWIDTH TILDE', 0x2016:'DOUBLE VERTICAL LINE', 0x2225:'PARALLEL TO',
+  0x00A2:'CENT SIGN', 0xFFE0:'FULLWIDTH CENT SIGN', 0x00A3:'POUND SIGN', 0xFFE1:'FULLWIDTH POUND SIGN', 0x00AC:'NOT SIGN', 0xFFE2:'FULLWIDTH NOT SIGN',
+  0x3099:'COMBINING KATAKANA-HIRAGANA VOICED SOUND MARK', 0x309A:'COMBINING KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK',
+  0x309B:'KATAKANA-HIRAGANA VOICED SOUND MARK', 0x309C:'KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK',
+  0x2460:'CIRCLED DIGIT ONE', 0x2161:'ROMAN NUMERAL TWO', 0x3231:'PARENTHESIZED IDEOGRAPH STOCK', 0x2116:'NUMERO SIGN',
   // Arrows
   0x2190:'LEFTWARDS ARROW', 0x2191:'UPWARDS ARROW', 0x2192:'RIGHTWARDS ARROW', 0x2193:'DOWNWARDS ARROW',
   0x2194:'LEFT RIGHT ARROW', 0x21D0:'LEFTWARDS DOUBLE ARROW', 0x21D2:'RIGHTWARDS DOUBLE ARROW', 0x21D4:'LEFT RIGHT DOUBLE ARROW',
@@ -197,6 +208,13 @@ export function UnicodeBrowser() {
 
   // Search
   const searchResults = useMemo(() => {
+    // 文字そのものを1つ貼り付けたら、その文字を出す（見た目が同じ文字の正体を調べる用途）。
+    // ⚠ trim() は NBSP・全角スペース・BOM も消すので、空白に見える文字だけを貼ったときは削らずに見る
+    const pasted = [...(query.trim() || query)]
+    if (pasted.length === 1 && pasted[0] !== ' ' && !/^[0-9a-z]$/i.test(pasted[0])) {
+      const cp = pasted[0].codePointAt(0)!
+      return [{ cp, char: pasted[0], name: getCharName(cp) }]
+    }
     if (!query.trim()) return []
     const q = query.trim().toLowerCase()
     // Code point lookup
@@ -291,7 +309,7 @@ export function UnicodeBrowser() {
       {activeTab === 'search' && (
         <div className="space-y-4">
           <input value={query} onChange={e => setQuery(e.target.value)}
-            placeholder='文字名 (例: "latin small letter a") または コードポイント (例: "U+0041")'
+            placeholder='文字名 (例: "minus sign")・コードポイント (例: "U+2212")・文字そのものを1つ'
             className="w-full rounded border border-border bg-surface px-4 py-2.5 font-mono text-sm text-primary placeholder:text-muted focus:border-teal focus:outline-none" />
           {query && (
             searchResults.length > 0 ? (
