@@ -1051,6 +1051,8 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-06-26',
     features: [
+      '出力を「線番号」と「エリア名（grid-template-areas）」で切り替え',
+      'レスポンシブなカード一覧：repeat(auto-fill / auto-fit, minmax()) で、幅に応じた列数と両者の違いをプレビュー',
       '列数・行数（1〜12）・column-gap・row-gapをスライダーで設定',
       'セルをクリックして選択し、スパン列数・行数をUI指定',
       'CSS Grid コード（display:grid / grid-template-columns / grid-column 等）をリアルタイム生成',
