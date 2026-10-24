@@ -108,7 +108,7 @@ export const tools: Tool[] = [
     releasedAt: '2026-06-16',
     features: [
       'JSON 貼り付けでリアルタイム整形',
-      '構文エラーのリアルタイム検出',
+      '構文エラーの位置（何行目・何列目）と理由を、前後の文字列に印を付けて表示',
       'シンタックスハイライト（キー・文字列・数値・真偽値）',
       'インデント幅選択（2 / 4 / タブ）',
       'キーのアルファベット順ソート・Minify',
@@ -1498,8 +1498,9 @@ export const tools: Tool[] = [
     ],
     features: [
       'JSON Schema と JSON を並べてリアルタイムバリデーション',
-      'エラー箇所を JSONPath 形式（/name など）で表示',
-      'type / required / properties / minimum / maximum / minLength / pattern に対応',
+      'エラー箇所を JSON Pointer 形式（/name など）で表示',
+      'type（integer を含む）/ required / properties / minimum / maximum / minLength / pattern / enum / const / format（email・uri・date・date-time・uuid など）に対応',
+      '検査しないキーワード（$ref・oneOf など）がスキーマにあれば警告し、Valid を過信させない',
       'ユーザー・配列・ネストオブジェクトの3種プリセット付き',
     ],
   },
@@ -2103,7 +2104,8 @@ export const tools: Tool[] = [
     releasedAt: '2026-07-05',
     features: [
       '追加（緑）・削除（赤）・変更（黄）をカラーで識別',
-      'ネストしたオブジェクト・配列の差分も検出',
+      '配列も位置ごとに中まで比べ、変わった項目だけを items[1].name のようなパスで表示',
+      'オブジェクトのキーの順序の違いは差分にしない',
       '差分サマリー（追加N件・削除N件・変更N件）を表示',
       '不正なJSON入力時にパースエラーを表示',
       'サンプルデータで即動作確認',
