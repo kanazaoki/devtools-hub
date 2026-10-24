@@ -83,11 +83,18 @@ function slugify(text: string): string {
   return 'h-' + text.toLowerCase().replace(/[^\w぀-鿿]+/g, '-').replace(/^-|-$/g, '')
 }
 
-function safeUrl(url: string): string {
-  return /^javascript:/i.test(url.trim()) ? '#' : url
+// ⚠ 以前は javascript: だけを弾いていた（java&#9;script: や data:text/html は通っていた）。
+// 使ってよい種類（http・https・mailto・tel・相対パス・画像の data:）だけを通す
+function safeUrl(url: string, forImage = false): string {
+  const u = url.trim().replace(/&amp;/g, '&')
+  const ok = /^(https?:|mailto:|tel:|#|\/|\.\.?\/)/i.test(u) || !/^[a-z][a-z0-9+.-]*:/i.test(u) || (forImage && /^data:image\/(png|jpe?g|gif|webp|avif);/i.test(u))
+  return ok ? u.replace(/&/g, '&amp;').replace(/"/g, '&quot;') : '#'
 }
 
-function processInline(text: string): string {
+// ⚠ 以前は本文を逃がさずに HTML として表示していたので、Markdown に書かれた <img src=x onerror=…> がそのまま動き、
+// 画像の代替テキストやリンク先の " から属性を差し込めた。先に本文を全部逃がしてから Markdown の記法だけを HTML にする
+function processInline(raw: string): string {
+  const text = esc(raw).replace(/"/g, '&quot;').replace(/&lt;br&gt;/g, '<br>')
   return text
     .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -95,8 +102,8 @@ function processInline(text: string): string {
     .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
     .replace(/_([^_\n]+)_/g, '<em>$1</em>')
     .replace(/~~(.+?)~~/g, '<del>$1</del>')
-    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_, alt, src) => `<img alt="${alt}" src="${safeUrl(src)}" style="max-width:100%">`)
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, href) => `<a href="${safeUrl(href)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`)
+    .replace(/!\[([^\]]*)\]\(((?:[^()\s]|\([^()]*\))+)\)/g, (_, alt, src) => `<img alt="${alt}" src="${safeUrl(src, true)}" style="max-width:100%">`)
+    .replace(/\[([^\]]+)\]\(((?:[^()\s]|\([^()]*\))+)\)/g, (_, label, href) => `<a href="${safeUrl(href)}" target="_blank" rel="noopener noreferrer">${label}</a>`)
 }
 
 function md2html(src: string): string {
@@ -185,7 +192,7 @@ function md2html(src: string): string {
     }
 
     // code block placeholder
-    if (line.includes('\x00CB')) { out.push(line); i++; continue }
+    if (line.includes('\x00CB')) { out.push(esc(line)); i++; continue }
 
     // empty line
     if (line.trim() === '') { i++; continue }

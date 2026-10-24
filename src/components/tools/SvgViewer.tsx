@@ -67,6 +67,18 @@ function parseSvg(code: string): ParseResult {
   }
 }
 
+// img で表示するときは xmlns が必須（HTML に直接書く SVG では省略できるため、無いものが多い）
+function svgForImg(svg: string): string {
+  let s = svg
+  if (!/<svg[^>]*\sxmlns\s*=/.test(s)) s = s.replace(/<svg\b/, '<svg xmlns="http://www.w3.org/2000/svg"')
+  if (/xlink:/.test(s) && !/xmlns:xlink\s*=/.test(s)) s = s.replace(/<svg\b/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"')
+  return s
+}
+
+function hasActiveContent(svg: string): boolean {
+  return /<script\b|\son[a-z]+\s*=|<foreignObject\b|javascript:/i.test(svg)
+}
+
 function getSvgDimensions(svgContent: string): { w: number; h: number } {
   try {
     const doc = new DOMParser().parseFromString(svgContent, 'image/svg+xml')
@@ -117,7 +129,7 @@ export function SvgViewer() {
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    const blob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' })
+    const blob = new Blob([svgForImg(svgContent)], { type: 'image/svg+xml;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const img = new Image()
     img.onload = () => {
@@ -339,14 +351,26 @@ export function SvgViewer() {
             )}
 
             {/* rendered SVG */}
+            {valid && svgContent && hasActiveContent(svgContent) && (
+              <p className="absolute left-2 top-2 z-10 rounded bg-amber-400/10 px-2 py-1 font-mono text-[10px] text-amber-300">
+                ⚠ この SVG にはスクリプトやイベント属性が含まれています（プレビューでは実行しません）
+              </p>
+            )}
+            {/* ⚠ 以前は貼り付けた SVG をそのまま HTML として差し込んでいたので、<image onerror="…"> や
+                <foreignObject> の中のスクリプトがこのページで動いた。img で表示すると、SVG の中のスクリプトは動かない */}
             {valid && svgContent && (
-              <div
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgForImg(svgContent))}`}
+                alt="SVG プレビュー"
                 style={{
+                  width: getSvgDimensions(svgContent).w,
+                  height: getSvgDimensions(svgContent).h,
+                  maxWidth: 'none',
                   transform: `scale(${zoom / 100})`,
                   transformOrigin: 'center center',
                   transition: 'transform 0.1s ease',
                 }}
-                dangerouslySetInnerHTML={{ __html: svgContent }}
               />
             )}
           </div>
