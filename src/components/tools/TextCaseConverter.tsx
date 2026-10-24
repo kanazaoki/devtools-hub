@@ -7,7 +7,7 @@ import { useState, useCallback, useMemo } from 'react'
 function tokenize(text: string): string[] {
   return text
     .trim()
-    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
     .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
     .replace(/[-_]+/g, ' ')
     .split(/\s+/)

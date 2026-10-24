@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 
-type Flag = 'g' | 'i' | 'm' | 's'
+type Flag = 'g' | 'i' | 'm' | 's' | 'u'
 type Tab = 'match' | 'replace'
 
 interface MatchDetail {
@@ -11,6 +11,7 @@ interface MatchDetail {
   line: number
   col: number
   groups: string[]
+  named: Record<string, string> | null
 }
 
 function buildRegex(pattern: string, flags: Set<Flag>): RegExp | null {
@@ -44,14 +45,14 @@ function getMatches(text: string, regex: RegExp): MatchDetail[] {
     const r = new RegExp(regex.source, regex.flags)
     while ((m = r.exec(text)) !== null) {
       const { line, col } = getLineCol(m.index)
-      matches.push({ index: m.index, value: m[0], line, col, groups: m.slice(1).map(g => g ?? '') })
+      matches.push({ index: m.index, value: m[0], line, col, groups: m.slice(1).map(g => g ?? ''), named: m.groups ? { ...m.groups } : null })
       if (m[0].length === 0) r.lastIndex++
     }
   } else {
     const m = regex.exec(text)
     if (m) {
       const { line, col } = getLineCol(m.index)
-      matches.push({ index: m.index, value: m[0], line, col, groups: m.slice(1).map(g => g ?? '') })
+      matches.push({ index: m.index, value: m[0], line, col, groups: m.slice(1).map(g => g ?? ''), named: m.groups ? { ...m.groups } : null })
     }
   }
   return matches
@@ -140,7 +141,7 @@ export function RegexStudio() {
           <span className="shrink-0 font-mono text-xs text-muted">/</span>
           {/* Flags */}
           <div className="flex gap-1">
-            {(['g', 'i', 'm', 's'] as Flag[]).map(f => (
+            {(['g', 'i', 'm', 's', 'u'] as Flag[]).map(f => (
               <button
                 key={f}
                 onClick={() => toggleFlag(f)}
@@ -261,7 +262,11 @@ export function RegexStudio() {
                 <span className="font-mono text-[10px] text-muted/50">
                   @{m.index}–{m.index + m.value.length - 1}
                 </span>
-                {m.groups.length > 0 && m.groups.some(g => g !== '') && (
+                {m.named ? (
+                  <span className="font-mono text-[10px] text-dim">
+                    groups: {'{ '}{Object.entries(m.named).map(([k, v]) => `${k}: "${v ?? ''}"`).join(', ')}{' }'}
+                  </span>
+                ) : m.groups.length > 0 && m.groups.some(g => g !== '') && (
                   <span className="font-mono text-[10px] text-dim">
                     groups: [{m.groups.map(g => `"${g}"`).join(', ')}]
                   </span>
