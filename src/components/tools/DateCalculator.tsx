@@ -1,115 +1,135 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { holidayName } from '@/lib/jpHolidays'
 
-type Mode = 'diff' | 'add' | 'bizdays'
+type Mode = 'diff' | 'add' | 'bizdays' | 'bizadd'
 
-function toDateStr(d: Date): string {
-  return d.toISOString().slice(0, 10)
+// 日付は「暦の上の日」として扱う。'YYYY-MM-DD' を UTC の 0 時に置き、曜日も UTC で読む。
+// ⚠ 以前は new Date('YYYY-MM-DD')（UTC として読まれる）と getDay()（ブラウザの時刻帯で読む）を
+// 混ぜていたため、UTC より西の時刻帯では曜日が1日ずれ、営業日の数が変わっていた。
+// 「今日」も toISOString（UTC）で作っていたので、日本では朝9時までは前日になっていた。
+const DAY = 86400000
+const parse = (s: string) => {
+  const [y, m, d] = s.split('-').map(Number)
+  return Date.UTC(y, m - 1, d)
 }
+const fmt = (t: number) => new Date(t).toISOString().slice(0, 10)
 
 function today(): string {
-  return toDateStr(new Date())
+  const n = new Date()
+  return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`
 }
 
 function dateDiff(a: string, b: string) {
-  const da = new Date(a), db = new Date(b)
-  const msPerDay = 86400000
-  const diffMs = Math.abs(db.getTime() - da.getTime())
-  const days = Math.round(diffMs / msPerDay)
-  const weeks = Math.floor(days / 7)
-  const months = Math.abs(
-    (db.getFullYear() - da.getFullYear()) * 12 + db.getMonth() - da.getMonth()
-  )
-  const years = Math.abs(db.getFullYear() - da.getFullYear())
-  const earlier = da <= db ? a : b
-  const later = da <= db ? b : a
-  return { days, weeks, months, years, earlier, later }
+  const ta = parse(a)
+  const tb = parse(b)
+  const [early, late] = ta <= tb ? [a, b] : [b, a]
+  const days = Math.abs(tb - ta) / DAY
+  const [y1, m1, d1] = early.split('-').map(Number)
+  const [y2, m2, d2] = late.split('-').map(Number)
+  // 経過した「満」の月数・年数（12/31→1/1 は0か月）
+  const months = (y2 - y1) * 12 + (m2 - m1) - (d2 < d1 ? 1 : 0)
+  return { days, weeks: Math.floor(days / 7), months, years: Math.floor(months / 12), earlier: early, later: late }
 }
 
-function addDays(base: string, n: number): string {
-  const d = new Date(base)
-  d.setDate(d.getDate() + n)
-  return toDateStr(d)
+const isWeekend = (t: number) => {
+  const w = new Date(t).getUTCDay()
+  return w === 0 || w === 6
 }
 
-function countBizDays(a: string, b: string): number {
-  const da = new Date(a), db = new Date(b)
-  const start = da <= db ? da : db
-  const end = da <= db ? db : da
-  let count = 0
-  const cur = new Date(start)
-  while (cur <= end) {
-    const dow = cur.getDay()
-    if (dow !== 0 && dow !== 6) count++
-    cur.setDate(cur.getDate() + 1)
+function isBusinessDay(t: number, skipHolidays: boolean) {
+  return !isWeekend(t) && !(skipHolidays && holidayName(fmt(t)))
+}
+
+function countBizDays(a: string, b: string, skipHolidays: boolean) {
+  const ta = Math.min(parse(a), parse(b))
+  const tb = Math.max(parse(a), parse(b))
+  let biz = 0
+  const holidays: string[] = []
+  for (let t = ta; t <= tb; t += DAY) {
+    if (isBusinessDay(t, skipHolidays)) biz++
+    else if (!isWeekend(t)) holidays.push(`${fmt(t)} ${holidayName(fmt(t))}`)
   }
-  return count
+  return { biz, total: (tb - ta) / DAY + 1, start: fmt(ta), end: fmt(tb), holidays }
+}
+
+/** 基準日から n 営業日後（負なら前）。基準日そのものは数えない */
+function addBizDays(base: string, n: number, skipHolidays: boolean) {
+  let t = parse(base)
+  const step = n >= 0 ? DAY : -DAY
+  let left = Math.abs(n)
+  const holidays: string[] = []
+  while (left > 0) {
+    t += step
+    if (isBusinessDay(t, skipHolidays)) left--
+    else if (!isWeekend(t)) holidays.push(`${fmt(t)} ${holidayName(fmt(t))}`)
+  }
+  return { base, n, resultDate: fmt(t), holidays }
 }
 
 function formatDate(s: string): string {
-  const d = new Date(s)
-  return d.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' })
+  return new Date(parse(s)).toLocaleDateString('ja-JP', {
+    timeZone: 'UTC',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'short',
+  })
 }
 
 export function DateCalculator() {
   const [mode, setMode] = useState<Mode>('diff')
-
-  // diff mode
-  const [diffStart, setDiffStart] = useState(() => {
-    const d = new Date(); d.setMonth(d.getMonth() - 1); return toDateStr(d)
-  })
-  const [diffEnd, setDiffEnd] = useState(today)
-
-  // add mode
-  const [addBase, setAddBase] = useState(today)
+  const [diffStart, setDiffStart] = useState('')
+  const [diffEnd, setDiffEnd] = useState('')
+  const [addBase, setAddBase] = useState('')
   const [addDaysVal, setAddDaysVal] = useState('30')
-
-  // bizdays mode
-  const [bizStart, setBizStart] = useState(() => {
-    const d = new Date(); d.setDate(d.getDate() - 14); return toDateStr(d)
-  })
-  const [bizEnd, setBizEnd] = useState(today)
-
+  const [bizStart, setBizStart] = useState('')
+  const [bizEnd, setBizEnd] = useState('')
+  const [bizBase, setBizBase] = useState('')
+  const [bizN, setBizN] = useState('10')
+  const [skipHolidays, setSkipHolidays] = useState(true)
   const [copied, setCopied] = useState(false)
 
-  const result = useCallback(() => {
-    if (mode === 'diff') {
-      if (!diffStart || !diffEnd) return null
-      return dateDiff(diffStart, diffEnd)
-    }
-    if (mode === 'add') {
-      if (!addBase) return null
-      const n = parseInt(addDaysVal, 10)
-      if (isNaN(n)) return null
-      const resultDate = addDays(addBase, n)
-      return { base: addBase, n, resultDate }
-    }
-    if (mode === 'bizdays') {
-      if (!bizStart || !bizEnd) return null
-      const biz = countBizDays(bizStart, bizEnd)
-      const { days } = dateDiff(bizStart, bizEnd)
-      return { biz, total: days + 1, start: bizStart, end: bizEnd }
-    }
-    return null
-  }, [mode, diffStart, diffEnd, addBase, addDaysVal, bizStart, bizEnd])()
+  // 初期値は「今日」から作る（サーバーで描いた日付と食い違わないよう、ブラウザで決める）
+  useEffect(() => {
+    const t = parse(today())
+    setDiffStart(fmt(t - 30 * DAY))
+    setDiffEnd(fmt(t))
+    setAddBase(fmt(t))
+    setBizStart(fmt(t - 14 * DAY))
+    setBizEnd(fmt(t))
+    setBizBase(fmt(t))
+  }, [])
 
-  const resultText = useCallback(() => {
+  const result = useMemo(() => {
+    if (mode === 'diff') return diffStart && diffEnd ? dateDiff(diffStart, diffEnd) : null
+    if (mode === 'add') {
+      const n = parseInt(addDaysVal, 10)
+      return addBase && !isNaN(n) ? { base: addBase, n, resultDate: fmt(parse(addBase) + n * DAY) } : null
+    }
+    if (mode === 'bizdays') return bizStart && bizEnd ? countBizDays(bizStart, bizEnd, skipHolidays) : null
+    const n = parseInt(bizN, 10)
+    return bizBase && !isNaN(n) && Math.abs(n) <= 2000 ? addBizDays(bizBase, n, skipHolidays) : null
+  }, [mode, diffStart, diffEnd, addBase, addDaysVal, bizStart, bizEnd, bizBase, bizN, skipHolidays])
+
+  const resultText = useMemo(() => {
     if (!result) return ''
     if (mode === 'diff') {
       const r = result as ReturnType<typeof dateDiff>
-      return `${formatDate(r.earlier)} ～ ${formatDate(r.later)}\n${r.days} 日 / ${r.weeks} 週 / ${r.months} ヶ月 / ${r.years} 年`
+      return `${formatDate(r.earlier)} ～ ${formatDate(r.later)}\n${r.days} 日 / ${r.weeks} 週 / 満${r.months} ヶ月 / 満${r.years} 年`
     }
     if (mode === 'add') {
       const r = result as { base: string; n: number; resultDate: string }
-      return `${formatDate(r.base)} の ${r.n > 0 ? r.n + ' 日後' : Math.abs(r.n) + ' 日前'} = ${formatDate(r.resultDate)}`
+      return `${formatDate(r.base)} の ${r.n >= 0 ? r.n + ' 日後' : Math.abs(r.n) + ' 日前'} = ${formatDate(r.resultDate)}`
     }
     if (mode === 'bizdays') {
-      const r = result as { biz: number; total: number; start: string; end: string }
-      return `${formatDate(r.start)} ～ ${formatDate(r.end)}\n営業日: ${r.biz} 日（全 ${r.total} 日）`
+      const r = result as ReturnType<typeof countBizDays>
+      return `${formatDate(r.start)} ～ ${formatDate(r.end)}\n営業日: ${r.biz} 日（全 ${r.total} 日・土日${skipHolidays ? 'と祝日' : ''}を除く）`
     }
-    return ''
-  }, [mode, result])()
+    const r = result as ReturnType<typeof addBizDays>
+    return `${formatDate(r.base)} の ${Math.abs(r.n)} 営業日${r.n >= 0 ? '後' : '前'} = ${formatDate(r.resultDate)}（土日${skipHolidays ? 'と祝日' : ''}を除く）`
+  }, [mode, result, skipHolidays])
 
   const handleCopy = async () => {
     if (!resultText) return
@@ -122,13 +142,13 @@ export function DateCalculator() {
     { key: 'diff', label: '差分計算' },
     { key: 'add', label: '日数加算' },
     { key: 'bizdays', label: '営業日カウント' },
+    { key: 'bizadd', label: 'N営業日後' },
   ]
+  const holidays = result && 'holidays' in result ? (result.holidays as string[]) : []
 
   return (
     <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
-      {/* Left: inputs */}
       <div className="flex flex-col gap-5 lg:w-80 shrink-0">
-        {/* Mode tabs */}
         <div className="flex flex-col gap-1">
           {MODES.map(({ key, label }, i) => (
             <button
@@ -149,7 +169,6 @@ export function DateCalculator() {
 
         <div className="h-px bg-border/50" />
 
-        {/* Date inputs */}
         <div className="flex flex-col gap-4">
           {mode === 'diff' && (
             <>
@@ -160,17 +179,7 @@ export function DateCalculator() {
           {mode === 'add' && (
             <>
               <DateField label="基準日" value={addBase} onChange={setAddBase} />
-              <div className="flex flex-col gap-1.5">
-                <label className="font-mono text-[10px] font-semibold uppercase tracking-widest text-muted">
-                  加算日数（負の値で過去）
-                </label>
-                <input
-                  type="number"
-                  value={addDaysVal}
-                  onChange={(e) => setAddDaysVal(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-[#0a0a10] px-3 py-2.5 font-mono text-sm text-bright outline-none transition-all focus:border-teal"
-                />
-              </div>
+              <NumberField label="加算日数（負の値で過去）" value={addDaysVal} onChange={setAddDaysVal} />
             </>
           )}
           {mode === 'bizdays' && (
@@ -179,10 +188,24 @@ export function DateCalculator() {
               <DateField label="終了日" value={bizEnd} onChange={setBizEnd} />
             </>
           )}
+          {mode === 'bizadd' && (
+            <>
+              <DateField label="基準日（この日は数えない）" value={bizBase} onChange={setBizBase} />
+              <NumberField label="営業日数（負の値で過去）" value={bizN} onChange={setBizN} />
+            </>
+          )}
+          {(mode === 'bizdays' || mode === 'bizadd') && (
+            <label className="flex items-start gap-2 font-mono text-[11px] text-primary">
+              <input type="checkbox" checked={skipHolidays} onChange={(e) => setSkipHolidays(e.target.checked)} className="mt-0.5 accent-teal" />
+              <span>
+                日本の祝日も除く
+                <span className="block text-[10px] text-muted">振替休日・国民の休日を含む（2019〜2099年。年末年始などの会社独自の休みは含みません）</span>
+              </span>
+            </label>
+          )}
         </div>
       </div>
 
-      {/* Right: result */}
       <div className="flex flex-1 flex-col gap-4 min-w-0">
         <p className="font-mono text-[10px] font-semibold uppercase tracking-widest text-muted">結果</p>
 
@@ -197,7 +220,7 @@ export function DateCalculator() {
                     <span className="text-muted/40">→</span> {formatDate(r.later)}
                   </p>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    {([['日', r.days], ['週', r.weeks], ['ヶ月', r.months], ['年', r.years]] as [string, number][]).map(([unit, val]) => (
+                    {([['日', r.days], ['週', r.weeks], ['ヶ月（満）', r.months], ['年（満）', r.years]] as [string, number][]).map(([unit, val]) => (
                       <div key={unit} className="flex flex-col items-center rounded-xl border border-border bg-[#080810] py-4 px-2 gap-1">
                         <span className="font-mono text-3xl font-bold text-bright tabular-nums leading-none">{val.toLocaleString()}</span>
                         <span className="font-mono text-[10px] text-muted mt-1">{unit}</span>
@@ -208,13 +231,13 @@ export function DateCalculator() {
               )
             })()}
 
-            {mode === 'add' && (() => {
+            {(mode === 'add' || mode === 'bizadd') && (() => {
               const r = result as { base: string; n: number; resultDate: string }
-              const n = r.n
+              const unit = mode === 'add' ? '日' : '営業日'
               return (
                 <div className="rounded-xl border border-teal/20 bg-teal/5 p-6 flex flex-col gap-2">
                   <p className="font-mono text-xs text-muted">
-                    {formatDate(r.base)} の {n >= 0 ? `${n} 日後` : `${Math.abs(n)} 日前`}
+                    {formatDate(r.base)} の {Math.abs(r.n)} {unit}{r.n >= 0 ? '後' : '前'}
                   </p>
                   <p className="font-mono text-xl font-bold text-bright leading-snug">{formatDate(r.resultDate)}</p>
                 </div>
@@ -222,7 +245,7 @@ export function DateCalculator() {
             })()}
 
             {mode === 'bizdays' && (() => {
-              const r = result as { biz: number; total: number; start: string; end: string }
+              const r = result as ReturnType<typeof countBizDays>
               return (
                 <>
                   <p className="font-mono text-xs text-muted leading-relaxed">
@@ -232,16 +255,22 @@ export function DateCalculator() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex flex-col items-center rounded-xl border border-teal/20 bg-teal/5 py-5 px-3 gap-1">
                       <span className="font-mono text-4xl font-bold text-teal tabular-nums leading-none">{r.biz}</span>
-                      <span className="font-mono text-[10px] text-muted mt-2 text-center leading-relaxed">営業日<br />（土日除く）</span>
+                      <span className="font-mono text-[10px] text-muted mt-2 text-center leading-relaxed">営業日<br />（土日{skipHolidays ? '・祝日' : ''}除く）</span>
                     </div>
                     <div className="flex flex-col items-center rounded-xl border border-border bg-[#080810] py-5 px-3 gap-1">
                       <span className="font-mono text-4xl font-bold text-bright tabular-nums leading-none">{r.total}</span>
-                      <span className="font-mono text-[10px] text-muted mt-2">総日数</span>
+                      <span className="font-mono text-[10px] text-muted mt-2">総日数（両端を含む）</span>
                     </div>
                   </div>
                 </>
               )
             })()}
+
+            {holidays.length > 0 && (
+              <p className="font-mono text-[11px] leading-relaxed text-dim">
+                除いた祝日（{holidays.length}）：{holidays.slice(0, 12).join('、')}{holidays.length > 12 ? ' …' : ''}
+              </p>
+            )}
 
             <button
               onClick={handleCopy}
@@ -258,6 +287,20 @@ export function DateCalculator() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function NumberField({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="font-mono text-[10px] font-semibold uppercase tracking-widest text-muted">{label}</label>
+      <input
+        type="number"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded-lg border border-border bg-[#0a0a10] px-3 py-2.5 font-mono text-sm text-bright outline-none transition-all focus:border-teal"
+      />
     </div>
   )
 }
