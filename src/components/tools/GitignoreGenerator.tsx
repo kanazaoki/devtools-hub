@@ -24,10 +24,8 @@ dist/
 build/
 out/
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 coverage/
 .nyc_output/
 *.log`,
@@ -226,10 +224,8 @@ artifacts/`,
     content: `node_modules/
 build/
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -244,11 +240,11 @@ out/
 build/
 dist/
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+!.env.example
 .vercel
+next-env.d.ts
+*.tsbuildinfo
 npm-debug.log*
 yarn-debug.log*`,
   },

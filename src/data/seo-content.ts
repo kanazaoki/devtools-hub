@@ -1210,12 +1210,12 @@ export const seoContent: Record<string, SeoArticleData> = {
   },
   'glob-pattern-tester': {
     heading: 'globパターン入門 — *, **, ?, {}, [] の使い方',
-    intro: 'globパターンはファイルパスのワイルドカードマッチング構文です。gitignore・webpack・ESLint・vitest・VS CodeなどほぼすべてのCLIツールで使われており、「どのファイルを対象にするか」を一行で表現できます。',
+    intro: 'globパターンはファイルパスのワイルドカードマッチング構文です。ESLint・vitest・tsconfig・GitHub ActionsなどほぼすべてのCLIツールで使われており、「どのファイルを対象にするか」を一行で表現できます。',
     sections: [
-      { title: '* と ** の違い', body: '単一の*はスラッシュを含まない任意の文字列にマッチします。例えば*.tsはsrc/utils/format.tsにはマッチしますが、src/*.tsはトップレベルのsrc/直下のTSファイルにしかマッチしません。一方**（ダブルスター）はスラッシュを含む任意のパスにマッチします。src/**/*.tsはsrc/以下どの深さにあるTSファイルにもマッチするため、ディレクトリ構造を問わず対象にしたいときに使います。' },
+      { title: '* と ** の違い', body: '単一の*はスラッシュを含まない任意の文字列にマッチします。例えば*.tsはトップレベルのformat.tsにはマッチしますが、src/utils/format.tsにはマッチしません。src/*.tsも、src/直下のTSファイルにしかマッチしません（.gitignoreだけは例外で、スラッシュを含まない*.tsはどの階層のTSファイルにも当たります）。一方**（ダブルスター）はスラッシュを含む任意のパスにマッチします。src/**/*.tsはsrc/以下どの深さにあるTSファイルにもマッチするため、ディレクトリ構造を問わず対象にしたいときに使います。' },
       { title: 'ブレース展開 {a,b,c}', body: '{ts,tsx}はtsまたはtsxのどちらかにマッチするOR条件です。**/*.{js,ts,jsx,tsx}のように複数の拡張子をまとめて指定できます。ブレース内はカンマ区切りで複数の候補を列挙でき、部分文字列として機能するため{test,spec}.tsのような使い方も可能です。多くのglob実装でサポートされていますが、一部のBashバージョンでは動作が異なります。' },
       { title: '文字クラス [abc] と ? の使い方', body: '[abc]は角括弧内の任意の1文字にマッチします。[a-z]のような範囲指定も使えます。?は任意の1文字（スラッシュ除く）にマッチします。例えばsrc/app?.tsはsrc/app1.tsやsrc/appA.tsにマッチします。実用頻度は*や**より低いですが、バージョン番号のような単一桁の違いを扱うときに便利です。' },
-      { title: 'globパターンを使うツール一覧', body: 'gitignoreはglobパターンで追跡除外ファイルを指定します。webpackのentry・moduleRules・resolveは**/*.{ts,tsx}などのglob形式を受け取ります。ESLintのignorePatterns、vitestのinclude/exclude、GitHub Actionsのpaths/paths-ignoreもglobを使います。tsconfig.jsonのinclude/excludeもglobパターンで対象ファイルを絞れます。' },
+      { title: 'globパターンを使うツール一覧', body: 'ESLint（flat config）のfiles・ignores、vitestのinclude/exclude、GitHub Actionsのpaths/paths-ignore、tsconfig.jsonのinclude/excludeは、いずれもglobで対象ファイルを指定します。ただし細かな規則はツールごとに違い、たとえばtsconfigのincludeは{ts,tsx}のような中かっこに対応していません。.gitignoreも見た目はglobですが、スラッシュの有無で当たる階層が変わる、!で打ち消せる、中かっこが使えない、といった独自の規則があります。このツールの「.gitignore」モードは、Gitと同じ規則で除外されるかを判定します。' },
     ],
   },
   'color-mix-previewer': {
