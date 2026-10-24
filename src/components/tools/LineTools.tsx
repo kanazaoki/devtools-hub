@@ -17,6 +17,9 @@ type Op =
   | 'number'
   | 'affix'
   | 'remove-affix'
+  | 'join-sql'
+  | 'join-json'
+  | 'join-csv'
 
 const OPS: { group: string; items: { id: Op; label: string }[] }[] = [
   {
@@ -46,6 +49,14 @@ const OPS: { group: string; items: { id: Op; label: string }[] }[] = [
       { id: 'number', label: '連番を振る' },
       { id: 'affix', label: '接頭辞・接尾辞を付ける' },
       { id: 'remove-affix', label: '接頭辞・接尾辞を外す' },
+    ],
+  },
+  {
+    group: '1行にまとめる（空行は除く）',
+    items: [
+      { id: 'join-sql', label: 'SQL の IN 句' },
+      { id: 'join-json', label: 'JSON の配列' },
+      { id: 'join-csv', label: 'カンマ区切り（CSV の1行）' },
     ],
   },
 ]
@@ -155,6 +166,22 @@ export function LineTools() {
       case 'affix':
         out = out.map((l) => `${prefix}${l}${suffix}`)
         break
+      // ⚠ 接頭辞・接尾辞の付与で IN 句を作ると、最後の行にもカンマが残り、値の中の ' もそのままで SQL が壊れる。
+      // まとめる処理を別に用意し、区切りは間にだけ入れ、引用符は規則どおりに逃がす
+      case 'join-sql':
+      case 'join-json':
+      case 'join-csv': {
+        const vals = out.map((l) => (ignoreSpace ? l.trim() : l)).filter((l) => l.trim() !== '')
+        const allNumeric = vals.length > 0 && vals.every((v) => /^-?\d+(\.\d+)?$/.test(v.trim()))
+        if (op === 'join-sql') {
+          out = [`(${vals.map((v) => (allNumeric ? v.trim() : `'${v.replace(/'/g, "''")}'`)).join(', ')})`]
+        } else if (op === 'join-json') {
+          out = [JSON.stringify(allNumeric ? vals.map((v) => Number(v)) : vals)]
+        } else {
+          out = [vals.map((v) => (/[",\r\n]|^\s|\s$/.test(v) ? `"${v.replace(/"/g, '""')}"` : v)).join(',')]
+        }
+        break
+      }
       case 'remove-affix':
         out = out.map((l) => {
           let s = l
@@ -168,7 +195,7 @@ export function LineTools() {
   }, [lines, op, caseInsensitive, ignoreSpace, prefix, suffix, seed])
 
   const outLines = output === '' ? 0 : output.split('\n').length
-  const removed = lines.length - outLines
+  const removed = op.startsWith('join-') ? 0 : lines.length - outLines
   const needsAffix = op === 'affix' || op === 'remove-affix'
   const usesKey = ['sort-asc', 'sort-desc', 'dedupe', 'unique-only', 'duplicates-only'].includes(op)
 
