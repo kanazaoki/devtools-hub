@@ -14,6 +14,14 @@ const TEXT_KEY = '#text'
 interface ConvertOptions {
   coerceValues: boolean
   xmlDecl: boolean
+  /** 1件しか無くても配列にする要素名（RSS の item など）。件数で型が変わるのを防ぐ */
+  arrayTags?: string[]
+}
+
+function ensureArrays(o: JsonObject, opts: ConvertOptions) {
+  for (const tag of opts.arrayTags ?? []) {
+    if (tag in o && !Array.isArray(o[tag])) o[tag] = [o[tag]]
+  }
 }
 
 // ── Entity handling ──────────────────────────────────────────
@@ -215,6 +223,7 @@ function elementToValue(el: Extract<XmlNode, { type: 'element' }>, opts: Convert
   for (const [k, v] of attrEntries) o[ATTR_PREFIX + k] = opts.coerceValues ? coerce(v) : v
   if (childText !== '') o[TEXT_KEY] = applyText(childText)
   for (const child of childElements) addToObj(o, child.name, elementToValue(child, opts))
+  ensureArrays(o, opts)
   return o
 }
 
@@ -225,6 +234,7 @@ function nodesToJson(nodes: XmlNode[], opts: ConvertOptions): JsonObject {
   if (elements.length === 0) throw new Error('XMLの要素が見つかりません。<tag> を含む XML を入力してください。')
   const obj: JsonObject = {}
   for (const el of elements) addToObj(obj, el.name, elementToValue(el, opts))
+  ensureArrays(obj, opts)
   return obj
 }
 
@@ -334,11 +344,13 @@ export function XmlJsonConverter() {
   const [input, setInput] = useState('')
   const [coerceValues, setCoerceValues] = useState(false)
   const [xmlDecl, setXmlDecl] = useState(true)
+  const [arrayTagsInput, setArrayTagsInput] = useState('')
+  const arrayTags = useMemo(() => arrayTagsInput.split(',').map((s) => s.trim()).filter(Boolean), [arrayTagsInput])
   const [copied, setCopied] = useState(false)
 
   const { output, error } = useMemo(
-    () => convert(input, mode, { coerceValues, xmlDecl }),
-    [input, mode, coerceValues, xmlDecl]
+    () => convert(input, mode, { coerceValues, xmlDecl, arrayTags }),
+    [input, mode, coerceValues, xmlDecl, arrayTags]
   )
 
   const fromLabel = mode === 'xml2json' ? 'XML' : 'JSON'
@@ -434,7 +446,17 @@ export function XmlJsonConverter() {
           >
             {coerceValues ? '✓ ' : ''}数値・真偽値を型変換
           </button>
-        ) : (
+        ) : null}
+        {mode === 'xml2json' && (
+          <input
+            type="text"
+            value={arrayTagsInput}
+            onChange={(e) => setArrayTagsInput(e.target.value)}
+            placeholder="常に配列にする要素（例: item, entry）"
+            className="w-56 rounded border border-border bg-surface px-2 py-1.5 font-mono text-[10px] text-primary outline-none focus:border-teal/50"
+          />
+        )}
+        {mode === 'xml2json' ? null : (
           <button
             type="button"
             onClick={() => setXmlDecl((v) => !v)}

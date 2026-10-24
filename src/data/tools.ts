@@ -2642,6 +2642,7 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-07-31',
     features: [
+      '「常に配列にする要素」を指定すると、1件しか無くても配列で出力（RSS の item など）',
       'XML → JSON / JSON → XML の双方向リアルタイム変換',
       '属性(@_)・テキスト(#text)・同名要素の配列化を正しく処理',
       'コメント・XML宣言・CDATA・名前空間プレフィックスに対応',
