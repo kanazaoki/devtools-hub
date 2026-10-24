@@ -36,29 +36,39 @@ function toGoName(key: string): string {
 
 // Merge an array of objects into an ordered key->value list (union of keys,
 // first non-null value wins) so array-of-objects yields a complete struct.
-function mergeObjects(objs: Record<string, unknown>[]): [string, unknown][] {
-  const order: string[] = []
-  const map = new Map<string, unknown>()
-  for (const o of objs) {
-    for (const [k, v] of Object.entries(o)) {
-      if (!map.has(k)) {
-        order.push(k)
-        map.set(k, v)
-      } else if (map.get(k) === null && v !== null) {
-        map.set(k, v)
-      }
-    }
-  }
-  return order.map((k) => [k, map.get(k)])
+// ある位置で観測した値すべてから Go の型を決める（配列の全要素、全オブジェクトの同じキー）。
+// ⚠ 以前は各キーの最初の null でない値だけで型を決めていたため、1 と 1.5 が混ざると int、
+// 入れ子のオブジェクトは最初の1つのキーしか拾えなかった
+function inferGoTypeFrom(values: unknown[], indent: number, omitempty: boolean): string {
+  const present = values.filter((v) => v !== null && v !== undefined)
+  const hasNull = present.length < values.length
+  if (present.length === 0) return 'interface{}'
+  const kinds = new Set(present.map((v) => (Array.isArray(v) ? 'array' : typeof v)))
+  if (kinds.size > 1) return 'interface{}'
+  const kind = [...kinds][0]
+  let typ: string
+  if (kind === 'string') typ = 'string'
+  else if (kind === 'boolean') typ = 'bool'
+  else if (kind === 'number') typ = present.every((v) => Number.isInteger(v)) ? 'int' : 'float64'
+  else if (kind === 'array') {
+    const items = (present as unknown[][]).flat()
+    return '[]' + (items.length ? inferGoTypeFrom(items, indent, omitempty) : 'interface{}')
+  } else if (kind === 'object') typ = structFromObjects(present as Record<string, unknown>[], indent, omitempty)
+  else return 'interface{}'
+  // null になりうる値はポインタにして、null と「ゼロ値」を区別できるようにする
+  return hasNull ? `*${typ}` : typ
 }
 
-function structFromEntries(entries: [string, unknown][], indent: number, omitempty: boolean): string {
-  if (entries.length === 0) return 'struct{}'
+function structFromObjects(objs: Record<string, unknown>[], indent: number, omitempty: boolean): string {
+  const keys: string[] = []
+  for (const o of objs) for (const k of Object.keys(o)) if (!keys.includes(k)) keys.push(k)
+  if (keys.length === 0) return 'struct{}'
   const pad = '\t'.repeat(indent + 1)
   const closePad = '\t'.repeat(indent)
-  const lines = entries.map(([key, val]) => {
+  const lines = keys.map((key) => {
     const field = toGoName(key)
-    const typ = inferGoType(val, indent + 1, omitempty)
+    const values = objs.filter((o) => key in o).map((o) => o[key])
+    const typ = inferGoTypeFrom(values, indent + 1, omitempty)
     const tag = `\`json:"${key}${omitempty ? ',omitempty' : ''}"\``
     return `${pad}${field} ${typ} ${tag}`
   })
@@ -66,24 +76,7 @@ function structFromEntries(entries: [string, unknown][], indent: number, omitemp
 }
 
 function inferGoType(value: unknown, indent: number, omitempty: boolean): string {
-  if (value === null || value === undefined) return 'interface{}'
-  const t = typeof value
-  if (t === 'string') return 'string'
-  if (t === 'boolean') return 'bool'
-  if (t === 'number') return Number.isInteger(value) ? 'int' : 'float64'
-  if (Array.isArray(value)) {
-    if (value.length === 0) return '[]interface{}'
-    const objs = value.filter((v) => v !== null && typeof v === 'object' && !Array.isArray(v)) as Record<string, unknown>[]
-    if (objs.length === value.length) {
-      return '[]' + structFromEntries(mergeObjects(objs), indent, omitempty)
-    }
-    const elemTypes = new Set(value.map((v) => inferGoType(v, indent, omitempty)))
-    return elemTypes.size === 1 ? '[]' + [...elemTypes][0] : '[]interface{}'
-  }
-  if (t === 'object') {
-    return structFromEntries(Object.entries(value as Record<string, unknown>), indent, omitempty)
-  }
-  return 'interface{}'
+  return inferGoTypeFrom([value], indent, omitempty)
 }
 
 function generateGo(json: string, rootName: string, omitempty: boolean): { output: string; error: string | null } {

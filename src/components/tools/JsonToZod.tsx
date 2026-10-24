@@ -4,41 +4,53 @@ import { useState, useMemo } from 'react'
 
 // ─── Zod schema generator ────────────────────────────────────────────────────
 
-function generateZodSchema(value: unknown, indent: number, opts: Options): string {
+// ある位置で観測した値すべてから Zod のスキーマを作る。
+// ⚠ 以前は配列の要素ごとにスキーマを作って z.union に並べていたため、キーが少し違うだけの
+// オブジェクトが別々の z.object になり、一部にしか無いキーも .optional() にならなかった
+function zodFrom(values: unknown[], indent: number, opts: Options): string {
   const pad = '  '.repeat(indent)
   const innerPad = '  '.repeat(indent + 1)
+  const present = values.filter((v) => v !== null && v !== undefined)
+  const nullable = present.length < values.length
+  const parts: string[] = []
 
-  if (value === null) return 'z.null()'
-  if (value === undefined) return 'z.undefined()'
+  const strs = present.filter((v) => typeof v === 'string')
+  const nums = present.filter((v) => typeof v === 'number') as number[]
+  const bools = present.filter((v) => typeof v === 'boolean')
+  const arrs = present.filter((v) => Array.isArray(v)) as unknown[][]
+  const objs = present.filter((v) => typeof v === 'object' && !Array.isArray(v)) as Record<string, unknown>[]
 
-  switch (typeof value) {
-    case 'boolean':
-      return 'z.boolean()'
-    case 'number':
-      return opts.intForIntegers && Number.isInteger(value) ? 'z.number().int()' : 'z.number()'
-    case 'string':
-      return 'z.string()'
-    case 'object':
-      if (Array.isArray(value)) {
-        if (value.length === 0) return 'z.array(z.unknown())'
-        // Collect unique type schemas
-        const itemSchemas = [...new Set(value.map((item) => generateZodSchema(item, indent, opts)))]
-        if (itemSchemas.length === 1) return `z.array(${itemSchemas[0]})`
-        return `z.array(z.union([${itemSchemas.join(', ')}]))`
-      }
-      // Object
-      const entries = Object.entries(value as Record<string, unknown>)
-      if (entries.length === 0) return 'z.object({})'
-      const fields = entries.map(([k, v]) => {
+  if (strs.length) parts.push('z.string()')
+  if (nums.length) parts.push(opts.intForIntegers && nums.every((n) => Number.isInteger(n)) ? 'z.number().int()' : 'z.number()')
+  if (bools.length) parts.push('z.boolean()')
+  if (arrs.length) {
+    const items = arrs.flat()
+    parts.push(`z.array(${items.length ? zodFrom(items, indent, opts) : 'z.unknown()'})`)
+  }
+  if (objs.length) {
+    const keys: string[] = []
+    for (const o of objs) for (const k of Object.keys(o)) if (!keys.includes(k)) keys.push(k)
+    if (keys.length === 0) parts.push('z.object({})')
+    else {
+      const fields = keys.map((k) => {
         const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(k) ? k : JSON.stringify(k)
-        let schema = generateZodSchema(v, indent + 1, opts)
-        if (opts.allOptional) schema += '.optional()'
+        const holders = objs.filter((o) => k in o)
+        let schema = zodFrom(holders.map((o) => o[k]), indent + 1, opts)
+        // 一部のオブジェクトにしか無いキーは省略可能
+        if (opts.allOptional || holders.length < objs.length) schema += '.optional()'
         return `${innerPad}${safeKey}: ${schema},`
       })
-      return `z.object({\n${fields.join('\n')}\n${pad}})`
-    default:
-      return 'z.unknown()'
+      parts.push(`z.object({\n${fields.join('\n')}\n${pad}})`)
+    }
   }
+
+  if (parts.length === 0) return nullable ? 'z.null()' : 'z.unknown()'
+  const base = parts.length === 1 ? parts[0] : `z.union([${parts.join(', ')}])`
+  return nullable ? `${base}.nullable()` : base
+}
+
+function generateZodSchema(value: unknown, indent: number, opts: Options): string {
+  return zodFrom([value], indent, opts)
 }
 
 interface Options {
