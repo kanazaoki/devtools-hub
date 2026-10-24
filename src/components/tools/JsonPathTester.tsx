@@ -72,7 +72,7 @@ function jsonPath(root: JsonValue, expr: string): JsonValue[] {
       if (inner.includes(',') && (inner.includes("'") || inner.includes('"'))) {
         const keys = inner.split(',').map(k => k.trim().replace(/^['"]|['"]$/g, ''))
         if (!Array.isArray(node) && node !== null && typeof node === 'object') {
-          keys.forEach(k => { if (k in node) traverse((node as Record<string, JsonValue>)[k], rest) })
+          keys.forEach(k => { if (Object.prototype.hasOwnProperty.call(node, k)) traverse((node as Record<string, JsonValue>)[k], rest) })
         }
         return
       }
@@ -94,7 +94,7 @@ function jsonPath(root: JsonValue, expr: string): JsonValue[] {
       if ((inner.startsWith("'") && inner.endsWith("'")) || (inner.startsWith('"') && inner.endsWith('"'))) {
         const key = inner.slice(1, -1)
         if (!Array.isArray(node) && node !== null && typeof node === 'object') {
-          if (key in node) traverse((node as Record<string, JsonValue>)[key], rest)
+          if (Object.prototype.hasOwnProperty.call(node, key)) traverse((node as Record<string, JsonValue>)[key], rest)
         }
         return
       }
@@ -113,14 +113,14 @@ function jsonPath(root: JsonValue, expr: string): JsonValue[] {
 
       // Bare key [key]
       if (!Array.isArray(node) && node !== null && typeof node === 'object') {
-        if (inner in node) traverse((node as Record<string, JsonValue>)[inner], rest)
+        if (Object.prototype.hasOwnProperty.call(node, inner)) traverse((node as Record<string, JsonValue>)[inner], rest)
       }
       return
     }
 
     // Dot-notation key
     if (!Array.isArray(node) && node !== null && typeof node === 'object') {
-      if (head in node) traverse((node as Record<string, JsonValue>)[head], rest)
+      if (Object.prototype.hasOwnProperty.call(node, head)) traverse((node as Record<string, JsonValue>)[head], rest)
     }
   }
 
@@ -168,35 +168,131 @@ function jsonPath(root: JsonValue, expr: string): JsonValue[] {
 }
 
 // Filter evaluator for [?(...)] expressions
+// ⚠ 以前は「@.key 演算子 値」1つだけで、@.a.b（入れ子）・&& / ||・!・日本語のキー名が使えず、
+// == はゆるい比較（@.x == 0 が "" や false にも当たる）だった。小さな式の読み取り器にした
+type Tok =
+  | { t: 'path'; v: string[] }
+  | { t: 'lit'; v: JsonValue | undefined }
+  | { t: 're'; v: RegExp }
+  | { t: 'op'; v: string }
+
+function lexFilter(src: string): Tok[] {
+  const toks: Tok[] = []
+  let i = 0
+  const readQuoted = (q: string) => {
+    let s = ''
+    i++
+    while (i < src.length && src[i] !== q) {
+      if (src[i] === '\\' && i + 1 < src.length) { s += src[i + 1]; i += 2; continue }
+      s += src[i++]
+    }
+    i++
+    return s
+  }
+  while (i < src.length) {
+    const c = src[i]
+    if (/\s/.test(c)) { i++; continue }
+    if (c === '@') {
+      i++
+      const path: string[] = []
+      while (i < src.length) {
+        if (src[i] === '.') {
+          i++
+          let k = ''
+          while (i < src.length && /[^\s.[\]()=!<>&|~]/.test(src[i])) k += src[i++]
+          path.push(k)
+        } else if (src[i] === '[') {
+          i++
+          while (/\s/.test(src[i] ?? '')) i++
+          const q = src[i]
+          if (q === "'" || q === '"') path.push(readQuoted(q))
+          else { let k = ''; while (i < src.length && src[i] !== ']') k += src[i++]; path.push(k.trim()) }
+          while (i < src.length && src[i] !== ']') i++
+          i++
+        } else break
+      }
+      toks.push({ t: 'path', v: path })
+      continue
+    }
+    if (c === "'" || c === '"') { toks.push({ t: 'lit', v: readQuoted(c) }); continue }
+    if (c === '/' && toks.length && toks[toks.length - 1].t === 'op' && (toks[toks.length - 1] as { v: string }).v === '=~') {
+      i++
+      let body = ''
+      while (i < src.length && src[i] !== '/') { if (src[i] === '\\') { body += src[i++] } body += src[i++] }
+      i++
+      let flags = ''
+      while (/[gimsuy]/.test(src[i] ?? '')) flags += src[i++]
+      toks.push({ t: 're', v: new RegExp(body, flags.replace('g', '')) })
+      continue
+    }
+    const two = src.slice(i, i + 2)
+    if (['==', '!=', '<=', '>=', '&&', '||', '=~'].includes(two)) {
+      // === / !== も受け付ける
+      if ((two === '==' || two === '!=') && src[i + 2] === '=') i++
+      toks.push({ t: 'op', v: two }); i += 2; continue
+    }
+    if ('<>!()'.includes(c)) { toks.push({ t: 'op', v: c }); i++; continue }
+    const m = /^(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null)/.exec(src.slice(i))
+    if (m) { toks.push({ t: 'lit', v: JSON.parse(m[1]) }); i += m[1].length; continue }
+    throw new Error(`フィルター式を読めません: ${src.slice(i, i + 10)}`)
+  }
+  return toks
+}
+
+function getPath(node: JsonValue, path: string[]): JsonValue | undefined {
+  let cur: JsonValue | undefined = node
+  for (const k of path) {
+    if (k === 'length' && (Array.isArray(cur) || typeof cur === 'string')) { cur = cur.length; continue }
+    if (cur === null || typeof cur !== 'object') return undefined
+    if (!Object.prototype.hasOwnProperty.call(cur, k)) return undefined
+    cur = (cur as Record<string, JsonValue>)[k]
+  }
+  return cur
+}
+
 function evalFilter(node: JsonValue, expr: string): boolean {
-  // @.key op value
-  const opMatch = expr.match(/^@\.(\w+)\s*(==|!=|<=|>=|<|>)\s*(.+)$/)
-  if (opMatch) {
-    const [, key, op, rawVal] = opMatch
-    if (node === null || typeof node !== 'object' || Array.isArray(node)) return false
-    const actual = (node as Record<string, JsonValue>)[key]
-    let expected: JsonValue
-    try {
-      expected = JSON.parse(rawVal)
-    } catch {
-      expected = rawVal.replace(/^['"]|['"]$/g, '')
-    }
-    switch (op) {
-      case '==': return actual == expected
-      case '!=': return actual != expected
-      case '<':  return typeof actual === 'number' && typeof expected === 'number' && actual < expected
-      case '<=': return typeof actual === 'number' && typeof expected === 'number' && actual <= expected
-      case '>':  return typeof actual === 'number' && typeof expected === 'number' && actual > expected
-      case '>=': return typeof actual === 'number' && typeof expected === 'number' && actual >= expected
-    }
+  const toks = lexFilter(expr)
+  let p = 0
+  const peek = () => toks[p]
+  const isOp = (v: string) => peek()?.t === 'op' && (peek() as { v: string }).v === v
+  const value = (): JsonValue | undefined | RegExp => {
+    const tk = toks[p++]
+    if (!tk) throw new Error('フィルター式が途中で終わっています')
+    if (tk.t === 'path') return getPath(node, tk.v)
+    if (tk.t === 'lit' || tk.t === 're') return tk.v
+    if (tk.v === '(') { const r = or(); if (!isOp(')')) throw new Error(') がありません'); p++; return r }
+    throw new Error(`予期しない ${tk.v}`)
   }
-  // @.key existence check
-  const existMatch = expr.match(/^@\.(\w+)$/)
-  if (existMatch) {
-    if (node === null || typeof node !== 'object' || Array.isArray(node)) return false
-    return existMatch[1] in node
+  const cmp = (): boolean => {
+    const a = value()
+    const tk = peek()
+    if (tk?.t === 'op' && ['==', '!=', '<', '<=', '>', '>=', '=~'].includes(tk.v)) {
+      p++
+      const b = value()
+      switch (tk.v) {
+        case '==': return a === b
+        case '!=': return a !== b
+        case '=~': return typeof a === 'string' && b instanceof RegExp && b.test(a)
+        default: {
+          const ok = (typeof a === 'number' && typeof b === 'number') || (typeof a === 'string' && typeof b === 'string')
+          if (!ok) return false
+          const x = a as number | string, y = b as number | string
+          return tk.v === '<' ? x < y : tk.v === '<=' ? x <= y : tk.v === '>' ? x > y : x >= y
+        }
+      }
+    }
+    // 単独のパスは「存在する」、真偽値の結果はそのまま
+    return typeof a === 'boolean' ? a : a !== undefined
   }
-  return false
+  const not = (): boolean => {
+    if (isOp('!')) { p++; return !not() }
+    return cmp()
+  }
+  const and = (): boolean => { let r = not(); while (isOp('&&')) { p++; const n = not(); r = r && n } return r }
+  const or = (): boolean => { let r = and(); while (isOp('||')) { p++; const n = and(); r = r || n } return r }
+  const r = or()
+  if (p < toks.length) throw new Error('フィルター式の後ろに余分なものがあります')
+  return r
 }
 
 // ── Sample JSON ────────────────────────────────────────────────────────────────
@@ -225,6 +321,7 @@ const PRESETS = [
   { label: '最初の本', expr: '$.store.book[0]' },
   { label: '価格 < 10', expr: '$.store.book[?(@.price < 10)]' },
   { label: '著者一覧', expr: '$.store.book[*].author' },
+  { label: '条件を組み合わせる', expr: "$.store.book[?(@.author == '宮沢賢治' && @.price < 10)].title" },
 ]
 
 // ── Component ─────────────────────────────────────────────────────────────────

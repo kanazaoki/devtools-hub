@@ -12,6 +12,8 @@ function flatten(obj: unknown, prefix = '', delim: Delimiter, result: Record<str
     return result
   }
   if (Array.isArray(obj)) {
+    // ⚠ 以前は空の配列がキーごと消えていた
+    if (obj.length === 0 && prefix) { result[prefix] = []; return result }
     obj.forEach((v, i) => flatten(v, prefix ? `${prefix}${delim}${i}` : String(i), delim, result))
     return result
   }
@@ -24,16 +26,18 @@ function flatten(obj: unknown, prefix = '', delim: Delimiter, result: Record<str
 }
 
 function unflatten(flat: Record<string, unknown>, delim: Delimiter): unknown {
-  const result: Record<string, unknown> = {}
+  // ⚠ 以前は普通のオブジェクトに cur[part] で書き込んでいたので、キーに __proto__ があると
+  // ページ全体の Object.prototype に値が入っていた。プロトタイプを持たないオブジェクトに入れる。
+  // また途中で配列を作ると、a.0 と a.x が混ざったときに a.x が消えていたので、いったん全部オブジェクトで組み、
+  // 最後に「キーが全部数字」のものだけ配列に直す
+  const result: Record<string, unknown> = Object.create(null)
   for (const [rawKey, value] of Object.entries(flat)) {
     const parts = rawKey.split(delim)
     let cur: Record<string, unknown> = result
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i]
-      const nextPart = parts[i + 1]
-      const nextIsIndex = /^\d+$/.test(nextPart)
-      if (cur[part] === undefined || cur[part] === null || typeof cur[part] !== 'object') {
-        cur[part] = nextIsIndex ? [] : {}
+      if (cur[part] === undefined || cur[part] === null || typeof cur[part] !== 'object' || Array.isArray(cur[part])) {
+        cur[part] = Object.create(null)
       }
       cur = cur[part] as Record<string, unknown>
     }
@@ -51,7 +55,7 @@ function unflatten(flat: Record<string, unknown>, delim: Delimiter): unknown {
         return arr
       }
       const out: Record<string, unknown> = {}
-      for (const k of keys) out[k] = toArray((v as Record<string, unknown>)[k])
+      for (const k of keys) Object.defineProperty(out, k, { value: toArray((v as Record<string, unknown>)[k]), enumerable: true, writable: true, configurable: true })
       return out
     }
     return v
@@ -59,12 +63,22 @@ function unflatten(flat: Record<string, unknown>, delim: Delimiter): unknown {
   return toArray(result)
 }
 
-function convert(input: string, mode: Mode, delim: Delimiter): { output: string; error: string } {
+function convert(input: string, mode: Mode, delim: Delimiter): { output: string; error: string; warning?: string } {
   try {
     const parsed = JSON.parse(input)
     if (mode === 'flatten') {
       const flat = flatten(parsed, '', delim)
-      return { output: JSON.stringify(flat, null, 2), error: '' }
+      // 元のキーに区切り文字が入っていると、戻したときに別の階層に分かれてしまう
+      const clash: string[] = []
+      const walk = (v: unknown) => {
+        if (v && typeof v === 'object') for (const [k, c] of Object.entries(v)) { if (!Array.isArray(v) && k.includes(delim)) clash.push(k); walk(c) }
+      }
+      walk(parsed)
+      return {
+        output: JSON.stringify(flat, null, 2),
+        error: '',
+        warning: clash.length ? `⚠ キー ${[...new Set(clash)].slice(0, 5).map((k) => `"${k}"`).join('・')} に区切り文字「${delim}」が含まれているため、Unflatten で元に戻すと別の階層に分かれます。別の区切り文字を選んでください。` : '',
+      }
     } else {
       if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
         return { output: '', error: 'Unflatten はフラットなオブジェクト（{}）を入力してください' }
@@ -98,12 +112,13 @@ export function JsonFlattener() {
   const [input, setInput]       = useState(SAMPLE_NESTED)
   const [output, setOutput]     = useState('')
   const [error, setError]       = useState('')
+  const [warning, setWarning]   = useState('')
   const [copied, setCopied]     = useState(false)
 
   const run = useCallback(() => {
     if (!input.trim()) { setOutput(''); setError(''); return }
-    const { output: out, error: err } = convert(input, mode, delim)
-    setOutput(out); setError(err)
+    const { output: out, error: err, warning: w } = convert(input, mode, delim)
+    setOutput(out); setError(err); setWarning(w ?? '')
   }, [input, mode, delim])
 
   useEffect(() => {
@@ -174,6 +189,7 @@ export function JsonFlattener() {
               </div>
             )}
           </div>
+          {warning && <p className="mb-2 text-xs text-amber-300">{warning}</p>}
           <div className={`h-72 w-full overflow-auto rounded border p-3 font-mono text-xs ${error ? 'border-red-500/50 bg-red-500/5 text-red-400' : 'border-border/50 bg-surface text-primary'}`}>
             {error ? error : output ? (
               <pre className="whitespace-pre-wrap">{output}</pre>

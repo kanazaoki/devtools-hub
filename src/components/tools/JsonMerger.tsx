@@ -12,7 +12,11 @@ function deepMerge(target: any, source: any, strategy: ArrayStrategy): any {
   }
   if (Array.isArray(target)) return source
   const result = { ...target }
-  for (const key of Object.keys(source)) result[key] = deepMerge(target[key], source[key], strategy)
+  // __proto__ という名前のキーを代入すると、値ではなくプロトタイプが変わって出力から消えるので、定義として入れる
+  for (const key of Object.keys(source)) {
+    const prev = Object.prototype.hasOwnProperty.call(target, key) ? target[key] : undefined
+    Object.defineProperty(result, key, { value: deepMerge(prev, source[key], strategy), enumerable: true, writable: true, configurable: true })
+  }
   return result
 }
 

@@ -51,24 +51,61 @@ const FMT = {
   headerText: string; outputText: string; placeholder: string
 }>
 
+// 変換で値の見た目が変わる・消えるものを探す。
+// ⚠ 以前は何も言わずに 1.10 → 1.1、0123 → 123（郵便番号など）、20桁の整数の下の桁、
+// 日付 → 時刻つきの値、TOML での null の消失が起きていた
+function scalarWarnings(input: string, from: Format): string[] {
+  const w = new Set<string>()
+  if (from === 'YAML') {
+    for (const line of input.split(/\r?\n/)) {
+      const m = /^\s*(?:-\s+|[^#:'"]+:\s+)([^\s#'"][^#]*?)\s*(?:#.*)?$/.exec(line)
+      if (!m) continue
+      const v = m[1]
+      if (/^0\d+$/.test(v)) w.add(`「${v}」は数値として読まれ、先頭の 0 が消えます。文字列として残すなら '${v}' のように引用符で囲んでください。`)
+      else if (/^-?\d+\.\d*0$/.test(v)) w.add(`「${v}」は数値として読まれ、末尾の 0 が消えます（バージョン番号なら引用符で囲んでください）。`)
+      else if (/^-?\d{16,}$/.test(v)) w.add(`「${v}」は桁が多すぎて、数値として読むと下の桁が変わります。引用符で囲んでください。`)
+    }
+  }
+  if (from === 'JSON' && /[:[,]\s*-?\d{16,}\s*[,}\]]/.test(input)) {
+    w.add('16桁以上の整数は JavaScript の数値の精度を超えるため、下の桁が変わります。ID などは文字列にしてください。')
+  }
+  return [...w]
+}
+
+function nullPaths(v: unknown, path = ''): string[] {
+  if (v === null) return [path || '(ルート)']
+  if (Array.isArray(v)) return v.flatMap((x, i) => nullPaths(x, `${path}[${i}]`))
+  if (v && typeof v === 'object') return Object.entries(v).flatMap(([k, x]) => nullPaths(x, path ? `${path}.${k}` : k))
+  return []
+}
+
 function convert(
   input: string,
   from: Format,
   to: Format
-): { output: string; error: string | null } {
-  if (!input.trim()) return { output: '', error: null }
+): { output: string; error: string | null; warnings: string[] } {
+  if (!input.trim()) return { output: '', error: null, warnings: [] }
+  const warnings = scalarWarnings(input, from)
 
   let parsed: unknown
   try {
     if (from === 'JSON') {
       parsed = JSON.parse(input)
     } else if (from === 'YAML') {
-      parsed = yaml.load(input)
+      // CORE_SCHEMA：日付を Date にせず文字列のまま残す（既定のスキーマは 2024-01-01 を時刻つきの値にする）
+      const docs: unknown[] = []
+      yaml.loadAll(input, (d) => docs.push(d), { schema: yaml.CORE_SCHEMA })
+      if (docs.length > 1) {
+        warnings.push(`「---」で区切られた ${docs.length} 個の文書を、配列としてまとめました。`)
+        parsed = docs
+      } else {
+        parsed = docs[0] ?? null
+      }
     } else {
       parsed = TOML.parse(input)
     }
   } catch (e) {
-    return { output: '', error: `${from} 構文エラー: ${(e as Error).message}` }
+    return { output: '', error: `${from} 構文エラー: ${(e as Error).message}`, warnings }
   }
 
   try {
@@ -78,11 +115,18 @@ function convert(
     } else if (to === 'YAML') {
       output = yaml.dump(parsed, { indent: 2, lineWidth: -1 })
     } else {
+      if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        return { output: '', error: 'TOML にできるのはオブジェクト（キーと値の組）だけです。配列や値そのものは TOML の一番外側に置けません。', warnings }
+      }
+      const nulls = nullPaths(parsed)
+      if (nulls.length) warnings.push(`TOML には null が無いため、${nulls.slice(0, 5).join('・')}${nulls.length > 5 ? ' など' : ''} は出力から消えます。`)
       output = TOML.stringify(parsed as TOML.JsonMap)
     }
-    return { output: output.trimEnd(), error: null }
+    return { output: output.trimEnd(), error: null, warnings }
   } catch (e) {
-    return { output: '', error: `${to} 変換エラー: ${(e as Error).message}` }
+    const msg = (e as Error).message
+    const hint = /mixed types/i.test(msg) ? '（この変換ライブラリは TOML 0.5 の規則で、数値と文字列が混ざった配列を書き出せません）' : ''
+    return { output: '', error: `${to} 変換エラー: ${msg}${hint}`, warnings }
   }
 }
 
@@ -128,7 +172,7 @@ export function YamlJsonConverter() {
   const [to, setTo] = useState<Format>('JSON')
   const [copied, setCopied] = useState(false)
 
-  const { output, error } = useMemo(() => convert(input, from, to), [input, from, to])
+  const { output, error, warnings } = useMemo(() => convert(input, from, to), [input, from, to])
 
   const handleSwap = useCallback(() => {
     setFrom(to)
@@ -227,6 +271,13 @@ export function YamlJsonConverter() {
               data-testid="error-bar"
             >
               <p className="font-mono text-[10px] leading-relaxed text-red-400">{error}</p>
+            </div>
+          )}
+          {warnings.length > 0 && (
+            <div className="border-t border-amber-400/20 bg-amber-400/5 px-4 py-2">
+              {warnings.map((w) => (
+                <p key={w} className="font-mono text-[10px] leading-relaxed text-amber-300">⚠ {w}</p>
+              ))}
             </div>
           )}
         </div>

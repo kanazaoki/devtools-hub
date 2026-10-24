@@ -14,26 +14,35 @@ function inferType(value: unknown): SqlType {
   return 'TEXT'
 }
 
-function mysqlType(t: SqlType): string {
+function mysqlType(t: SqlType, big: boolean): string {
   if (t === 'REAL') return 'DOUBLE'
   if (t === 'BOOLEAN') return 'TINYINT(1)'
+  if (t === 'INTEGER' && big) return 'BIGINT'
   return t
 }
 
+// ⚠ 以前は名前の中の " や ` をそのまま囲んでいたので、キー名によっては SQL が壊れていた。囲み文字は2つ重ねて逃がす
 function quoteIdentifier(name: string, dialect: Dialect): string {
-  if (dialect === 'mysql') return `\`${name}\``
-  return `"${name}"`
+  if (dialect === 'mysql') return `\`${name.replace(/`/g, '``')}\``
+  return `"${name.replace(/"/g, '""')}"`
 }
 
 function quoteValue(value: unknown, type: SqlType, dialect: Dialect): string {
-  if (value === null) return 'NULL'
+  if (value === null || value === undefined) return 'NULL'
   if (type === 'BOOLEAN') {
     if (dialect === 'mysql') return value ? '1' : '0'
     return value ? 'TRUE' : 'FALSE'
   }
-  if (type === 'INTEGER' || type === 'REAL') return String(value)
-  // TEXT: エスケープ
-  const str = String(value).replace(/'/g, "''")
+  if (type === 'INTEGER' || type === 'REAL') {
+    // ⚠ 整数と真偽値が混ざった列で true がそのまま出ていた
+    if (typeof value === 'boolean') return value ? '1' : '0'
+    return String(value)
+  }
+  // TEXT: 入れ子のオブジェクト・配列は JSON の文字列にする（⚠ 以前は '[object Object]' になっていた）
+  let str = typeof value === 'object' ? JSON.stringify(value) : String(value)
+  str = str.replace(/'/g, "''")
+  // MySQL は既定で \ を文字列の中のエスケープとして読むので、\ も重ねる（⚠ 以前は C:\path が壊れていた）
+  if (dialect === 'mysql') str = str.replace(/\\/g, '\\\\')
   return `'${str}'`
 }
 
@@ -41,6 +50,7 @@ interface ColumnInfo {
   name: string
   types: Set<SqlType>
   nullable: boolean
+  big: boolean
 }
 
 function analyzeColumns(rows: Record<string, unknown>[]): ColumnInfo[] {
@@ -50,7 +60,7 @@ function analyzeColumns(rows: Record<string, unknown>[]): ColumnInfo[] {
     for (const [key, val] of Object.entries(row)) {
       const t = inferType(val)
       if (!colMap.has(key)) {
-        colMap.set(key, { name: key, types: new Set(), nullable: false })
+        colMap.set(key, { name: key, types: new Set(), nullable: false, big: false })
       }
       const col = colMap.get(key)!
       if (t === 'NULL') {
@@ -58,7 +68,12 @@ function analyzeColumns(rows: Record<string, unknown>[]): ColumnInfo[] {
       } else {
         col.types.add(t)
       }
+      if (typeof val === 'number' && Number.isInteger(val) && Math.abs(val) > 2147483647) col.big = true
     }
+  }
+  // ⚠ 一部の行にしか無いキーは、無い行で NULL を入れる。以前は NOT NULL のままで INSERT が失敗していた
+  for (const col of colMap.values()) {
+    if (rows.some((r) => !(col.name in r))) col.nullable = true
   }
 
   return Array.from(colMap.values())
@@ -89,7 +104,13 @@ function generateSql(
   // CREATE TABLE
   const colDefs = cols.map((col) => {
     const baseType = resolveType(col)
-    const sqlType = dialect === 'mysql' ? mysqlType(baseType) : baseType
+    const sqlType = dialect === 'mysql'
+      ? mysqlType(baseType, col.big)
+      : dialect === 'postgresql' && baseType === 'INTEGER' && col.big
+        ? 'BIGINT'
+        : dialect === 'postgresql' && baseType === 'REAL'
+          ? 'DOUBLE PRECISION'
+          : baseType
     const nullable = col.nullable ? '' : ' NOT NULL'
     return `  ${quoteIdentifier(col.name, dialect)} ${sqlType}${nullable}`
   })
