@@ -172,7 +172,7 @@ export function CurlToCode() {
           <p className="font-mono text-xs text-amber-300">⚠ 変換に反映していないオプション：{parsed.ignored.join('、')}</p>
         )}
         <p className="font-mono text-[10px] text-[var(--muted)]">
-          bash の引用符（'…'・"…"・$'…'）と、Windows のコマンドプロンプト用（^ で続ける形）の両方を読めます。ブラウザの開発者ツールの「Copy as cURL」をそのまま貼り付けられます。
+          {"bash の引用符（'…'・\"…\"・$'…'）と、Windows のコマンドプロンプト用（^ で続ける形）の両方を読めます。"}ブラウザの開発者ツールの「Copy as cURL」をそのまま貼り付けられます。
         </p>
       </div>
 
