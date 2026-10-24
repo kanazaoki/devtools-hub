@@ -9,39 +9,71 @@ type CronFields = Record<FieldKey, string>
 
 // ── Validation ────────────────────────────────────────────────────────────────
 
-function isValidFieldValue(val: string, min: number, max: number): boolean {
-  if (val === '*') return true
-  if (/^\*\/\d+$/.test(val)) {
-    const step = parseInt(val.slice(2), 10)
-    return step >= 1 && step <= max
+// 1つのフィールドを、当てはまる値の集合にする。
+// 対応：* ／ 数値 ／ a-b ／ */n ／ a-b/n ／ a/n ／ それらのカンマ区切り ／ JAN〜DEC・SUN〜SAT
+// ⚠ 以前は */n を「n で割り切れる値」として扱っていたため、1 から始まる日・月で
+// */2 が 2,4,6…、*/3 が 3,6,9,12 になっていた（正しくは 1,3,5… と 1,4,7,10）
+const NAMES: Record<string, number> = {
+  JAN: 1, FEB: 2, MAR: 3, APR: 4, MAY: 5, JUN: 6, JUL: 7, AUG: 8, SEP: 9, OCT: 10, NOV: 11, DEC: 12,
+  SUN: 0, MON: 1, TUE: 2, WED: 3, THU: 4, FRI: 5, SAT: 6,
+}
+
+function parseField(val: string, min: number, max: number): Set<number> | null {
+  const out = new Set<number>()
+  const num = (s: string) => {
+    const n = /^\d+$/.test(s) ? parseInt(s, 10) : NAMES[s.toUpperCase()]
+    return n === undefined || n < min || n > max ? null : n
   }
-  if (/^\d+$/.test(val)) {
-    const n = parseInt(val, 10)
-    return n >= min && n <= max
+  for (const part of val.split(',')) {
+    const m = /^(\*|[A-Za-z0-9]+(?:-[A-Za-z0-9]+)?)(?:\/(\d+))?$/.exec(part)
+    if (!m) return null
+    const step = m[2] ? parseInt(m[2], 10) : 1
+    if (step < 1) return null
+    let lo = min
+    let hi = max
+    if (m[1] !== '*') {
+      const [a, b] = m[1].split('-')
+      const na = num(a)
+      if (na === null) return null
+      lo = na
+      // 「a/n」は a から最大値まで n おき、「a」だけなら a のみ
+      hi = b !== undefined ? (num(b) ?? -1) : m[2] ? max : na
+      if (hi < lo) return null
+    }
+    for (let n = lo; n <= hi; n += step) out.add(n)
   }
-  if (/^\d+-\d+$/.test(val)) {
-    const [a, b] = val.split('-').map(Number)
-    return a >= min && b <= max && a < b
-  }
-  if (/^(\d+,)+\d+$/.test(val)) {
-    return val.split(',').every((n) => {
-      const num = parseInt(n, 10)
-      return num >= min && num <= max
-    })
-  }
-  return false
+  return out
+}
+
+interface ParsedCron {
+  minute: Set<number>
+  hour: Set<number>
+  day: Set<number>
+  month: Set<number>
+  weekday: Set<number>
+  /** 日と曜日の両方を指定しているか（このときはどちらかに当てはまれば実行＝OR） */
+  dayOr: boolean
+}
+
+function parseFields(f: CronFields): ParsedCron | null {
+  const minute = parseField(f.minute, 0, 59)
+  const hour = parseField(f.hour, 0, 23)
+  const day = parseField(f.day, 1, 31)
+  const month = parseField(f.month, 1, 12)
+  // 曜日は 0〜7 を受け付け、7 は 0（日曜）として扱う
+  const wd = parseField(f.weekday, 0, 7)
+  if (!minute || !hour || !day || !month || !wd) return null
+  const weekday = new Set([...wd].map((n) => n % 7))
+  const dayOr = !f.day.startsWith('*') && !f.weekday.startsWith('*')
+  return { minute, hour, day, month, weekday, dayOr }
 }
 
 function parseCronExpression(expr: string): CronFields | null {
   const parts = expr.trim().split(/\s+/)
   if (parts.length !== 5) return null
   const [minute, hour, day, month, weekday] = parts
-  if (!isValidFieldValue(minute, 0, 59)) return null
-  if (!isValidFieldValue(hour, 0, 23)) return null
-  if (!isValidFieldValue(day, 1, 31)) return null
-  if (!isValidFieldValue(month, 1, 12)) return null
-  if (!isValidFieldValue(weekday, 0, 6)) return null
-  return { minute, hour, day, month, weekday }
+  const f = { minute, hour, day, month, weekday }
+  return parseFields(f) ? f : null
 }
 
 function fieldsToExpr(f: CronFields): string {
@@ -50,76 +82,69 @@ function fieldsToExpr(f: CronFields): string {
 
 // ── Description ───────────────────────────────────────────────────────────────
 
-const WDAY_JA = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日']
-const MON_JA  = ['', '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
 
+// 各フィールドを集合として読み、日本語の説明を作る。
+// ⚠ 以前は形を数通りだけ見分けていたため、0 9 * * 1-5 が「毎日」、0 0 1 */3 * が「毎年 1日」になっていた
 function describeExpression(f: CronFields): string {
-  const { minute, hour, day, month, weekday } = f
-  const any  = (v: string) => v === '*'
-  const step = (v: string) => /^\*\/\d+$/.test(v)
-  const num  = (v: string) => /^\d+$/.test(v) ? parseInt(v, 10) : 0
-
-  if (any(minute) && any(hour) && any(day) && any(month) && any(weekday))
-    return '毎分 実行'
-
-  if (step(minute) && any(hour) && any(day) && any(month) && any(weekday))
-    return `${minute.slice(2)} 分ごとに実行`
-
-  if (any(minute) && step(hour) && any(day) && any(month) && any(weekday))
-    return `${hour.slice(2)} 時間ごとに実行`
-
-  if (!any(minute) && !step(minute) && any(hour) && any(day) && any(month) && any(weekday))
-    return `毎時 ${minute} 分 に実行`
-
-  let schedule = ''
-  if (!any(weekday) && /^\d+$/.test(weekday)) {
-    schedule = `毎週${WDAY_JA[num(weekday)] ?? `曜日${weekday}`}`
-  } else if (!any(month) && !any(day)) {
-    schedule = `毎年 ${MON_JA[num(month)]} ${day}日`
-  } else if (!any(day)) {
-    schedule = `毎月 ${day}日`
-  } else if (!any(month)) {
-    schedule = `毎年 ${MON_JA[num(month)]}`
-  } else {
-    schedule = '毎日'
+  const p = parseFields(f)
+  if (!p) return ''
+  const sorted = (s: Set<number>) => [...s].sort((a, b) => a - b)
+  // 連続する値は「1〜5」にまとめる
+  const list = (s: Set<number>, fmt: (n: number) => string = String) => {
+    const v = sorted(s)
+    const out: string[] = []
+    for (let i = 0; i < v.length; i++) {
+      let j = i
+      while (j + 1 < v.length && v[j + 1] === v[j] + 1) j++
+      out.push(j - i >= 2 ? `${fmt(v[i])}〜${fmt(v[j])}` : v.slice(i, j + 1).map(fmt).join('・'))
+      i = j
+    }
+    return out.join('・')
   }
+  const stepOf = (val: string) => /^\*\/(\d+)$/.exec(val)?.[1]
+  const wd = (n: number) => '日月火水木金土'[n]
+  const pad = (n: number) => String(n).padStart(2, '0')
 
-  const timeStr =
-    any(hour) && any(minute)   ? '毎時間'
-    : any(hour)                ? `毎時 ${minute} 分`
-    : any(minute)              ? `${hour}:00`
-    : `${String(num(hour)).padStart(2, '0')}:${String(num(minute)).padStart(2, '0')}`
+  const monthText = f.month === '*' ? '' : stepOf(f.month) ? `${list(p.month, (n) => `${n}月`)}` : `${list(p.month)}月`
+  const dayText = f.day === '*' ? '' : stepOf(f.day) ? `${stepOf(f.day)}日ごと（1日から。月が変わると1日に戻る）` : `${list(p.day)}日`
+  const wdText = f.weekday === '*' ? '' : `${list(p.weekday, wd)}曜日`
+  let when: string
+  if (p.dayOr) when = `${dayText} と ${wdText}（どちらかに当てはまる日）`
+  else when = dayText || wdText || (monthText ? '' : '毎日')
+  const datePart = [monthText ? `${monthText}の` : '', when].join('')
 
-  return `${schedule} ${timeStr} に実行`
+  const mStep = stepOf(f.minute)
+  const hStep = stepOf(f.hour)
+  const oneMin = p.minute.size === 1 ? sorted(p.minute)[0] : null
+  const oneHour = p.hour.size === 1 ? sorted(p.hour)[0] : null
+  let time: string
+  if (oneMin !== null && oneHour !== null) time = `${pad(oneHour)}:${pad(oneMin)}`
+  else if (f.minute === '*' && f.hour === '*') time = '毎分'
+  else if (mStep && f.hour === '*') time = `${mStep}分ごと`
+  else if (oneMin !== null && f.hour === '*') time = `毎時 ${oneMin}分`
+  else if (oneMin !== null && hStep) time = `${hStep}時間ごと（${list(p.hour)}時）の ${oneMin}分`
+  else if (oneMin !== null) time = `${list(p.hour)}時 の ${oneMin}分`
+  else time = `${f.hour === '*' ? '毎時' : `${list(p.hour)}時`} の ${mStep ? `${mStep}分ごと` : `${list(p.minute)}分`}`
+
+  return `${datePart} ${time} に実行`.trim()
 }
 
 // ── Next executions ───────────────────────────────────────────────────────────
 
-function matchField(val: string, n: number): boolean {
-  if (val === '*') return true
-  if (/^\*\/\d+$/.test(val)) return n % parseInt(val.slice(2), 10) === 0
-  if (/^\d+$/.test(val)) return parseInt(val, 10) === n
-  if (/^\d+-\d+$/.test(val)) {
-    const [a, b] = val.split('-').map(Number)
-    return n >= a && n <= b
-  }
-  if (/^(\d+,)+\d+$/.test(val)) return val.split(',').map(Number).includes(n)
-  return false
-}
-
-function getNextExecutions(f: CronFields, count = 3): Date[] {
+// ⚠ 日と曜日を両方指定すると、標準の cron は「どちらかに当てはまる日」に実行する（OR）。
+// 以前は両方に当てはまる日だけを数えていたため、0 0 13 * 5 が「13日の金曜日」だけになっていた
+export function getNextExecutions(f: CronFields, count = 5, from = new Date()): Date[] {
+  const p = parseFields(f)
+  if (!p) return []
   const results: Date[] = []
-  const d = new Date()
+  const d = new Date(from)
   d.setSeconds(0, 0)
   d.setMinutes(d.getMinutes() + 1)
-  for (let i = 0; i < 525_600 && results.length < count; i++) {
-    if (
-      matchField(f.month,   d.getMonth() + 1) &&
-      matchField(f.day,     d.getDate())       &&
-      matchField(f.weekday, d.getDay())        &&
-      matchField(f.hour,    d.getHours())      &&
-      matchField(f.minute,  d.getMinutes())
-    ) {
+  for (let i = 0; i < 2 * 525_600 && results.length < count; i++) {
+    const dayOk = p.dayOr
+      ? p.day.has(d.getDate()) || p.weekday.has(d.getDay())
+      : p.day.has(d.getDate()) && p.weekday.has(d.getDay())
+    if (p.month.has(d.getMonth() + 1) && dayOk && p.hour.has(d.getHours()) && p.minute.has(d.getMinutes())) {
       results.push(new Date(d))
     }
     d.setMinutes(d.getMinutes() + 1)
@@ -346,7 +371,12 @@ export function CronBuilder() {
       {/* ── Next executions ── */}
       {!parseError && nextRuns.length > 0 && (
         <div className="space-y-1.5">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">次回実行時刻</p>
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted">
+            次回実行時刻
+            <span className="ml-2 normal-case tracking-normal text-muted/70">
+              （このブラウザの時刻帯 {Intl.DateTimeFormat().resolvedOptions().timeZone} で計算。サーバーが UTC なら実際の時刻はずれます）
+            </span>
+          </p>
           <div className="overflow-hidden rounded-md border border-border bg-bg divide-y divide-border/50">
             {nextRuns.map((d, i) => (
               <div key={i} className="flex items-center justify-between px-4 py-2.5">
