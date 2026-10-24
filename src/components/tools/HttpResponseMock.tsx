@@ -44,14 +44,19 @@ function buildCurl(status: number, statusText: string, headers: Header[], body: 
   return `# curl -i レスポンス形式\n${lines.join('\n')}`
 }
 
+// ボディを持てないステータス。new Response にボディを渡すと例外になる（204 で確認）
+const NULL_BODY_STATUS = [101, 103, 204, 205, 304]
+
 function buildFetch(status: number, headers: Header[], body: string): string {
   const hdrs: Record<string, string> = {}
   for (const h of headers) {
     if (h.key.trim()) hdrs[h.key.trim()] = h.value.trim()
   }
+  const noBody = NULL_BODY_STATUS.includes(status)
   return [
     '// fetch モック (例: MSW / テスト用)',
-    `new Response(${body ? JSON.stringify(body) : 'null'}, {`,
+    ...(noBody && body ? [`// ${status} はボディを持てないため、ボディは外しています`] : []),
+    `new Response(${body && !noBody ? JSON.stringify(body) : 'null'}, {`,
     `  status: ${status},`,
     `  headers: ${JSON.stringify(hdrs, null, 4).replace(/\n/g, '\n  ')},`,
     '});',
@@ -187,6 +192,11 @@ export function HttpResponseMock() {
               placeholder="レスポンスボディ（省略可）"
             />
             {jsonError && <p className="mt-1 text-xs text-yellow-400">⚠ {jsonError}</p>}
+            {NULL_BODY_STATUS.includes(status) && body.trim() && (
+              <p className="mt-1 text-xs text-yellow-400">
+                ⚠ {status} はボディを持てないステータスです。ボディを付けると仕様違反になり、fetch の Response では例外になります
+              </p>
+            )}
           </div>
         </div>
 
