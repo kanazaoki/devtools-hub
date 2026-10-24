@@ -146,18 +146,40 @@ const EVENT_MAP: Record<string, string> = {
 }
 
 function cssPropToCamel(prop: string): string {
-  return prop.trim().replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
+  const p = prop.trim()
+  // -ms- だけは React の規則で小文字の ms から始まる
+  if (p.startsWith('-ms-')) return 'ms' + p.slice(3).replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
+  return p.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
 }
 
+// ; で区切る。ただし引用符や url( ) の中の ; では区切らない
+function splitDecls(value: string): string[] {
+  const out: string[] = []
+  let cur = ''
+  let depth = 0
+  let q: string | null = null
+  for (const c of value) {
+    if (q) { cur += c; if (c === q) q = null; continue }
+    if (c === '"' || c === "'") { q = c; cur += c; continue }
+    if (c === '(') depth++
+    if (c === ')') depth--
+    if (c === ';' && depth === 0) { out.push(cur); cur = ''; continue }
+    cur += c
+  }
+  out.push(cur)
+  return out.map((s) => s.trim()).filter(Boolean)
+}
+
+// ⚠ 以前は値を '...' にそのまま入れていたので、' を含む値で壊れ、url("a;b") の ; で区切られ、
+// カスタムプロパティ（--x）は -X のような名前になっていた
 function convertStyle(value: string): string {
-  const pairs = value.split(';').map((s) => s.trim()).filter(Boolean)
-  const entries = pairs
+  const entries = splitDecls(value)
     .map((pair) => {
       const idx = pair.indexOf(':')
       if (idx === -1) return null
-      const key = cssPropToCamel(pair.slice(0, idx))
-      const val = pair.slice(idx + 1).trim()
-      return `${key}: '${val}'`
+      const raw = pair.slice(0, idx).trim()
+      const key = raw.startsWith('--') ? JSON.stringify(raw) : cssPropToCamel(raw)
+      return `${key}: ${JSON.stringify(pair.slice(idx + 1).trim())}`
     })
     .filter(Boolean)
   if (entries.length === 0) return `{{}}`
@@ -171,14 +193,18 @@ function convertAttrName(name: string): string {
   if (lower.startsWith('on') && lower.length > 2) {
     return 'on' + lower[2].toUpperCase() + lower.slice(3)
   }
+  // ⚠ data-* と aria-* は JSX でもハイフンのまま書く（以前は dataId のようにしていて、属性として効かなくなっていた）
+  if (/^(data|aria)-/.test(lower)) return lower
+  // xlink:href → xlinkHref、xml:lang → xmlLang（React の書き方）
+  if (name.includes(':')) return name.replace(/:([a-z])/g, (_, c: string) => c.toUpperCase())
   if (name.includes('-')) {
     return name.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
   }
   return name
 }
 
-function convertAttributes(attrsStr: string): string {
-  const attrRegex = /(\s+)([a-zA-Z][a-zA-Z0-9:_-]*)(?:=(?:"([^"]*?)"|'([^']*?)'|(\S+?(?=[\s>]))?))?(?=[\s>]|$)/g
+function convertAttributes(attrsStr: string, warnings: Set<string>): string {
+  const attrRegex = /(\s+)([a-zA-Z_:][a-zA-Z0-9:_.-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g
   return attrsStr.replace(attrRegex, (_match, space, name, dq, sq, unquoted) => {
     const jsxName = convertAttrName(name)
     const rawValue = dq !== undefined ? dq : sq !== undefined ? sq : unquoted
@@ -188,28 +214,90 @@ function convertAttributes(attrsStr: string): string {
     if (name.toLowerCase() === 'style') {
       return `${space}${jsxName}=${convertStyle(rawValue)}`
     }
+    // ⚠ onclick="go()" を onClick="go()"（文字列）にしていた。React では関数を渡す必要がある
+    if (/^on[a-z]/i.test(name)) {
+      warnings.add('onclick などのイベント属性は、() => { … } の関数に置き換えました。中のコードはそのままなので、コンポーネントの関数として書き直してください。')
+      return `${space}${jsxName}={() => { ${rawValue.trim()} }}`
+    }
+    // 属性値の中の " はそのまま書けないので {"..."} にする
+    if (rawValue.includes('"')) return `${space}${jsxName}={${JSON.stringify(rawValue)}}`
     return `${space}${jsxName}="${rawValue}"`
   })
 }
 
-function htmlToJsx(html: string): string {
-  if (!html.trim()) return ''
+// 文字の部分にある { と } は JSX では式の始まりになるので、{'{'} の形にする
+function escapeText(text: string): string {
+  return text.replace(/[{}]/g, (c) => `{'${c}'}`)
+}
 
-  let result = html
-
-  // HTML comments → {/* ... */}
-  result = result.replace(/<!--([\s\S]*?)-->/g, (_: string, content: string) => `{/*${content}*/}`)
-
-  // Opening tags: convert attributes and handle void/self-closing
-  result = result.replace(/<([a-zA-Z][a-zA-Z0-9-]*)(\s[^>]*?)?\s*(\/?)>/g, (_match: string, tagName: string, attrs: string | undefined, selfClose: string) => {
-    const lower = tagName.toLowerCase()
-    const isVoid = VOID_ELEMENTS.has(lower)
-    const processedAttrs = attrs ? convertAttributes(attrs) : ''
-    const closing = isVoid || selfClose ? ' />' : '>'
-    return `<${tagName}${processedAttrs}${closing}`
-  })
-
-  return result
+function htmlToJsxWithWarnings(html: string): { jsx: string; warnings: string[] } {
+  const warnings = new Set<string>()
+  if (!html.trim()) return { jsx: '', warnings: [] }
+  let out = ''
+  let i = 0
+  let depth = 0
+  let roots = 0
+  while (i < html.length) {
+    if (html.startsWith('<!--', i)) {
+      const end = html.indexOf('-->', i + 4)
+      const stop = end === -1 ? html.length : end + 3
+      out += `{/*${html.slice(i + 4, end === -1 ? html.length : end).replace(/\*\//g, '* /')}*/}`
+      i = stop
+      continue
+    }
+    if (/^<!doctype/i.test(html.slice(i, i + 9))) {
+      const end = html.indexOf('>', i)
+      i = end === -1 ? html.length : end + 1
+      warnings.add('<!DOCTYPE> は JSX に書けないので取り除きました。')
+      continue
+    }
+    if (html[i] === '<' && /[a-zA-Z/]/.test(html[i + 1] ?? '')) {
+      // 引用符の中の > を終わりと取り違えないように読む
+      let j = i + 1
+      let q: string | null = null
+      while (j < html.length) {
+        const c = html[j]
+        if (q) { if (c === q) q = null } else if (c === '"' || c === "'") q = c; else if (c === '>') break
+        j++
+      }
+      const tag = html.slice(i, j + 1)
+      i = j + 1
+      const close = /^<\/\s*([a-zA-Z][\w:-]*)/.exec(tag)
+      if (close) { out += tag; depth--; continue }
+      const m = /^<([a-zA-Z][\w:-]*)([\s\S]*?)(\/?)>$/.exec(tag)
+      if (!m) { out += escapeText(tag); continue }
+      const [, tagName, attrs, selfClose] = m
+      const lower = tagName.toLowerCase()
+      const isVoid = VOID_ELEMENTS.has(lower)
+      if (depth === 0) roots++
+      out += `<${tagName}${convertAttributes(attrs.replace(/\/\s*$/, ''), warnings)}${isVoid || selfClose ? ' />' : '>'}`
+      if (!isVoid && !selfClose) {
+        depth++
+        // style と script の中身は {`...`} で包む（CSS の { } が JSX の式と読まれないように）
+        if (lower === 'style' || lower === 'script') {
+          const endRe = new RegExp(`</\\s*${lower}\\s*>`, 'i')
+          const rest = html.slice(i)
+          const em = endRe.exec(rest)
+          const inner = em ? rest.slice(0, em.index) : rest
+          if (inner.trim()) out += `{\`${inner.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${')}\`}`
+          i += inner.length
+        }
+      }
+      continue
+    }
+    const next = html.indexOf('<', i + 1)
+    const stop = next === -1 ? html.length : next
+    const text = html.slice(i, stop)
+    if (depth === 0 && text.trim()) roots++
+    out += escapeText(text)
+    i = stop
+  }
+  let jsx = out
+  if (roots > 1) {
+    jsx = `<>\n${out.trim()}\n</>`
+    warnings.add('一番外側に要素が複数あるので、<> … </>（フラグメント）で包みました。')
+  }
+  return { jsx, warnings: [...warnings] }
 }
 
 const SAMPLE = `<div class="container" tabindex="0">
@@ -231,7 +319,7 @@ export function HtmlToJsx() {
   const [input, setInput] = useState(SAMPLE)
   const [copied, setCopied] = useState(false)
 
-  const jsx = useMemo(() => htmlToJsx(input), [input])
+  const { jsx, warnings } = useMemo(() => htmlToJsxWithWarnings(input), [input])
 
   const handleCopy = () => {
     if (!jsx) return
@@ -315,6 +403,11 @@ export function HtmlToJsx() {
           ) : (
             <div className="flex-1 min-h-[18rem] overflow-auto rounded-lg border border-teal/20 bg-[#060a12] py-3 px-4">
               <pre className="font-mono text-xs leading-5 text-bright whitespace-pre-wrap break-words">{jsx}</pre>
+            </div>
+          )}
+          {warnings.length > 0 && (
+            <div className="mt-2 rounded border border-amber-400/30 bg-amber-400/5 px-3 py-2">
+              {warnings.map((w) => <p key={w} className="font-mono text-[11px] leading-relaxed text-amber-300">⚠ {w}</p>)}
             </div>
           )}
         </div>

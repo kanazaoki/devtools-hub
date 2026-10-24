@@ -1408,7 +1408,9 @@ export const tools: Tool[] = [
     features: [
       'class → className、for → htmlFor など主要属性名を自動変換',
       'style="..." → style={{ camelCase: \'value\' }} オブジェクト記法に変換',
-      'onclick・onchange 等のイベント属性を onClick・onChange にキャメルケース変換',
+      'onclick="go()" 等のイベント属性を onClick={() => { go() }} の関数に変換',
+      'data-*・aria-* はハイフンのまま残し、SVG の stroke-width・xlink:href は strokeWidth・xlinkHref に変換',
+      '文字の中の { } と <style> の中身を JSX で壊れない形に変換。外側の要素が複数ならフラグメントで包む',
       '<img> <input> <br> など void 要素を自己閉じタグ形式に補完',
       'HTMLコメント <!-- --> を JSXコメント {/* */} に変換',
       'tabindex・readonly・maxlength 等の属性名も正しく変換',
