@@ -26,57 +26,61 @@ function jsonToCsv(jsonText: string): { result: string; error: string | null } {
   if (data.length === 0) return { result: '', error: 'JSON 配列が空です' }
   const rows = data as Record<string, unknown>[]
   const keys = Array.from(new Set(rows.flatMap((r) => (typeof r === 'object' && r !== null ? Object.keys(r) : []))))
+  // 入れ子のオブジェクト・配列は String() だと "[object Object]" になるので JSON の文字列にする
   const escape = (v: unknown) => {
-    const s = v === null || v === undefined ? '' : String(v)
-    return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g, '""')}"` : s
+    const s = v === null || v === undefined ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v)
+    return /[",\r\n]|^\s|\s$/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
   }
   const lines = [keys.join(','), ...rows.map((r) => keys.map((k) => escape((r as Record<string, unknown>)[k])).join(','))]
   return { result: lines.join('\n'), error: null }
 }
 
-function csvToJson(csvText: string): { result: string; error: string | null } {
-  const lines = csvText.trim().split('\n')
-  if (lines.length < 2) return { result: '', error: 'CSV は2行以上（ヘッダー + データ）が必要です' }
-
-  function parseLine(line: string): string[] {
-    const fields: string[] = []
-    let current = ''
-    let inQuote = false
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i]
-      if (inQuote) {
-        if (ch === '"') {
-          if (line[i + 1] === '"') { current += '"'; i++ }
-          else inQuote = false
-        } else {
-          current += ch
-        }
-      } else {
-        if (ch === '"') { inQuote = true }
-        else if (ch === ',') { fields.push(current); current = '' }
-        else current += ch
-      }
-    }
-    fields.push(current)
-    return fields
+// CSV 全体を1文字ずつ読んで行と列に分ける（RFC 4180）。
+// ⚠ 以前は先に改行で行に分けていたため、引用符の中の改行で行が割れていた。
+// CRLF の \r も最後の列の値に残っていた
+function parseCsv(text: string): string[][] {
+  const s = text.replace(/^﻿/, '')
+  const rows: string[][] = []
+  let row: string[] = []
+  let field = ''
+  let inQuote = false
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i]
+    if (inQuote) {
+      if (ch === '"') {
+        if (s[i + 1] === '"') { field += '"'; i++ }
+        else inQuote = false
+      } else field += ch
+    } else if (ch === '"') inQuote = true
+    else if (ch === ',') { row.push(field); field = '' }
+    else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && s[i + 1] === '\n') i++
+      row.push(field); field = ''
+      rows.push(row); row = []
+    } else field += ch
   }
+  if (field !== '' || row.length) { row.push(field); rows.push(row) }
+  return rows.filter((r) => r.some((c) => c !== ''))
+}
 
-  const headers = parseLine(lines[0])
-  const rows = lines.slice(1).filter((l) => l.trim()).map((line) => {
-    const vals = parseLine(line)
+function csvToJson(csvText: string): { result: string; error: string | null } {
+  const table = parseCsv(csvText)
+  if (table.length < 2) return { result: '', error: 'CSV は2行以上（ヘッダー + データ）が必要です' }
+  const headers = table[0].map((h) => h.trim())
+  const ragged = table.slice(1).findIndex((r) => r.length !== headers.length)
+  const rows = table.slice(1).map((vals) => {
     const obj: Record<string, string> = {}
-    headers.forEach((h, i) => { obj[h.trim()] = vals[i] ?? '' })
+    headers.forEach((h, i) => { obj[h] = vals[i] ?? '' })
     return obj
   })
-  return { result: JSON.stringify(rows, null, 2), error: null }
+  const warn = ragged >= 0 ? `（${ragged + 2} 行目の列数がヘッダーと違います。引用符の閉じ忘れや区切り文字を確認してください）` : null
+  return { result: JSON.stringify(rows, null, 2), error: warn }
 }
 
 function parsePreviewRows(csvText: string): { headers: string[]; rows: string[][] } {
-  const lines = csvText.trim().split('\n').slice(0, 21)
-  if (lines.length < 1) return { headers: [], rows: [] }
-  const headers = lines[0].split(',').map((h) => h.trim())
-  const rows = lines.slice(1).map((l) => l.split(',').map((v) => v.trim()))
-  return { headers, rows }
+  const table = parseCsv(csvText).slice(0, 21)
+  if (table.length < 1) return { headers: [], rows: [] }
+  return { headers: table[0].map((h) => h.trim()), rows: table.slice(1) }
 }
 
 function jsonToPreviewRows(jsonText: string): { headers: string[]; rows: string[][] } {
@@ -174,7 +178,10 @@ export function JsonCsvConverter() {
               {copied ? '✓ Copied' : 'コピー'}
             </button>
           </div>
-          {error ? (
+          {error && result && (
+            <p className="bg-[#0e0a06] px-4 py-2 font-mono text-[11px] text-yellow-400/90">⚠ {error}</p>
+          )}
+          {error && !result ? (
             <div className="flex-1 min-h-[14rem] bg-[#0e0608] p-4 border-l-2 border-red-500/50">
               <p className="font-mono text-xs text-red-400 leading-relaxed">{error}</p>
             </div>
