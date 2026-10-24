@@ -91,13 +91,22 @@ function generateOutput(
     return { output: '', error: '無効な JSON です。構文を確認してください。' }
   }
 
-  if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-    return { output: '', error: 'ルート要素はオブジェクト { } である必要があります。' }
+  if (typeof parsed !== 'object' || parsed === null) {
+    return { output: '', error: 'ルート要素はオブジェクト { } か配列 [ ] である必要があります。' }
   }
 
   const name = rootName.trim() || 'Root'
   const interfaces = new Map<string, Record<string, TypeInfo>>()
-  mergeObjects([parsed as Record<string, unknown>], name, interfaces)
+  // 配列を貼った場合は全要素を合わせて要素の型を作り、ルートはその配列の型にする
+  // （省略されうるキーや null になりうるキーは、複数のサンプルを並べないと分からない）
+  let rootAlias = ''
+  if (Array.isArray(parsed)) {
+    const elemName = `${name}Item`
+    const elem = parsed.length ? typeOf(parsed, elemName, interfaces) : 'unknown'
+    rootAlias = `type ${name} = ${elem.includes(' | ') ? `(${elem})` : elem}[];`
+  } else {
+    mergeObjects([parsed as Record<string, unknown>], name, interfaces)
+  }
 
   const lines: string[] = []
   const entries = [...interfaces.entries()]
@@ -117,6 +126,7 @@ function generateOutput(
     lines.push('')
   }
 
+  if (rootAlias) lines.push(rootAlias)
   return { output: lines.join('\n').trimEnd(), error: null }
 }
 
