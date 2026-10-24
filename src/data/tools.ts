@@ -868,6 +868,7 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-06-20',
     features: [
+      '配列の全要素を合わせて型を作り、一部の要素にしか無いキーは ? 付き、値の型が違えばユニオンにする',
       'JSONからTypeScript interfaceをリアルタイム生成',
       'ネストしたオブジェクトを別interfaceに自動分割',
       'null値をオプショナル（?）プロパティに変換',
