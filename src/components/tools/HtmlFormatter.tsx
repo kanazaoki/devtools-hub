@@ -16,6 +16,9 @@ const INLINE = new Set([
   'a', 'abbr', 'b', 'bdi', 'bdo', 'br', 'cite', 'code', 'data', 'del', 'dfn',
   'em', 'i', 'img', 'ins', 'kbd', 'mark', 'q', 'rp', 'rt', 'ruby', 's', 'samp',
   'small', 'span', 'strong', 'sub', 'sup', 'time', 'u', 'var', 'wbr',
+  // ⚠ 以前は入っていなかった行内の部品。ボタンや入力欄の間に改行を入れると隙間が出る
+  'button', 'input', 'select', 'label', 'output', 'meter', 'progress',
+  'picture', 'svg', 'canvas', 'iframe', 'video', 'audio', 'embed', 'object',
 ])
 
 type Token =
@@ -171,7 +174,9 @@ function minifyHtml(src: string, keepComments: boolean): string {
         const collapsed = t.value.replace(/\s+/g, ' ')
         if (collapsed.trim() === '') {
           // 直前が行内要素なら空白の意味が残るので1つだけ入れる
-          if (/<\/?(?:[a-z]+)[^>]*>$/i.test(out) && /<\/?(a|span|b|i|em|strong|code|small|sub|sup|u|s|mark|time|label)[\s/>]/i.test(out.slice(-40))) {
+          // ⚠ 以前は一部の要素名だけを見ていたので、img や button の間の空白を消して隙間を詰めてしまっていた
+          const lastTag = out.match(/<\/?([a-zA-Z][\w-]*)[^>]*>$/)?.[1]?.toLowerCase()
+          if (lastTag && INLINE.has(lastTag)) {
             if (!out.endsWith(' ')) out += ' '
           }
         } else {
