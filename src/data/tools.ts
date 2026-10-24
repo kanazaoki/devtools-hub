@@ -13,6 +13,26 @@ export interface Tool {
 
 export const tools: Tool[] = [
   {
+    slug: 'responsive-image-generator',
+    name: 'Responsive Image Generator',
+    tagline: '1枚の画像から表示幅ごとの画像と srcset つきの img タグを作る',
+    description:
+      '画像を1枚ドロップすると、480・768・1280px など選んだ幅ごとに縮小した画像（WebP / JPEG）を作り、srcset と sizes、width / height を書いた img タグを出力します。表示サイズより大きな画像を配るとそのぶん転送が無駄になり、width / height が無いと読み込み時にレイアウトがずれます。ファーストビューの画像なら loading="lazy" を外して fetchpriority="high" を付けます。画像と HTML は ZIP でまとめて保存できます。',
+    tags: ['画像', '最適化', 'パフォーマンス'],
+    boothUrl: '',
+    hasWebVersion: true,
+    releasedAt: '2026-10-24',
+    desktopFeatures: [],
+    features: [
+      '選んだ幅（320〜1920px）ごとに縮小。元の幅より大きい幅は作らない',
+      'WebP / JPEG と品質を選び、各ファイルの大きさと元に対する割合を表示',
+      'srcset・sizes・width・height を書いた img タグを出力（CLS 対策）',
+      'ファーストビューの画像は loading="lazy" を外し fetchpriority="high" を付ける',
+      '画像と HTML を ZIP でまとめて保存',
+      '処理はブラウザ内で完結し、画像は送信しない',
+    ],
+  },
+  {
     slug: 'image-metadata-remover',
     name: 'Image Metadata Remover',
     tagline: '写真の位置情報・撮影情報を、画質を落とさずに取り除く — JPEG / PNG',
@@ -241,15 +261,15 @@ export const tools: Tool[] = [
   {
     slug: 'webp-studio',
     name: 'WebP Studio',
-    tagline: 'PNG/JPG → WebP/AVIF 一括変換',
+    tagline: 'PNG/JPG → WebP 一括変換（AVIF はデスクトップ版）',
     description:
-      'PNG・JPG 画像を WebP または AVIF 形式に一括変換。品質スライダー・変換前後比較プレビュー・ファイルサイズ削減率表示付き。ドラッグ & ドロップで複数ファイルを一度に変換し、ZIP でまとめてダウンロード。',
+      'PNG・JPG 画像を WebP 形式に一括変換（AVIF への変換はデスクトップ版のみ）。品質スライダー・変換前後比較プレビュー・ファイルサイズ削減率表示付き。ドラッグ & ドロップで複数ファイルを一度に変換し、ZIP でまとめてダウンロード。',
     tags: ['画像', 'データ変換', '最適化'],
     boothUrl: 'https://knkk.booth.pm/items/8447752',
     hasWebVersion: true,
     releasedAt: '2026-06-13',
     features: [
-      'PNG / JPG → WebP / AVIF 変換',
+      'PNG / JPG → WebP 変換',
       '品質スライダー（0〜100）',
       '変換前後の比較プレビュー',
       'ファイルサイズ削減率の表示',
