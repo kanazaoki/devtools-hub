@@ -406,6 +406,8 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-06-18',
     features: [
+      '署名の検証：HS256/384/512 は共通鍵、RS・PS・ES 系は公開鍵（PEM / JWK）で検証。alg: none とアルゴリズム混同の形は理由つきで拒否',
+      '日本語などの UTF-8 のクレームも文字化けせずに表示',
       'Header / Payload / Signature を即デコード',
       'JSON シンタックスハイライト表示',
       '標準クレーム（exp / iat / iss / sub など）をわかりやすく表示',
