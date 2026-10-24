@@ -1517,7 +1517,7 @@ export const tools: Tool[] = [
     name: 'Color Token Generator',
     tagline: 'カラーパレットを CSS変数 / Tailwind / Sass / Style Dictionary で一括出力',
     description:
-      'カラーに名前と HEX 値を設定すると、CSS カスタムプロパティ（:root）・Tailwind theme.colors・Sass 変数・Style Dictionary JSON の4形式でトークンコードを生成。最大10色まで追加でき、カラーピッカーと HEX 入力の両方で色を設定できます。デザインシステム構築時のトークン定義作業を高速化。',
+      '素材の色（gray-50 など）と役割の色（bg・text・accent など）を二段構えで登録し、役割ごとにライト／ダークで参照する素材を選ぶと、ダークモードの切り替えまで入った CSS カスタムプロパティを生成します。Tailwind CSS v4（@theme inline）・v3（extend）・Sass・Style Dictionary JSON でも出力。背景に対する文字のコントラスト比をライト・ダークの両方で表示します。',
     tags: ['カラー', 'デザイン', '開発者向け'],
     boothUrl: 'https://knkk.booth.pm/items/8575370',
     hasWebVersion: true,
@@ -1527,8 +1527,11 @@ export const tools: Tool[] = [
       'トークンを各形式のファイルとして書き出し（.css / tailwind.config.js / .scss / .json）',
     ],
     features: [
-      'CSS変数 / Tailwind config / Sass変数 / Style Dictionary JSON の4形式で出力',
-      '最大10色を追加・削除、カラーピッカーと HEX 入力で色指定',
+      '素材の色と役割の色の二段構え。役割はライト／ダークで別の素材を参照',
+      'prefers-color-scheme: dark で参照先だけを差し替える CSS を出力',
+      'CSS変数 / Tailwind v4・v3 / Sass / Style Dictionary JSON で出力（v3 は既定の色を消さない extend）',
+      '背景の役割に対する文字のコントラスト比（WCAG）をライト・ダークで表示',
+      '素材・役割をそれぞれ最大20件、カラーピッカーと HEX 入力で色指定',
       '名前欄が空の場合は color-1 などのデフォルト名を自動適用',
       '各形式のコードをワンクリックでコピー',
     ],

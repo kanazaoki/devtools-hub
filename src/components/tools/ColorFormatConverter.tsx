@@ -453,6 +453,9 @@ export function ColorFormatConverter() {
               ))}
             </div>
             <span className="mt-0.5 font-mono text-[9px] text-muted/60">{cmykString}</span>
+            <span className="mt-1 font-mono text-[9px] leading-relaxed text-muted/60">
+              ※ 単純な計算式による目安です。印刷所の変換（Japan Color などのプロファイル）とは値が一致しません。入稿には印刷所の指定に従ってください。また cmyk() は CSS では使えません。
+            </span>
           </div>
           <button
             onClick={() => handleCopy('cmyk', cmykString)}

@@ -995,7 +995,7 @@ export const seoContent: Record<string, SeoArticleData> = {
     sections: [
       { title: 'デザイントークンとハードコードの違い', body: 'ボタンの背景色を#3B82F6と直接書くのがハードコードで、--color-primary: #3B82F6 として変数に抽象化するのがトークン化です。ハードコードでは色を変える際に全ファイルを検索・置換する必要があります。トークンなら変数の値を一箇所変えるだけで全体に反映されます。' },
       { title: 'CSS変数でのカラートークン', body: ':root { --color-primary: #3B82F6; --color-primary-hover: #2563EB; } のようにrootに定義し、color: var(--color-primary) で参照します。ダークモードは@media (prefers-color-scheme: dark) { :root { --color-primary: #60A5FA; } } で上書きできます。全コンポーネントが変数を参照するだけでテーマ切り替えが完成します。' },
-      { title: 'Tailwindカスタムカラーへの転用', body: 'Color Token GeneratorはTailwind CSS形式での出力に対応しています。生成したパレットをtailwind.config.jsのtheme.extend.colorsにコピーするだけでprimary-500・primary-600などのカスタムクラスが使えるようになります。Tailwind v4ではtailwind.config.jsの代わりに@theme { --color-primary-500: #3b82f6; }のようにCSSファイルに直接トークンを定義する方式に移行しました。Color Token Generatorが出力するCSS変数形式はそのままTailwind v4のテーマ定義として使えます。' },
+      { title: 'Tailwindカスタムカラーへの転用', body: 'Color Token GeneratorはTailwind CSS形式での出力に対応しています。v3では生成したコードをtailwind.config.jsのtheme.extend.colorsに入れるだけでprimary-500・primary-600などのカスタムクラスが使えるようになります。Tailwind v4ではtailwind.config.jsの代わりに@theme { --color-primary-500: #3b82f6; }のようにCSSファイルに直接トークンを定義する方式に移行しました。Color Token Generatorの「Tailwind v4」タブは、CSS変数で定義した色を @theme inline { --color-bg: var(--bg); } の形でTailwindに登録するコードを出すので、bg-bg や text-accent のクラスがダークモードでも自動で切り替わります。' },
       { title: 'JSON・SCSSトークンの活用', body: 'Color Token GeneratorはCSS変数・Tailwind設定・SCSS変数・JSONの4形式で出力できます。Style Dictionary・theo・token-transformerなどのデザイントークン変換ツールではJSONが入力として使えます。デザインツール（Figma）とコードの間でトークンを共有するワークフローに活用できます。' },
     ],
   },
