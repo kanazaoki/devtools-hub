@@ -59,7 +59,7 @@ function convertSvgToReact(
   svgCode: string,
   componentName: string,
   propsEnabled: { fill: boolean; stroke: boolean; size: boolean }
-): { code: string; error: string | null } {
+): { code: string; error: string | null; warnings?: string[] } {
   const trimmed = svgCode.trim()
   if (!trimmed) return { code: '', error: null }
   if (!trimmed.includes('<svg')) {
@@ -89,53 +89,50 @@ function convertSvgToReact(
       return `style={{ ${pairs.join(', ')} }}`
     })
 
-    // Replace fill/stroke attributes if props enabled
+    // ⚠ 以前の出力は3つの理由で使えなかった：
+    // ① 分割代入の中に「...props: 型」と書いていて、TypeScript の構文エラーになっていた
+    // ② size を最初に見つかった width / height に当てていたので、<svg> に幅が無いと <rect> の幅が変わっていた
+    // ③ 既定値（currentColor・24）を分割代入に書いておらず、props を渡さないと undefined になっていた
+    const fills = new Set([...result.matchAll(/\bfill="([^"]*)"/g)].map((m) => m[1].toLowerCase()).filter((v) => v !== 'none'))
+    const strokes = new Set([...result.matchAll(/\bstroke="([^"]*)"/g)].map((m) => m[1].toLowerCase()).filter((v) => v !== 'none'))
+    const warnings: string[] = []
     if (propsEnabled.fill) {
+      if (fills.size > 1) warnings.push(`fill が ${fills.size} 色あります（${[...fills].join(', ')}）。すべて同じ fill に置き換わるので、多色のアイコンは単色になります`)
       result = result.replace(/\bfill="(?!none)([^"]*)"/g, 'fill={fill}')
     }
     if (propsEnabled.stroke) {
+      if (strokes.size > 1) warnings.push(`stroke が ${strokes.size} 色あります。すべて同じ stroke に置き換わります`)
       result = result.replace(/\bstroke="(?!none)([^"]*)"/g, 'stroke={stroke}')
     }
     if (propsEnabled.size) {
-      result = result.replace(/\bwidth="[^"]*"/, 'width={size}').replace(/\bheight="[^"]*"/, 'height={size}')
+      // 大きさはルートの <svg> にだけ当てる（無ければ足す）
+      result = result.replace(/<svg\b([^>]*)>/, (_, attrs: string) => {
+        const a = attrs.replace(/\s(width|height)="[^"]*"/g, '')
+        return `<svg${a} width={size} height={size}>`
+      })
+      if (!/viewBox=/.test(result)) warnings.push('viewBox がありません。大きさを変えると中身が拡大縮小されず、切れて表示されます')
     }
 
     // Self-close empty tags
     result = result.replace(/<([\w]+)([^>]*)><\/\1>/g, (_, tag, attrs) => `<${tag}${attrs} />`)
 
-    // Build props interface
-    const propLines: string[] = []
-    const propDefaults: string[] = []
-    if (propsEnabled.fill) { propLines.push("fill?: string"); propDefaults.push('fill = "currentColor"') }
-    if (propsEnabled.stroke) { propLines.push("stroke?: string"); propDefaults.push('stroke = "currentColor"') }
-    if (propsEnabled.size) { propLines.push("size?: number | string"); propDefaults.push('size = 24') }
-    propLines.push("...props: React.SVGProps<SVGSVGElement>")
+    const ownProps: string[] = []
+    const defaults: string[] = []
+    if (propsEnabled.fill) { ownProps.push('fill?: string'); defaults.push("fill = 'currentColor'") }
+    if (propsEnabled.stroke) { ownProps.push('stroke?: string'); defaults.push("stroke = 'currentColor'") }
+    if (propsEnabled.size) { ownProps.push('size?: number | string'); defaults.push('size = 24') }
 
-    const propsType = propLines.length > 1
-      ? `{
-  ${propLines.join(';\n  ')};
-}`
-      : `{ ${propLines.join('; ')} }`
+    const code = `import type { SVGProps } from 'react'
 
-    const destructure = propLines.length > 0
-      ? `{ ${[...propDefaults.map(d => d.split(' = ')[0]), '...props'].join(', ')} }`
-      : 'props'
+type ${componentName}Props = Omit<SVGProps<SVGSVGElement>, ${ownProps.length ? ownProps.map((p) => `'${p.split('?')[0]}'`).join(' | ') : "never"}>${ownProps.length ? ` & {\n  ${ownProps.join('\n  ')}\n}` : ''}
 
-    const code = `import React from 'react'
-
-interface ${componentName}Props {
-  ${[...propDefaults.map(d => { const [k, v] = d.split(' = '); return `${k.trim()}?: ${typeof v === 'string' && v.startsWith('"') ? 'string' : 'number | string'}` }), 'className?: string'].join(';\n  ')}
-}
-
-const ${componentName}: React.FC<${componentName}Props> = (${destructure.replace('...props', '...props: React.SVGProps<SVGSVGElement>')}) => {
+export default function ${componentName}({ ${[...defaults, '...props'].join(', ')} }: ${componentName}Props) {
   return (
     ${result.replace('<svg', '<svg {...props}')}
   )
 }
-
-export default ${componentName}
 `
-    return { code, error: null }
+    return { code, error: null, warnings }
   } catch (e) {
     return { code: '', error: 'SVG の変換中にエラーが発生しました' }
   }
@@ -151,7 +148,7 @@ export function SvgToReact() {
   const [sizeProp, setSizeProp] = useState(true)
   const [copied, setCopied] = useState(false)
 
-  const { code, error } = convertSvgToReact(input, componentName || 'MyIcon', {
+  const { code, error, warnings = [] } = convertSvgToReact(input, componentName || 'MyIcon', {
     fill: fillProp, stroke: strokeProp, size: sizeProp
   })
 
@@ -252,6 +249,9 @@ export function SvgToReact() {
               placeholder="SVG を入力すると React コンポーネントに変換されます"
             />
           )}
+          {warnings.map((w) => (
+            <p key={w} className="mt-1.5 text-xs text-amber-300">⚠ {w}</p>
+          ))}
         </div>
       </div>
     </div>

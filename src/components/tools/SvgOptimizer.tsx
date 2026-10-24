@@ -31,8 +31,18 @@ function optimizeSvg(svg: string, opts: Options): string {
     s = s.replace(/\sxmlns:(?:inkscape|sodipodi|dc|cc|rdf)="[^"]*"/gi, '')
   }
   if (opts.round) {
+    // ⚠ 以前はファイル中のすべての小数を丸めていたため、<text> の中の「v2.25」や、
+    // href の「image.2x.png」（→ image0.2x.png）まで書き換わっていた。
+    // 丸めるのは属性値の中の数値だけにし、id や href など文字列の属性には触れない。
     const d = Math.max(0, Math.min(6, opts.decimals))
-    s = s.replace(/-?\d*\.\d+/g, (m) => String(parseFloat(parseFloat(m).toFixed(d))))
+    const SKIP = /^(id|class|href|xlink:href|src|font-family|data-[\w-]+|aria-[\w-]+|xmlns(:\w+)?|version)$/i
+    const num = /(?<![\w#.])-?(?:\d+\.\d+|\.\d+)(?:e[-+]?\d+)?/gi
+    s = s.replace(/(\s)([\w:-]+)="([^"]*)"/g, (all, sp: string, name: string, value: string) =>
+      SKIP.test(name)
+        ? all
+        : // 0.5 は .5 と書ける（SVG の数値は先頭の 0 を省略できる）
+          `${sp}${name}="${value.replace(num, (m) => String(parseFloat(parseFloat(m).toFixed(d))).replace(/^(-?)0\./, '$1.'))}"`,
+    )
   }
   if (opts.minify) {
     s = s.replace(/>\s+</g, '><')
