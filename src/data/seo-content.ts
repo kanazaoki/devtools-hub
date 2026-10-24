@@ -327,19 +327,19 @@ export const seoContent: Record<string, SeoArticleData> = {
     sections: [
       {
         title: 'iOS アプリに必要なアイコンサイズ',
-        body: 'App Store に申請する iOS アプリには、1024×1024px（App Store 掲載用）を必須として、iPhone・iPad それぞれの解像度に対応した複数サイズのアイコンが必要です。Xcode では Assets.xcassets にドロップするだけで各サイズへの自動割り当てが可能ですが、元となる高解像度の PNG 画像（最低でも 1024px）が必要です。アイコン一括リサイズでは 16px から 512px まで一度に書き出せるため、Xcode への組み込みをスムーズに行えます。',
+        body: 'App Store に申請する iOS アプリには、1024×1024px（App Store 掲載用）を必須として、iPhone・iPad それぞれの解像度に対応した複数サイズのアイコンが必要です。Xcode では Assets.xcassets にドロップするだけで各サイズへの自動割り当てが可能ですが、元となる高解像度の PNG 画像（最低でも 1024px）が必要です。アイコン一括リサイズの書き出しは 512px までなので、1024px は元画像をそのまま使ってください（180px などの小さいサイズは一括で書き出せます）。',
       },
       {
         title: 'Android アプリのアイコンサイズ規格',
-        body: 'Android では DPI（Dots Per Inch）に基づいたサイズ体系を使用します。mdpi（48px）・hdpi（72px）・xhdpi（96px）・xxhdpi（144px）・xxxhdpi（192px）の5つのサイズに加え、Google Play 掲載用に 512×512px の高解像度アイコンが必要です。Adaptive Icon に対応する場合は前景・背景レイヤーを別途用意しますが、通常のランチャーアイコンであれば PNG を各サイズに書き出すだけで対応できます。',
+        body: 'Android では DPI（Dots Per Inch）に基づいたサイズ体系を使用します。mdpi（48px）・hdpi（72px）・xhdpi（96px）・xxhdpi（144px）・xxxhdpi（192px）の5つのサイズに加え、Google Play 掲載用に 512×512px の高解像度アイコンが必要です。Adaptive Icon に対応する場合は前景・背景レイヤーを別途用意しますが、通常のランチャーアイコンであれば PNG を各サイズに書き出すだけで対応できます。Web 版アイコン一括リサイズが出すのは 48・96・192・512px で、72px・144px は含まれません。',
       },
       {
         title: 'ICO ファイルとは？Windows アプリでの必要性',
-        body: 'ICO（アイコン）ファイルは Windows が使用するアイコン形式で、複数の解像度の画像を1ファイルに格納できるのが特徴です。Electron や WPF などで Windows アプリを配布する際には、.ico ファイルが必須になります。有料のデスクトップ版アイコン一括リサイズでは ICO 形式への変換も対応しており、16・32・48・256px を1ファイルにまとめた ICO を生成できます。',
+        body: 'ICO（アイコン）ファイルは Windows が使用するアイコン形式で、複数の解像度の画像を1ファイルに格納できるのが特徴です。Electron や WPF などで Windows アプリを配布する際には、.ico ファイルが必須になります。Web 版アイコン一括リサイズが作るのはサイトの favicon 用の ICO（16・32・48px）です。アプリ配布用に 256px まで入れた ICO が要る場合は、有料のデスクトップ版で生成できます。',
       },
       {
         title: 'Web・ファビコン向けのアイコンサイズ',
-        body: 'Web サイトのファビコン（ブラウザタブに表示されるアイコン）には 16×16px・32×32px の PNG、または ICO ファイルが使われます。PWA（Progressive Web App）を構築する場合は manifest.json に記載する 192×192px と 512×512px のアイコンも必要です。アイコン一括リサイズではこれらのサイズも含めた Web 向けアイコンセットをまとめて生成し、ZIP でダウンロードできます。',
+        body: 'Web サイトのファビコン（ブラウザタブに表示されるアイコン）には 16×16px・32×32px の PNG、または ICO ファイルが使われます。PWA（Progressive Web App）を構築する場合は manifest.json に記載する 192×192px と 512×512px のアイコンも必要です。アイコン一括リサイズで「サイト用の一式」を選ぶと、favicon.ico・apple-touch-icon（180px）・192/512px と、head に書くタグ、site.webmanifest をまとめて ZIP で受け取れます。',
       },
     ],
   },

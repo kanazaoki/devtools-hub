@@ -3,7 +3,54 @@
 import { useState, useRef } from 'react'
 import JSZip from 'jszip'
 
-const SIZES = [16, 32, 48, 64, 128, 256, 512]
+// 16・32：ブラウザのタブ ／ 48・96：Google の検索結果（48 の倍数）／ 180：iOS のホーム画面
+// 192・512：Android・PWA のマニフェスト
+const SIZES = [16, 32, 48, 96, 128, 180, 192, 256, 512]
+
+// PNG を中に入れた .ico を作る（Windows Vista 以降・主要ブラウザが対応する形式）
+async function buildIco(pngs: { size: number; blob: Blob }[]): Promise<Blob> {
+  const datas = await Promise.all(pngs.map(async (p) => new Uint8Array(await p.blob.arrayBuffer())))
+  const header = new Uint8Array(6 + 16 * pngs.length)
+  const v = new DataView(header.buffer)
+  v.setUint16(2, 1, true) // type: icon
+  v.setUint16(4, pngs.length, true)
+  let offset = header.length
+  pngs.forEach((p, i) => {
+    const e = 6 + i * 16
+    header[e] = p.size >= 256 ? 0 : p.size
+    header[e + 1] = p.size >= 256 ? 0 : p.size
+    v.setUint16(e + 4, 1, true) // planes
+    v.setUint16(e + 6, 32, true) // bit count
+    v.setUint32(e + 8, datas[i].length, true)
+    v.setUint32(e + 12, offset, true)
+    offset += datas[i].length
+  })
+  return new Blob([header, ...datas], { type: 'image/x-icon' })
+}
+
+const HEAD_SNIPPET = `<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#ffffff">
+`
+
+const MANIFEST = JSON.stringify(
+  {
+    name: 'サイト名',
+    short_name: 'サイト名',
+    icons: [
+      { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    theme_color: '#ffffff',
+    background_color: '#ffffff',
+    display: 'standalone',
+  },
+  null,
+  2,
+)
 
 interface ResizeResult {
   size: number
@@ -18,7 +65,7 @@ interface FileEntry {
   status: 'idle' | 'processing' | 'done' | 'error'
 }
 
-async function resizeToSize(file: File, size: number): Promise<Blob> {
+async function resizeToSize(file: File, size: number, background: string | null = null): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image()
     const objUrl = URL.createObjectURL(file)
@@ -29,7 +76,17 @@ async function resizeToSize(file: File, size: number): Promise<Blob> {
       canvas.height = size
       const ctx = canvas.getContext('2d')
       if (!ctx) { reject(new Error('Canvas context unavailable')); return }
-      ctx.drawImage(img, 0, 0, size, size)
+      // iOS はホーム画面アイコンの透明部分を黒にするので、指定があれば下を塗る
+      if (background) {
+        ctx.fillStyle = background
+        ctx.fillRect(0, 0, size, size)
+      }
+      ctx.imageSmoothingQuality = 'high'
+      // ⚠ 以前は正方形でない画像も size×size に引き伸ばしていた。縦横比を保って中央に置く
+      const scale = Math.min(size / img.naturalWidth, size / img.naturalHeight)
+      const w = img.naturalWidth * scale
+      const h = img.naturalHeight * scale
+      ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h)
       canvas.toBlob((blob) => {
         if (!blob) { reject(new Error('Resize failed')); return }
         resolve(blob)
@@ -48,6 +105,8 @@ export function ResizeImage() {
   const [selectedSizes, setSelectedSizes] = useState<Set<number>>(new Set(SIZES))
   const [processing, setProcessing] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const [siteSet, setSiteSet] = useState(true)
+  const [touchBg, setTouchBg] = useState('#ffffff')
   const inputRef = useRef<HTMLInputElement>(null)
 
   function addFiles(files: File[]) {
@@ -103,6 +162,21 @@ export function ResizeImage() {
         zip.file(r.filename, r.blob)
       })
     })
+    // サイト用の一式（最初の画像から）：決まったファイル名・favicon.ico・head のタグ・マニフェスト
+    if (siteSet) {
+      const f = done[0].file
+      const png = (s: number, bg: string | null = null) => resizeToSize(f, s, bg)
+      const set = zip.folder('site')!
+      const [p16, p32, p48] = await Promise.all([png(16), png(32), png(48)])
+      set.file('favicon.ico', await buildIco([{ size: 16, blob: p16 }, { size: 32, blob: p32 }, { size: 48, blob: p48 }]))
+      set.file('favicon-32x32.png', p32)
+      set.file('favicon-96x96.png', await png(96))
+      set.file('apple-touch-icon.png', await png(180, touchBg))
+      set.file('icon-192.png', await png(192))
+      set.file('icon-512.png', await png(512))
+      set.file('head.html', HEAD_SNIPPET)
+      set.file('site.webmanifest', MANIFEST)
+    }
     const blob = await zip.generateAsync({ type: 'blob' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -165,6 +239,19 @@ export function ResizeImage() {
               </label>
             ))}
           </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-4 border-t border-border px-4 py-2.5">
+          <label className="flex items-center gap-2 font-mono text-[11px] text-primary">
+            <input type="checkbox" checked={siteSet} onChange={(e) => setSiteSet(e.target.checked)} className="accent-teal" />
+            サイト用の一式も入れる（favicon.ico・apple-touch-icon・マニフェスト・head のタグ）
+          </label>
+          {siteSet && (
+            <label className="flex items-center gap-2 font-mono text-[11px] text-muted">
+              iOS 用アイコンの背景
+              <input type="color" value={touchBg} onChange={(e) => setTouchBg(e.target.value)} className="h-6 w-8 cursor-pointer rounded border border-border bg-transparent" />
+              <span className="text-[10px] text-muted/70">透明のままだと iOS で黒くなります</span>
+            </label>
+          )}
         </div>
       </div>
 
