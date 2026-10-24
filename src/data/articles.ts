@@ -1050,12 +1050,12 @@ export const articles: Article[] = [
       },
       {
         heading: '2. 不要データを除去して軽量化する',
-        body: 'SVGを最適化ツールに通し、コメント・XML宣言・<metadata>・Inkscapeなどのエディタ属性を除去し、座標の数値を適切な桁数に丸め、タグ間の空白を最小化します。エディタ書き出しのSVGはこれだけで数十%小さくなることも珍しくありません。数値の丸めは桁を落としすぎると形が崩れるため、プレビューを見ながら調整するのがコツです。width/heightやviewBoxは表示に関わるので残します。',
+        body: 'SVGを最適化ツールに通し、コメント・XML宣言・<metadata>・Inkscapeなどのエディタ属性を除去し、座標の数値を適切な桁数に丸め、タグ間の空白を最小化します。Inkscape 風のメタデータを含むテスト用のSVGでは、これだけで710バイトが456バイトになりました。数値の丸めは桁を落としすぎると形が崩れ、特に viewBox が 0 0 1 1 のような小さな座標系では小数1桁でも形が変わるので、プレビューを見ながら調整します。SVG Optimizer が丸めるのは属性の中の数値だけで、<text> の文字や、ファイル名・id のような文字列には触れません。グラデーションなどを url(#id) で参照している id もそのまま残ります。width/height や viewBox は表示に関わるので残します。',
         tool: 'svg-optimizer',
       },
       {
         heading: '3. Reactコンポーネントとして使う',
-        body: '最適化したSVGをReactで使う場合は、属性をJSX仕様（class→className、stroke-width→strokeWidth など）に変換する必要があります。変換ツールを使えばSVGコードを貼り付けるだけでReact/TypeScriptのコンポーネントになり、fillやsizeをpropsで受け取れる形にもできます。fillにcurrentColorを指定すれば、テキストの色に追従するアイコンコンポーネントとして再利用できます。',
+        body: '最適化したSVGをReactで使う場合は、属性をJSX仕様（class→className、stroke-width→strokeWidth など）に変換する必要があります。変換ツールを使えばSVGコードを貼り付けるだけでReact/TypeScriptのコンポーネントになり、fillやsizeをpropsで受け取れる形にもできます。fill の既定値は currentColor になるので、テキストの色に追従するアイコンコンポーネントとして再利用できます。注意したいのは2点です。fill を props にするとすべての fill が同じ値に置き換わるので、多色のアイコンは単色になります（SVG to React は色が複数あると警告を出します）。また size で大きさを変えるには viewBox が必要で、無いと中身が拡大縮小されず切れて表示されます。生成されたコンポーネントは TypeScript のコンパイラでエラーなく通ることを確かめています。',
         tool: 'svg-to-react',
       },
     ],
