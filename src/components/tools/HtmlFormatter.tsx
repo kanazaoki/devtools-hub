@@ -182,11 +182,39 @@ function minifyHtml(src: string, keepComments: boolean): string {
       case 'comment':
         if (keepComments) out += t.value
         break
+      case 'raw': {
+        // ⚠ 以前は pre・script・style・textarea の中身まで空白を詰めていた。pre の字下げが消え、
+        // script では「// コメント」の後ろの行がコメントに飲み込まれて JavaScript が壊れていた。開始タグだけ詰める
+        const openEnd = t.value.indexOf('>') + 1
+        out += collapseTag(t.value.slice(0, openEnd)) + t.value.slice(openEnd)
+        break
+      }
       default:
-        out += t.value.replace(/\s+/g, ' ').replace(/\s+>/, '>')
+        out += collapseTag(t.value)
     }
   }
   return out.trim()
+}
+
+// タグの中の連続した空白を1つにする。属性値（引用符の中）の空白はそのまま残す
+function collapseTag(tag: string): string {
+  let out = ''
+  let quote: string | null = null
+  for (let i = 0; i < tag.length; i++) {
+    const c = tag[i]
+    if (quote) {
+      out += c
+      if (c === quote) quote = null
+    } else if (c === '"' || c === "'") {
+      quote = c
+      out += c
+    } else if (/\s/.test(c)) {
+      if (!out.endsWith(' ')) out += ' '
+    } else {
+      out += c
+    }
+  }
+  return out.replace(/\s+(\/?>)$/, '$1')
 }
 
 export function HtmlFormatter() {

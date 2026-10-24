@@ -174,7 +174,7 @@ export function DataSizeConverter() {
               ))}
             </ul>
             <p className="border-t border-border px-4 py-2 text-xs text-muted">
-              理論値です。実際はオーバーヘッドや輻輳により1〜2割ほど遅くなります。
+              回線の速さだけで割った理論値です。実際は通信の往復にかかる待ち時間（遅延）や混雑が加わるため、これより遅くなります。小さいファイルほど、待ち時間の占める割合が大きくなります。
             </p>
           </div>
         </>
