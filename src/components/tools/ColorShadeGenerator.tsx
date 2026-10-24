@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 
-type Tab = 'tints' | 'shades' | 'tones'
+type Tab = 'scale' | 'tints' | 'shades' | 'tones'
 type OutputFormat = 'css' | 'tailwind'
 
 function hexToRgb(hex: string): [number, number, number] | null {
@@ -43,7 +43,15 @@ function generatePalette(hex: string, steps: number, tab: Tab): { label: string;
   const black: [number, number, number] = [0, 0, 0]
   const gray: [number, number, number] = [128, 128, 128]
 
-  const TAILWIND_KEYS = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900']
+  if (tab === 'scale') {
+    // 50（いちばん明るい）〜900（いちばん暗い）で、入力した色を 500 に置く。
+    // ⚠ 以前は Tints タブで入力色そのものを「50」、白を「600」と呼んでいて、
+    // Tailwind の 50＝最も明るい という並びと逆になっていた
+    return SCALE.map(([label, toward, t]) => ({
+      label,
+      hex: toward === 'white' ? mix(rgb, white, t) : toward === 'black' ? mix(rgb, black, t) : mix(rgb, rgb, 0),
+    }))
+  }
 
   return Array.from({ length: steps }, (_, i) => {
     const t = i / (steps - 1)
@@ -55,19 +63,38 @@ function generatePalette(hex: string, steps: number, tab: Tab): { label: string;
     } else {
       color = mix(rgb, gray, t)
     }
-    return { label: TAILWIND_KEYS[i] ?? String((i + 1) * 100), hex: color }
+    // Tints / Shades / Tones は入力色から順に並べた段階なので、明るさの番号ではなく段階の番号を付ける
+    return { label: `${tab.slice(0, -1)}-${i}`, hex: color }
   })
 }
 
-function buildCssVars(palette: { label: string; hex: string }[]): string {
-  return [':root {', ...palette.map(({ label, hex }) => `  --color-${label}: ${hex};`), '}'].join('\n')
+const SCALE: [string, 'white' | 'black' | 'base', number][] = [
+  ['50', 'white', 0.95],
+  ['100', 'white', 0.9],
+  ['200', 'white', 0.75],
+  ['300', 'white', 0.55],
+  ['400', 'white', 0.3],
+  ['500', 'base', 0],
+  ['600', 'black', 0.15],
+  ['700', 'black', 0.35],
+  ['800', 'black', 0.55],
+  ['900', 'black', 0.75],
+]
+
+const tokenName = (name: string) => name.trim().replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '') || 'primary'
+
+function buildCssVars(palette: { label: string; hex: string }[], name: string): string {
+  const n = tokenName(name)
+  return [':root {', ...palette.map(({ label, hex }) => `  --color-${n}-${label}: ${hex};`), '}'].join('\n')
 }
 
-function buildTailwind(palette: { label: string; hex: string }[]): string {
-  return `colors: {\n${palette.map(({ label, hex }) => `  '${label}': '${hex}',`).join('\n')}\n}`
+function buildTailwind(palette: { label: string; hex: string }[], name: string): string {
+  const n = tokenName(name)
+  return `colors: {\n  '${n}': {\n${palette.map(({ label, hex }) => `    '${label}': '${hex}',`).join('\n')}\n  },\n}`
 }
 
 const TAB_DEFS: { key: Tab; label: string; desc: string }[] = [
+  { key: 'scale', label: 'Scale', desc: '50〜900（入力色を500に）' },
   { key: 'tints', label: 'Tints', desc: '白混じり' },
   { key: 'shades', label: 'Shades', desc: '黒混じり' },
   { key: 'tones', label: 'Tones', desc: 'グレー混じり' },
@@ -76,14 +103,15 @@ const TAB_DEFS: { key: Tab; label: string; desc: string }[] = [
 export function ColorShadeGenerator() {
   const [hex, setHex] = useState('#14b8a6')
   const [hexInput, setHexInput] = useState('#14b8a6')
-  const [tab, setTab] = useState<Tab>('shades')
+  const [tab, setTab] = useState<Tab>('scale')
+  const [name, setName] = useState('primary')
   const [steps, setSteps] = useState(7)
   const [outputFormat, setOutputFormat] = useState<OutputFormat>('css')
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
   const [copiedAll, setCopiedAll] = useState(false)
 
   const palette = generatePalette(hex, steps, tab)
-  const output = outputFormat === 'css' ? buildCssVars(palette) : buildTailwind(palette)
+  const output = outputFormat === 'css' ? buildCssVars(palette, name) : buildTailwind(palette, name)
 
   const handleHexInput = (v: string) => {
     setHexInput(v)
@@ -136,8 +164,19 @@ export function ColorShadeGenerator() {
 
         <div className="h-8 w-px bg-border" />
 
+        <label className="flex items-center gap-2">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted">名前</span>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="primary"
+            className="w-28 rounded border border-border bg-transparent px-3 py-1.5 font-mono text-sm text-bright outline-none transition-colors focus:border-teal"
+          />
+        </label>
+
         {/* Steps */}
-        <div className="flex items-center gap-3">
+        <div className={`flex items-center gap-3 ${tab === 'scale' ? 'hidden' : ''}`}>
           <span className="font-mono text-[10px] uppercase tracking-widest text-muted">Steps</span>
           <input
             type="range"
