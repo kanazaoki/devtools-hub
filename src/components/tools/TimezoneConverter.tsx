@@ -1,38 +1,38 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 const CITIES = [
-  { label: '東京 (JST)',         tz: 'Asia/Tokyo' },
-  { label: 'ソウル (KST)',        tz: 'Asia/Seoul' },
-  { label: '上海 (CST)',          tz: 'Asia/Shanghai' },
-  { label: 'シンガポール (SGT)',   tz: 'Asia/Singapore' },
-  { label: 'バンコク (ICT)',       tz: 'Asia/Bangkok' },
-  { label: 'ホーチミン (ICT)',     tz: 'Asia/Ho_Chi_Minh' },
-  { label: 'ジャカルタ (WIB)',     tz: 'Asia/Jakarta' },
-  { label: 'ムンバイ (IST)',       tz: 'Asia/Kolkata' },
-  { label: 'カラチ (PKT)',        tz: 'Asia/Karachi' },
-  { label: 'ドバイ (GST)',        tz: 'Asia/Dubai' },
-  { label: 'テヘラン (IRST)',      tz: 'Asia/Tehran' },
-  { label: 'モスクワ (MSK)',       tz: 'Europe/Moscow' },
-  { label: 'イスタンブール (TRT)', tz: 'Europe/Istanbul' },
-  { label: 'カイロ (EET)',        tz: 'Africa/Cairo' },
-  { label: 'ナイロビ (EAT)',       tz: 'Africa/Nairobi' },
-  { label: 'ヨハネスブルグ (SAST)',tz: 'Africa/Johannesburg' },
-  { label: 'ラゴス (WAT)',        tz: 'Africa/Lagos' },
-  { label: 'ベルリン (CET)',       tz: 'Europe/Berlin' },
-  { label: 'パリ (CET)',          tz: 'Europe/Paris' },
-  { label: 'マドリード (CET)',     tz: 'Europe/Madrid' },
-  { label: 'アムステルダム (CET)', tz: 'Europe/Amsterdam' },
-  { label: 'ロンドン (GMT)',       tz: 'Europe/London' },
-  { label: 'サンパウロ (BRT)',     tz: 'America/Sao_Paulo' },
-  { label: 'ニューヨーク (EST)',   tz: 'America/New_York' },
-  { label: 'シカゴ (CST)',        tz: 'America/Chicago' },
-  { label: 'ロサンゼルス (PST)',   tz: 'America/Los_Angeles' },
-  { label: 'ホノルル (HST)',       tz: 'Pacific/Honolulu' },
-  { label: 'アンカレジ (AKST)',    tz: 'America/Anchorage' },
-  { label: 'シドニー (AEDT)',      tz: 'Australia/Sydney' },
-  { label: 'オークランド (NZDT)', tz: 'Pacific/Auckland' },
+  { label: '東京',         tz: 'Asia/Tokyo' },
+  { label: 'ソウル',        tz: 'Asia/Seoul' },
+  { label: '上海',          tz: 'Asia/Shanghai' },
+  { label: 'シンガポール',   tz: 'Asia/Singapore' },
+  { label: 'バンコク',       tz: 'Asia/Bangkok' },
+  { label: 'ホーチミン',     tz: 'Asia/Ho_Chi_Minh' },
+  { label: 'ジャカルタ',     tz: 'Asia/Jakarta' },
+  { label: 'ムンバイ',       tz: 'Asia/Kolkata' },
+  { label: 'カラチ',        tz: 'Asia/Karachi' },
+  { label: 'ドバイ',        tz: 'Asia/Dubai' },
+  { label: 'テヘラン',      tz: 'Asia/Tehran' },
+  { label: 'モスクワ',       tz: 'Europe/Moscow' },
+  { label: 'イスタンブール', tz: 'Europe/Istanbul' },
+  { label: 'カイロ',        tz: 'Africa/Cairo' },
+  { label: 'ナイロビ',       tz: 'Africa/Nairobi' },
+  { label: 'ヨハネスブルグ',tz: 'Africa/Johannesburg' },
+  { label: 'ラゴス',        tz: 'Africa/Lagos' },
+  { label: 'ベルリン',       tz: 'Europe/Berlin' },
+  { label: 'パリ',          tz: 'Europe/Paris' },
+  { label: 'マドリード',     tz: 'Europe/Madrid' },
+  { label: 'アムステルダム', tz: 'Europe/Amsterdam' },
+  { label: 'ロンドン',       tz: 'Europe/London' },
+  { label: 'サンパウロ',     tz: 'America/Sao_Paulo' },
+  { label: 'ニューヨーク',   tz: 'America/New_York' },
+  { label: 'シカゴ',        tz: 'America/Chicago' },
+  { label: 'ロサンゼルス',   tz: 'America/Los_Angeles' },
+  { label: 'ホノルル',       tz: 'Pacific/Honolulu' },
+  { label: 'アンカレジ',    tz: 'America/Anchorage' },
+  { label: 'シドニー',      tz: 'Australia/Sydney' },
+  { label: 'オークランド', tz: 'Pacific/Auckland' },
   { label: 'UTC',                 tz: 'UTC' },
 ]
 
@@ -65,6 +65,32 @@ function formatInTZ(tz: string, date: Date): string {
   }
 }
 
+// そのタイムゾーンでの UTC からのずれ（分）
+function offsetMinutes(tz: string, at: number): number {
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+      .formatToParts(new Date(at)).map((x) => [x.type, x.value]),
+  )
+  const asUtc = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second)
+  return Math.round((asUtc - Math.floor(at / 1000) * 1000) / 60000)
+}
+
+// 「tz での y-m-d h:mi」が指す瞬間（UTC のミリ秒）。夏時間の境目もずれを2回測って合わせる
+function zonedToUtc(y: number, mo: number, d: number, h: number, mi: number, tz: string): number {
+  const guess = Date.UTC(y, mo - 1, d, h, mi)
+  let t = guess - offsetMinutes(tz, guess) * 60000
+  t = guess - offsetMinutes(tz, t) * 60000
+  return t
+}
+
+function partsInTZ(tz: string, at: number): { y: number; mo: number; d: number } {
+  const p = Object.fromEntries(
+    new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: 'numeric', day: 'numeric' })
+      .formatToParts(new Date(at)).map((x) => [x.type, x.value]),
+  )
+  return { y: +p.year, mo: +p.month, d: +p.day }
+}
+
 function getHourInTZ(tz: string, date: Date): number {
   try {
     const h = new Intl.DateTimeFormat('en', { timeZone: tz, hour: 'numeric', hour12: false }).format(date)
@@ -92,7 +118,17 @@ export function TimezoneConverter() {
     return () => clearInterval(id)
   }, [])
 
-  const parsedBase = useMemo(() => new Date(baseDate), [baseDate])
+  // 入力した日時を、どのタイムゾーンの時刻として読むか（既定はブラウザのタイムゾーン）
+  const [baseTz, setBaseTz] = useState('Asia/Tokyo')
+  useEffect(() => {
+    const local = Intl.DateTimeFormat().resolvedOptions().timeZone
+    if (local) setBaseTz(local)
+  }, [])
+  const parsedBase = useMemo(() => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(baseDate)
+    if (!m) return new Date(NaN)
+    return new Date(zonedToUtc(+m[1], +m[2], +m[3], +m[4], +m[5], baseTz))
+  }, [baseDate, baseTz])
   const isValid = !isNaN(parsedBase.getTime())
 
   const addSlot = () => {
@@ -102,27 +138,34 @@ export function TimezoneConverter() {
   }
   const removeSlot = (i: number) => setSlots(s => s.filter((_, idx) => idx !== i))
   const updateSlot = (i: number, tz: string) => setSlots(s => s.map((v, idx) => idx === i ? tz : v))
-  const setNowBase = () => setBaseDate(toLocalISO(new Date()))
+  const setNowBase = () => {
+    // 「今すぐ」は基準のタイムゾーンでの現在時刻を入れる
+    const n = Date.now()
+    const p = partsInTZ(baseTz, n)
+    const hh = getHourInTZ(baseTz, new Date(n))
+    const mm = new Intl.DateTimeFormat('en-US', { timeZone: baseTz, minute: 'numeric' }).format(new Date(n))
+    const pad = (x: number) => String(x).padStart(2, '0')
+    setBaseDate(`${p.y}-${pad(p.mo)}-${pad(p.d)}T${pad(hh)}:${pad(+mm)}`)
+  }
 
-  // Timeline: 24 hours, highlight business hours (9-18) per slot
+  // Timeline: 先頭のタイムゾーンの、基準日の 0〜23 時の各瞬間について、各都市の現地時刻を見る。
+  // ⚠ 以前は各行を「その都市の h 時」で並べていたので、どの都市も同じ 9–18 時が塗られ、
+  // 重なりは常に 9:00〜17:00 と表示されていた（東京とニューヨークでも）
   const timelineHours = Array.from({ length: 24 }, (_, i) => i)
+  const refTz = slots[0]
+  const instants = useMemo(() => {
+    const at = isValid ? parsedBase.getTime() : now.getTime()
+    const { y, mo, d } = partsInTZ(refTz, at)
+    return timelineHours.map((h) => zonedToUtc(y, mo, d, h, 0, refTz))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refTz, parsedBase, isValid, ready])
 
-  const overlapHours = useCallback(() => {
-    if (!isValid || slots.length < 2) return new Set<number>()
-    const sets = slots.map(tz => {
-      const s = new Set<number>()
-      for (let h = 0; h < 24; h++) {
-        const d = new Date(parsedBase)
-        d.setHours(d.getHours() + h - getHourInTZ(tz, parsedBase))
-        const tzHour = getHourInTZ(tz, d)
-        if (tzHour >= 9 && tzHour < 18) s.add(h)
-      }
-      return s
-    })
-    return sets.reduce((a, b) => new Set([...a].filter(x => b.has(x))))
-  }, [slots, parsedBase, isValid])
-
-  const overlap = overlapHours()
+  const localHour = (tz: string, h: number) => getHourInTZ(tz, new Date(instants[h]))
+  const overlap = useMemo(() => {
+    if (slots.length < 2) return new Set<number>()
+    return new Set(timelineHours.filter((h) => slots.every((tz) => { const lh = localHour(tz, h); return lh >= 9 && lh < 18 })))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slots, instants])
 
   return (
     <div className="space-y-5">
@@ -134,6 +177,15 @@ export function TimezoneConverter() {
           onChange={e => setBaseDate(e.target.value)}
           className="rounded border border-border bg-surface px-3 py-2 font-mono text-sm text-primary focus:border-teal focus:outline-none"
         />
+        <select
+          value={baseTz}
+          onChange={e => setBaseTz(e.target.value)}
+          aria-label="入力した日時のタイムゾーン"
+          className="rounded border border-border bg-surface px-2 py-2 font-mono text-xs text-primary focus:border-teal focus:outline-none"
+        >
+          {!CITIES.some(c => c.tz === baseTz) && <option value={baseTz}>{baseTz}</option>}
+          {CITIES.map(c => <option key={c.tz} value={c.tz}>{c.label} の時刻として</option>)}
+        </select>
         <button onClick={setNowBase}
           className="rounded border border-border bg-surface px-3 py-2 font-mono text-xs text-muted hover:border-teal hover:text-teal transition-colors">
           今すぐ
@@ -191,13 +243,11 @@ export function TimezoneConverter() {
                 </span>
                 <div className="flex flex-1 gap-px">
                   {timelineHours.map(h => {
-                    const d = isValid ? new Date(parsedBase) : now
-                    d.setHours(d.getHours() + h - (isValid ? getHourInTZ(tz, parsedBase) : getHourInTZ(tz, now)))
-                    const tzH = getHourInTZ(tz, d)
+                    const tzH = localHour(tz, h)
                     const isBiz = tzH >= 9 && tzH < 18
                     const isOver = overlap.has(h)
                     return (
-                      <div key={h} title={`${h}:00 → ${tz}: ${tzH}:00`}
+                      <div key={h} title={`${CITIES.find(c => c.tz === refTz)?.label ?? refTz} ${h}:00 = ${city?.label ?? tz} ${tzH}:00`}
                         className="flex-1 h-5 rounded-sm transition-all"
                         style={{
                           backgroundColor: isOver ? 'rgba(0,200,150,0.6)' : isBiz ? color + '33' : 'rgba(255,255,255,0.04)',
@@ -222,11 +272,16 @@ export function TimezoneConverter() {
             </div>
           </div>
         </div>
-        {overlap.size > 0 && (
-          <p className="mt-2 font-mono text-xs text-teal">
-            ✓ 重複ビジネスアワー: {[...overlap].sort((a,b)=>a-b).map(h=>`${h}:00`).join(', ')}
+        <p className="mt-2 font-mono text-[10px] text-muted">
+          横軸は {CITIES.find(c => c.tz === refTz)?.label ?? refTz} の時刻（基準日の 0〜23 時）。各行はその瞬間の各都市の現地時刻で、9〜18 時を塗っています。
+        </p>
+        {slots.length >= 2 && (overlap.size > 0 ? (
+          <p className="mt-1 font-mono text-xs text-teal">
+            ✓ 全員の 9〜18 時が重なる時間（{CITIES.find(c => c.tz === refTz)?.label ?? refTz} 時刻）: {[...overlap].sort((a,b)=>a-b).map(h=>`${h}:00`).join(', ')}
           </p>
-        )}
+        ) : (
+          <p className="mt-1 font-mono text-xs text-amber-300">全員の 9〜18 時が重なる時間はありません</p>
+        ))}
       </div>
     </div>
   )

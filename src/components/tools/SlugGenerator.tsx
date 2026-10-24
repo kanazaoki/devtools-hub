@@ -78,26 +78,52 @@ const KANA_MAP: Record<string, string> = {
   'ャ':'ya','ュ':'yu','ョ':'yo',
 }
 
+// 外来語の表記（ティ・ファ など）とヴ
+const EXTRA_MAP: Record<string, string> = {
+  'ヴァ':'va','ヴィ':'vi','ヴ':'vu','ヴェ':'ve','ヴォ':'vo',
+  'ティ':'ti','ディ':'di','トゥ':'tu','ドゥ':'du','デュ':'dyu',
+  'ファ':'fa','フィ':'fi','フェ':'fe','フォ':'fo','フュ':'fyu',
+  'ウィ':'wi','ウェ':'we','ウォ':'wo',
+  'チェ':'che','シェ':'she','ジェ':'je','イェ':'ye',
+  'ゔ':'vu',
+}
+
+// ⚠ 以前は「っ」を消していたので がっこう → gakou、「ー」を区切りにしていたので コーヒー → ko-hi になっていた。
+// 促音は次の子音を重ね（ch の前は t）、長音は書かない（ヘボン式でのスラッグの慣用）
 function kanaToRomaji(text: string): string {
   let result = ''
   let i = 0
-  while (i < text.length) {
-    // 2文字拗音を先に試す
-    const two = text.slice(i, i + 2)
-    if (KANA_MAP[two] !== undefined) {
-      result += KANA_MAP[two]
-      i += 2
-      continue
+  let pendingSokuon = false
+  const push = (r: string) => {
+    if (pendingSokuon && r) {
+      result += r.startsWith('ch') ? 't' : /^[bcdfghjklmpqrstvwxyz]/.test(r) ? r[0] : ''
+      pendingSokuon = false
     }
-    const one = text[i]
-    if (KANA_MAP[one] !== undefined) {
-      result += KANA_MAP[one]
+    result += r
+  }
+  while (i < text.length) {
+    const ch = text[i]
+    if (ch === 'っ' || ch === 'ッ') { pendingSokuon = true; i++; continue }
+    if (ch === 'ー') { i++; continue }
+    const two = text.slice(i, i + 2)
+    const r2 = EXTRA_MAP[two] ?? KANA_MAP[two]
+    if (r2 !== undefined) { push(r2); i += 2; continue }
+    const r1 = EXTRA_MAP[ch] ?? KANA_MAP[ch]
+    if (r1 !== undefined) {
+      push(r1)
     } else {
-      result += one
+      pendingSokuon = false
+      result += ch
     }
     i++
   }
   return result
+}
+
+// 読みが分からず取り除かれる文字（漢字など）
+function droppedChars(input: string): string[] {
+  const s = kanaToRomaji(input).normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[ßæÆøØ]/g, '')
+  return [...new Set([...s].filter((c) => /[^\x00-\x7F]/.test(c) && /\p{L}/u.test(c) && !/[Ａ-Ｚａ-ｚ０-９]/.test(c)))]
 }
 
 // ─── Slug logic ───────────────────────────────────────────────────────────────
@@ -109,6 +135,8 @@ function toSlug(input: string, sep: string, caseMode: CaseMode): string {
   let s = kanaToRomaji(input)
   // 2. 全角英数→半角
   s = s.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+  // 2b. アクセント記号を外す（⚠ 以前は café → caf のように文字ごと消えていた）
+  s = s.normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss').replace(/[æÆ]/g, 'ae').replace(/[øØ]/g, 'o')
   // 3. 特殊文字・空白をセパレーターに
   s = s.replace(/[^a-zA-Z0-9぀-ヿ一-鿿]+/g, sep)
   // 4. 漢字など残った非ASCII → 除去
@@ -133,6 +161,7 @@ export function SlugGenerator() {
   const [copied, setCopied] = useState(false)
 
   const slug = toSlug(input, sep, caseMode)
+  const dropped = droppedChars(input)
 
   const copy = useCallback(() => {
     if (!slug) return
@@ -222,6 +251,11 @@ export function SlugGenerator() {
             {copied ? '✓ コピー済み' : 'コピー'}
           </button>
         </div>
+        {dropped.length > 0 && (
+          <p className="mt-2 text-xs text-amber-300">
+            ⚠ 読みが分からない文字（{dropped.join('')}）は取り除きました。漢字は読み方を決められないため、ひらがな・カタカナか英語で入力してください。
+          </p>
+        )}
       </div>
 
       {/* Examples */}
@@ -229,10 +263,10 @@ export function SlugGenerator() {
         <p className="mb-2 text-xs font-medium text-muted uppercase tracking-widest">変換例</p>
         <ul className="space-y-1 font-mono text-xs text-dim">
           {[
-            ['こんにちは世界', 'konnichiha-sekai'],
+            ['がっこうのコーヒー', 'gakkou-no-kohi'],
             ['Hello World!', 'hello-world'],
             ['My Awesome Post 2026', 'my-awesome-post-2026'],
-            ['東京 Tokyo 2026！', 'tokyo-tokyo-2026'],
+            ['Café Crème', 'cafe-creme'],
           ].map(([from, to]) => (
             <li key={from} className="flex items-center gap-2">
               <span className="text-muted">{from}</span>

@@ -24,6 +24,21 @@ function fmtTz(ms: number, tz: string) {
   })
 }
 
+// 「tz での日時」が指す瞬間。ずれを2回測って夏時間の境目にも合わせる
+function zonedToUtc(y: number, mo: number, d: number, h: number, mi: number, s: number, tz: string): number {
+  const off = (at: number) => {
+    const p = Object.fromEntries(
+      new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+        .formatToParts(new Date(at)).map((x) => [x.type, x.value]),
+    )
+    return Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - Math.floor(at / 1000) * 1000
+  }
+  const guess = Date.UTC(y, mo - 1, d, h, mi, s)
+  let t = guess - off(guess)
+  t = guess - off(t)
+  return t
+}
+
 function relativeTime(ms: number) {
   const diff = ms - Date.now()
   const abs = Math.abs(diff)
@@ -106,6 +121,14 @@ export function TimestampConverter() {
   const tsValid = tsInput !== '' && !isNaN(tsNum) && isFinite(tsNum)
   const tsMs = tsValid ? (unit === 's' ? tsNum * 1000 : tsNum) : null
   const tsError = tsInput !== '' && !tsValid ? '数値を入力してください' : ''
+  // 13桁（ミリ秒）を秒として読むと西暦5万年台になる。桁で取り違えに気づけるようにする
+  const unitHint = tsValid
+    ? unit === 's' && Math.abs(tsNum) >= 1e11
+      ? '桁数がミリ秒のようです（13桁）。単位を ms にしてください。'
+      : unit === 'ms' && Math.abs(tsNum) > 0 && Math.abs(tsNum) < 1e11
+        ? '桁数が秒のようです（10桁）。単位を s にしてください。'
+        : ''
+    : ''
 
   const tsRows: ResultRow[] = tsMs !== null ? [
     { key: `Local (${localTz})`, val: fmtTz(tsMs, localTz), highlight: true },
@@ -118,7 +141,14 @@ export function TimestampConverter() {
   ] : []
 
   // Date → Timestamp
-  const dtMs = dtDate ? new Date(`${dtDate}T${dtTime || '00:00:00'}`).getTime() : null
+  // ⚠ 以前はブラウザのタイムゾーンで読んでいた（画面に表示もしていなかった）。選んだタイムゾーンの時刻として読む
+  const dtMs = (() => {
+    const dm = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dtDate)
+    if (!dm) return null
+    const tm = /^(\d{2}):(\d{2})(?::(\d{2}))?/.exec(dtTime || '00:00:00')
+    if (!tm) return null
+    return zonedToUtc(+dm[1], +dm[2], +dm[3], +tm[1], +tm[2], +(tm[3] ?? 0), tz)
+  })()
   const dtRows: ResultRow[] = dtMs && !isNaN(dtMs) ? [
     { key: 'Unix (s)',  val: String(Math.floor(dtMs / 1000)), highlight: true },
     { key: 'Unix (ms)', val: String(dtMs) },
@@ -208,6 +238,7 @@ export function TimestampConverter() {
             </select>
           </div>
           {tsError && <p className="font-mono text-[10px] text-red-400">{tsError}</p>}
+          {unitHint && <p className="font-mono text-[10px] text-amber-300">⚠ {unitHint}</p>}
           {tsRows.length > 0 && <ResultTable rows={tsRows} />}
         </div>
       </div>
@@ -230,6 +261,7 @@ export function TimestampConverter() {
                 className="w-full rounded-lg border border-border bg-[#111827] px-3 py-2 font-mono text-xs text-primary outline-none focus:border-blue-400/40" />
             </div>
           </div>
+          <p className="font-mono text-[10px] text-muted">{tz} の時刻として読みます（タイムゾーンは上の選択で変えられます）</p>
           {dtRows.length > 0 && <ResultTable rows={dtRows} />}
         </div>
       </div>
