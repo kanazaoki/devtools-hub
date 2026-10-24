@@ -17,12 +17,18 @@ type CharKey = keyof typeof CHARSET
 
 type Strength = 'Weak' | 'Fair' | 'Strong' | 'Very Strong'
 
-function calcStrength(password: string, activeCount: number): Strength {
-  const len = password.length
-  if (len === 0) return 'Weak'
-  if (len >= 16 && activeCount >= 4) return 'Very Strong'
-  if ((len >= 12 && activeCount >= 3) || (len >= 16 && activeCount >= 2)) return 'Strong'
-  if (len >= 8 && activeCount >= 2) return 'Fair'
+// ランダムに生成したパスワードの強さは「文字の種類の数 ^ 長さ」の組み合わせの数で決まる。
+// これを2の何乗か（ビット）で表し、その大きさで判定する。
+// ⚠ 以前は文字種の数だけで判定していたため、小文字だけ32文字（約150ビット）が Weak、
+// 4種8文字（約52ビット）が Fair になり、「長さが一番効く」という事実と逆の表示になっていた
+function entropyBits(length: number, poolSize: number) {
+  return poolSize > 1 ? length * Math.log2(poolSize) : 0
+}
+
+function calcStrength(bits: number): Strength {
+  if (bits >= 100) return 'Very Strong'
+  if (bits >= 72) return 'Strong'
+  if (bits >= 50) return 'Fair'
   return 'Weak'
 }
 
@@ -154,7 +160,9 @@ export function PasswordGenerator() {
 
   const activeCount = (Object.keys(options) as CharKey[]).filter((k) => options[k]).length
   const canGenerate = activeCount > 0
-  const strength = calcStrength(password, activeCount)
+  const poolSize = (Object.keys(CHARSET) as CharKey[]).filter((k) => options[k]).reduce((n, k) => n + CHARSET[k].length, 0)
+  const bits = entropyBits(password.length, poolSize)
+  const strength = calcStrength(bits)
 
   const handleGenerate = useCallback(() => {
     if (!canGenerate) return
@@ -263,7 +271,7 @@ export function PasswordGenerator() {
               ))}
             </div>
             <span className={`shrink-0 font-mono text-[10px] tabular-nums ${STRENGTH_LABEL_COLOR[strength]}`}>
-              {strength}
+              {strength}（約 {Math.round(bits)} ビット）
             </span>
           </div>
         )}

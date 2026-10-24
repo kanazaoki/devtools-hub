@@ -556,6 +556,7 @@ export const tools: Tool[] = [
     hasWebVersion: true,
     releasedAt: '2026-06-18',
     features: [
+      '強さを文字の種類と長さから計算したビット数で表示（長さを伸ばす効果がそのまま出る）',
       '文字種（大文字・小文字・数字・記号）を個別にON/OFF',
       '長さ 4〜64 文字をスライダーで指定',
       '強度メーター（Weak / Fair / Strong / Very Strong）',
