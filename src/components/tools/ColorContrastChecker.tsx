@@ -34,11 +34,14 @@ function contrastRatio(fg: string, bg: string): number | null {
 
 // ── WCAG thresholds ───────────────────────────────────────────────────────────
 
+// 「大きな文字」は 24px 以上、または太字で 18.66px（14pt）以上。
+// 文字以外（ボタンの輪郭・入力欄の枠・アイコン・グラフの線）は 1.4.11 で 3:1。
 const WCAG_LEVELS = [
-  { id: 'aa-normal',  level: 'AA',  sublabel: '通常',  threshold: 4.5 },
-  { id: 'aa-large',   level: 'AA',  sublabel: '大文字', threshold: 3.0 },
-  { id: 'aaa-normal', level: 'AAA', sublabel: '通常',  threshold: 7.0 },
-  { id: 'aaa-large',  level: 'AAA', sublabel: '大文字', threshold: 4.5 },
+  { id: 'aa-normal',  level: 'AA',  sublabel: '通常の文字',                       threshold: 4.5 },
+  { id: 'aa-large',   level: 'AA',  sublabel: '大きな文字（24px〜／太字18.66px〜）', threshold: 3.0 },
+  { id: 'aa-ui',      level: 'AA',  sublabel: '文字以外（ボタンの枠・アイコン等）',  threshold: 3.0 },
+  { id: 'aaa-normal', level: 'AAA', sublabel: '通常の文字',                       threshold: 7.0 },
+  { id: 'aaa-large',  level: 'AAA', sublabel: '大きな文字',                        threshold: 4.5 },
 ] as const
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -270,7 +273,7 @@ export function ColorContrastChecker() {
       {/* ── WCAG strip ── */}
       <div className="overflow-hidden rounded border border-border">
         <div className="border-b border-border px-4 py-2">
-          <span className="font-mono text-[9px] uppercase tracking-widest text-muted">WCAG 2.1</span>
+          <span className="font-mono text-[9px] uppercase tracking-widest text-muted">WCAG 2.2（基準値は 2.1 と同じ）</span>
         </div>
         <div className="divide-y divide-border/50">
           {WCAG_LEVELS.map(({ id, level, sublabel, threshold }) => {

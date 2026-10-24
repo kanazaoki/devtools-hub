@@ -27,18 +27,19 @@ const CVD_MATRICES: Record<string, number[][]> = {
     [0.004733, 0.691367, 0.303900],
   ],
   achromatopsia: [
-    [0.299, 0.587, 0.114],
-    [0.299, 0.587, 0.114],
-    [0.299, 0.587, 0.114],
+    // 線形RGBで計算しているので、輝度の係数（Rec.709）を使う
+    [0.2126, 0.7152, 0.0722],
+    [0.2126, 0.7152, 0.0722],
+    [0.2126, 0.7152, 0.0722],
   ],
 }
 
 const CVD_LABELS: Record<string, { en: string; ja: string }> = {
   normal:       { en: 'Normal',       ja: '正常色覚' },
-  protanopia:   { en: 'Protanopia',   ja: '第一色盲（赤が見えにくい）' },
-  deuteranopia: { en: 'Deuteranopia', ja: '第二色盲（緑が見えにくい）' },
-  tritanopia:   { en: 'Tritanopia',   ja: '第三色盲（青が見えにくい）' },
-  achromatopsia:{ en: 'Achromatopsia',ja: '全色盲（色の区別がない）' },
+  protanopia:   { en: 'Protanopia',   ja: '1型2色覚（P型・赤が見分けにくい）' },
+  deuteranopia: { en: 'Deuteranopia', ja: '2型2色覚（D型・緑が見分けにくい）' },
+  tritanopia:   { en: 'Tritanopia',   ja: '3型2色覚（T型・青と黄が見分けにくい）' },
+  achromatopsia:{ en: 'Achromatopsia',ja: '1色覚（明るさだけで見分ける）' },
 }
 
 const CVD_TYPES = Object.keys(CVD_MATRICES)
