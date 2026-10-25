@@ -170,7 +170,7 @@ export function KeyboardEventTester() {
           className="rounded border border-border bg-bg px-3 py-2 text-sm text-primary outline-none focus:border-teal"
         />
         <span className="text-[11px] text-muted">
-          変換中は isComposing が true、key が &quot;Process&quot;、keyCode が 229 になります。確定の Enter で送信しないよう、isComposing が true のときは処理を飛ばすのが定番です。
+          変換中は isComposing が true、key が &quot;Process&quot;、keyCode が 229 になります。確定の Enter で送信しないよう、isComposing が true のときは処理を飛ばすのが定番です。変換中に押したキーは、右の履歴に「変換中」の印が付きます。
         </span>
       </label>
 
@@ -287,6 +287,12 @@ export function KeyboardEventTester() {
                       <span className={`truncate font-semibold ${i === 0 ? 'text-teal' : 'text-primary'}`}>
                         {item.combo}
                       </span>
+                      {/* 表は最後の1件しか出さないので、確定の Enter が変換中だったかを後から見返せるよう履歴にも印を付ける */}
+                      {item.isComposing && (
+                        <span className="shrink-0 rounded border border-amber-400/40 bg-amber-400/10 px-1.5 text-[10px] font-normal text-amber-300">
+                          変換中
+                        </span>
+                      )}
                     </div>
                     <div className="mt-0.5 flex gap-2 text-muted">
                       <span>{item.timestamp}</span>
