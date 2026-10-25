@@ -156,6 +156,11 @@ export function CssTransformExplorer() {
       else if (t2d.skewX === 0 && t2d.skewY !== 0) parts.push(`skewY(${t2d.skewY}deg)`)
       else parts.push(`skew(${t2d.skewX}deg, ${t2d.skewY}deg)`)
     }
+    // ⚠ 以前は perspective をプロパティとしてこの要素に付けていたが、perspective プロパティは「子要素」の奥行きにしか効かない。
+    // 要素そのものの3D回転に奥行きを付けるには、transform の先頭に perspective() 関数を置く
+    if (is3D && parts.length > 0 && (t3d.rotateX !== 0 || t3d.rotateY !== 0 || t3d.translateZ !== 0)) {
+      parts.unshift(`perspective(${t3d.perspective}px)`)
+    }
     return parts.length > 0 ? parts.join(' ') : 'none'
   }
 
@@ -167,7 +172,6 @@ export function CssTransformExplorer() {
 
   const generateCSS = (): string => {
     const lines: string[] = ['.element {']
-    if (is3D) lines.push(`  perspective: ${t3d.perspective}px;`)
     if (transformStr !== 'none') lines.push(`  transform: ${transformStr};`)
     if (!isDefaultOrigin) lines.push(`  transform-origin: ${originStr};`)
     lines.push('}')
@@ -185,7 +189,6 @@ export function CssTransformExplorer() {
   const previewStyle: React.CSSProperties = {
     transform: transformStr === 'none' ? undefined : transformStr,
     transformOrigin: isDefaultOrigin ? undefined : originStr,
-    perspective: is3D ? t3d.perspective : undefined,
     backgroundColor: previewBg,
     transition: 'transform 0.05s linear',
   }
