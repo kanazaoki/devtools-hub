@@ -11,6 +11,33 @@ function nextId() { return String(++uid) }
 
 type Row = { id: string; cells: string[] }
 
+// CSV（またはスプレッドシートからコピーしたタブ区切り）を RFC 4180 の規則で読む。
+// ⚠ 以前は , で単純に区切っていたので、"東京都, 千代田区" のような引用符つきの値が2つのセルに割れていた
+function parseDelimited(text: string): string[][] {
+  const src = text.replace(/^﻿/, '').replace(/\s+$/, '')
+  if (!src) return []
+  const firstLine = src.split(/\r?\n/)[0]
+  const sep = firstLine.includes('\t') && !firstLine.includes(',') ? '\t' : ','
+  const rows: string[][] = []
+  let row: string[] = []
+  let field = ''
+  let q = false
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i]
+    if (q) {
+      if (c === '"') { if (src[i + 1] === '"') { field += '"'; i++ } else q = false }
+      else field += c
+    } else if (c === '"' && field === '') q = true
+    else if (c === sep) { row.push(field); field = '' }
+    else if (c === '\n' || c === '\r') {
+      if (c === '\r' && src[i + 1] === '\n') i++
+      row.push(field); field = ''; rows.push(row); row = []
+    } else field += c
+  }
+  row.push(field); rows.push(row)
+  return rows.filter((r) => r.some((c) => c.trim() !== ''))
+}
+
 // ⚠ 以前はセルの中の | と改行をそのまま出していたので、列がずれたり表が途中で切れたりしていた
 function cell(s: string): string {
   return s.replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\r?\n/g, '<br>').trim()
@@ -81,13 +108,12 @@ export function MarkdownTableGenerator() {
   }
 
   const importCsv = () => {
-    const lines = csvInput.trim().split('\n').filter(Boolean)
-    if (lines.length === 0) return
-    const parseLine = (line: string) => line.split(',').map((c) => c.trim().replace(/^"|"$/g, ''))
-    const [head, ...rest] = lines
-    const newHeaders = parseLine(head)
-    const newRows: Row[] = rest.map((l) => {
-      const cells = parseLine(l)
+    const table = parseDelimited(csvInput)
+    if (table.length === 0) return
+    const [head, ...rest] = table
+    const newHeaders = head.map((c) => c.trim())
+    const newRows: Row[] = rest.map((cellsRaw) => {
+      const cells = cellsRaw.map((c) => c.trim())
       while (cells.length < newHeaders.length) cells.push('')
       return { id: nextId(), cells: cells.slice(0, newHeaders.length) }
     })
