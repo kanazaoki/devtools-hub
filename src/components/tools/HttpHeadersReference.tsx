@@ -359,9 +359,9 @@ const HEADERS: Header[] = [
   {
     name: 'X-XSS-Protection',
     category: 'response',
-    description: '古いブラウザの XSS フィルターを有効化する。CSP が普及した現在は非推奨とされているが、古いブラウザ向けに設定されることがある。',
+    description: '古いブラウザの XSS フィルターを制御するヘッダー。主要ブラウザはこのフィルターをすでに削除しており、フィルター自体が情報漏えいの原因になった例もあるため、いまは「0（無効）」を送るか、ヘッダーごと送らないのが推奨（MDN・OWASP）。XSS 対策は Content-Security-Policy で行う。',
     syntax: 'X-XSS-Protection: 0 | 1 | 1; mode=block',
-    example: 'X-XSS-Protection: 1; mode=block',
+    example: 'X-XSS-Protection: 0',
     tags: ['security', 'XSS', 'legacy'],
   },
   {
