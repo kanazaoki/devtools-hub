@@ -23,16 +23,38 @@ function ScannerCorner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
   return <span className={`${base} ${corners[pos]} border-teal/60`} aria-hidden="true" />
 }
 
+// Wi-Fi の QR は WIFI:T:WPA;S:名前;P:パスワード;; の形。名前とパスワードの中の \ ; , : " は \ で逃がす必要がある
+function wifiString(ssid: string, password: string, enc: 'WPA' | 'WEP' | 'nopass', hidden: boolean): string {
+  const esc = (v: string) => v.replace(/([\\;,:"])/g, '\\$1')
+  return `WIFI:T:${enc};S:${esc(ssid)};${enc === 'nopass' ? '' : `P:${esc(password)};`}${hidden ? 'H:true;' : ''};`
+}
+
+function luminance(hex: string): number {
+  const n = parseInt(hex.slice(1), 16)
+  const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4 })
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+}
+
 export function QrCode() {
   const [input, setInput] = useState('')
+  const [mode, setMode] = useState<'text' | 'wifi'>('text')
+  const [wifi, setWifi] = useState({ ssid: '', password: '', enc: 'WPA' as 'WPA' | 'WEP' | 'nopass', hidden: false })
   const [opts, setOpts] = useState<QrOptions>({ size: 256, fg: '#000000', bg: '#ffffff' })
   const [error, setError] = useState('')
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const content = mode === 'text' ? input.trim() : wifi.ssid ? wifiString(wifi.ssid, wifi.password, wifi.enc, wifi.hidden) : ''
+  // 読み取れない色の組み合わせ：明暗の差が小さい、または明るい点を暗い背景に置く（読めないアプリが多い）
+  const lf = luminance(opts.fg), lb = luminance(opts.bg)
+  const colorWarning = lf > lb
+    ? '前景が背景より明るい（白黒反転）と、読み取れないアプリが多くあります。前景を暗い色にしてください。'
+    : (lb + 0.05) / (lf + 0.05) < 4
+      ? '前景と背景の明るさの差が小さく、読み取りにくくなります。'
+      : ''
 
   const generate = useCallback(async () => {
-    if (!input.trim()) { setError(''); return }
+    if (!content) { setError(''); return }
     try {
-      await QRCode.toCanvas(canvasRef.current!, input.trim(), {
+      await QRCode.toCanvas(canvasRef.current!, content, {
         width: opts.size,
         margin: 2,
         color: { dark: opts.fg, light: opts.bg },
@@ -48,7 +70,7 @@ export function QrCode() {
 
   const downloadPng = () => {
     const canvas = canvasRef.current
-    if (!canvas || !input.trim()) return
+    if (!canvas || !content) return
     const a = document.createElement('a')
     a.href = canvas.toDataURL('image/png')
     a.download = 'qrcode.png'
@@ -56,9 +78,9 @@ export function QrCode() {
   }
 
   const downloadSvg = async () => {
-    if (!input.trim()) return
+    if (!content) return
     try {
-      const svg = await QRCode.toString(input.trim(), {
+      const svg = await QRCode.toString(content, {
         type: 'svg',
         width: opts.size,
         margin: 2,
@@ -77,7 +99,7 @@ export function QrCode() {
     }
   }
 
-  const hasContent = input.trim().length > 0 && !error
+  const hasContent = content.length > 0 && !error
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto]">
@@ -85,6 +107,36 @@ export function QrCode() {
       {/* ── Left: controls ── */}
       <div className="flex flex-col gap-5">
 
+        <div className="flex gap-1.5">
+          {([['text', 'テキスト / URL'], ['wifi', 'Wi-Fi']] as const).map(([m, label]) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`rounded border px-2.5 py-1 font-mono text-[10px] ${mode === m ? 'border-teal/40 bg-teal/10 text-teal' : 'border-border text-muted hover:text-dim'}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {mode === 'wifi' ? (
+          <div className="flex flex-col gap-2">
+            <input value={wifi.ssid} onChange={(e) => setWifi((w) => ({ ...w, ssid: e.target.value }))} placeholder="ネットワーク名（SSID）" className="rounded-md border border-border bg-bg px-3 py-2 font-mono text-xs text-primary outline-none focus:border-teal/40" />
+            {wifi.enc !== 'nopass' && (
+              <input value={wifi.password} onChange={(e) => setWifi((w) => ({ ...w, password: e.target.value }))} placeholder="パスワード" className="rounded-md border border-border bg-bg px-3 py-2 font-mono text-xs text-primary outline-none focus:border-teal/40" />
+            )}
+            <div className="flex flex-wrap items-center gap-3 font-mono text-[11px] text-muted">
+              <select value={wifi.enc} onChange={(e) => setWifi((w) => ({ ...w, enc: e.target.value as 'WPA' | 'WEP' | 'nopass' }))} className="rounded border border-border bg-bg px-2 py-1 text-primary">
+                <option value="WPA">WPA / WPA2 / WPA3</option>
+                <option value="WEP">WEP</option>
+                <option value="nopass">パスワードなし</option>
+              </select>
+              <label className="flex items-center gap-1"><input type="checkbox" checked={wifi.hidden} onChange={(e) => setWifi((w) => ({ ...w, hidden: e.target.checked }))} className="accent-teal" />ステルス（非公開）ネットワーク</label>
+            </div>
+            {content && <p className="break-all font-mono text-[10px] text-muted/70">{content}</p>}
+            <p className="text-[10px] text-muted/60">パスワードは QR の中にそのまま入ります。画像を共有する相手に注意してください（このページは何も送信しません）。</p>
+          </div>
+        ) : (
         <div className="flex flex-col gap-1.5">
           <label className="font-mono text-[10px] uppercase tracking-widest text-muted">テキスト / URL</label>
           <textarea
@@ -96,6 +148,7 @@ export function QrCode() {
             className="w-full rounded-md border border-border bg-bg p-3 font-mono text-xs leading-relaxed text-primary outline-none placeholder:text-muted/25 focus:border-border-hi transition-colors resize-none"
           />
         </div>
+        )}
 
         <div className="flex flex-col gap-1.5">
           <label className="font-mono text-[10px] uppercase tracking-widest text-muted">サイズ</label>
@@ -142,6 +195,7 @@ export function QrCode() {
         )}
 
         {error && <p className="font-mono text-[11px] text-red-400">{error}</p>}
+        {colorWarning && <p className="font-mono text-[11px] text-amber-300">⚠ {colorWarning}</p>}
       </div>
 
       {/* ── Right: scanner frame ── */}
@@ -201,7 +255,7 @@ export function QrCode() {
         </div>
 
         {hasContent && (
-          <p className="font-mono text-[10px] text-muted/40">{input.trim().length} chars</p>
+          <p className="font-mono text-[10px] text-muted/40">{content.length} chars</p>
         )}
       </div>
     </div>
