@@ -64,7 +64,7 @@ export function QrCode() {
     } catch {
       setError('QR コードを生成できませんでした（入力が長すぎる可能性があります）')
     }
-  }, [input, opts])
+  }, [content, opts])
 
   useEffect(() => { generate() }, [generate])
 

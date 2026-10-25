@@ -528,7 +528,7 @@ export const tools: Tool[] = [
     name: 'QR コード',
     tagline: 'テキスト・URL を即座に QR コードへ変換',
     description:
-      'テキストや URL を入力すると即座に QR コードを生成。サイズ・前景色・背景色を自由にカスタマイズして PNG または SVG でダウンロードできます。Wi-Fi 設定や連絡先など幅広い用途に。',
+      'テキストや URL を入力すると即座に QR コードを生成。サイズ・前景色・背景色を自由にカスタマイズして PNG または SVG でダウンロードできます。Wi-Fi の接続用 QR も作れます（ネットワーク名とパスワードを入れるだけ）。',
     tags: ['開発者向け', 'ユーティリティ', 'QR'],
     boothUrl: 'https://knkk.booth.pm/items/8523108',
     hasWebVersion: true,
