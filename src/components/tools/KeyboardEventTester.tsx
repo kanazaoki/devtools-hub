@@ -15,6 +15,7 @@ interface KeyEntry {
   metaKey: boolean
   type: string
   repeat: boolean
+  isComposing: boolean
   combo: string
   timestamp: string
 }
@@ -27,7 +28,7 @@ function formatTimestamp(date: Date): string {
   return `${h}:${m}:${s}.${ms}`
 }
 
-function buildCombo(e: React.KeyboardEvent): string {
+function buildCombo(e: React.KeyboardEvent<HTMLElement>): string {
   const parts: string[] = []
   if (e.ctrlKey && e.key !== 'Control') parts.push('Ctrl')
   if (e.altKey && e.key !== 'Alt') parts.push('Alt')
@@ -67,7 +68,7 @@ export function KeyboardEventTester() {
   const idRef = useRef(0)
   const areaRef = useRef<HTMLDivElement>(null)
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLElement>) => {
     if (e.key === 'Tab') e.preventDefault()
     const entry: KeyEntry = {
       id: ++idRef.current,
@@ -82,6 +83,9 @@ export function KeyboardEventTester() {
       metaKey: e.metaKey,
       type: e.type,
       repeat: e.repeat,
+      // 日本語入力の変換中は isComposing が true（key は "Process"、keyCode は 229）。
+      // 変換を確定する Enter で送信してしまう不具合は、これを見て防ぐ
+      isComposing: e.nativeEvent.isComposing,
       combo: buildCombo(e),
       timestamp: formatTimestamp(new Date()),
     }
@@ -110,6 +114,7 @@ export function KeyboardEventTester() {
         { prop: 'shiftKey', value: String(lastEvent.shiftKey)        },
         { prop: 'metaKey',  value: String(lastEvent.metaKey)         },
         { prop: 'repeat',   value: String(lastEvent.repeat)          },
+        { prop: 'isComposing', value: String(lastEvent.isComposing)  },
         { prop: 'type',     value: JSON.stringify(lastEvent.type)    },
       ]
     : []
@@ -154,6 +159,20 @@ export function KeyboardEventTester() {
           )}
         </div>
       </div>
+
+      {/* 日本語入力（IME）は文字を入れられる欄でしか動かないので、変換中のイベントはここで確かめる */}
+      <label className="flex flex-col gap-1">
+        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">日本語入力（IME）で試す</span>
+        <input
+          type="text"
+          onKeyDown={handleKeyDown}
+          placeholder="ここで日本語を入力して、変換中や確定の Enter を押す"
+          className="rounded border border-border bg-bg px-3 py-2 text-sm text-primary outline-none focus:border-teal"
+        />
+        <span className="text-[11px] text-muted">
+          変換中は isComposing が true、key が &quot;Process&quot;、keyCode が 229 になります。確定の Enter で送信しないよう、isComposing が true のときは処理を飛ばすのが定番です。
+        </span>
+      </label>
 
       {/* Main 2-panel area */}
       <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
