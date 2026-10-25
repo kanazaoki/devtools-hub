@@ -48,12 +48,15 @@ function checkFontAvailable(font: string): boolean {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
     if (!ctx) return false
-    const size = 24
-    ctx.font = `${size}px monospace`
-    const base = ctx.measureText('ABCabc123').width
-    ctx.font = `${size}px "${font}", monospace`
-    const test = ctx.measureText('ABCabc123').width
-    return base !== test
+    // 3つの基本フォントで比べ、どれか1つでも幅が変われば入っている（1つだけだと幅の近いフォントを見落とす）
+    const size = 72
+    const sample = 'mmmmmmmmmmlliWW@#あア漢123'
+    return ['monospace', 'serif', 'sans-serif'].some((baseFont) => {
+      ctx.font = `${size}px ${baseFont}`
+      const base = ctx.measureText(sample).width
+      ctx.font = `${size}px "${font}", ${baseFont}`
+      return ctx.measureText(sample).width !== base
+    })
   } catch {
     return false
   }

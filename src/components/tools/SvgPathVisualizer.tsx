@@ -34,7 +34,8 @@ function parsePath(d: string): PathCmd[] {
     const abs = type.toUpperCase() as CmdType
     const raw = match[0].trim()
     const paramStr = match[2].trim()
-    const params = paramStr ? paramStr.split(/[\s,]+/).filter(Boolean).map(Number) : []
+    // ⚠ 以前は空白とカンマだけで区切っていたので、最適化ツールが出す M10-20L.5.5 のような詰めた書き方が NaN になっていた
+    const params = (paramStr.match(/[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/g) ?? []).map(Number)
     cmds.push({ raw, type, abs, params, color: CMD_COLORS[abs] || '#94a3b8', index: idx++ })
   }
   return cmds
